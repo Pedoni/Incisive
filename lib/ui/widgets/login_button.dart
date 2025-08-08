@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:incisive_demo/ui/pages/home_page.dart';
 
 class LoginButton extends StatelessWidget {
   final TextEditingController usernameController;
@@ -25,7 +26,7 @@ class LoginButton extends StatelessWidget {
         foregroundColor: Colors.white,
         fixedSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
       ),
-      onPressed: () {},
+      onPressed: () => Navigator.pushNamed(context, HomePage.routeName),
       child: Text(
         "Enter",
         style: const TextStyle(
