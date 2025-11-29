@@ -28,20 +28,15 @@ flutter:
   assets:
     - assets/images/
 
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
+    - family: Nunito Sans
+      fonts:
+        - asset: assets/fonts/NunitoSans_10pt-Regular.ttf
+        - asset: assets/fonts/NunitoSans_10pt-Bold.ttf
 
 flutter_native_splash:
   color: "#8D5A23"
