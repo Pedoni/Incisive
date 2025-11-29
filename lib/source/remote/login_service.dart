@@ -21,25 +21,20 @@ class LoginService {
     }
   }
 
-  Future<void> logout() async {
-    await supabase.auth.signOut();
-  }
+  Future<void> logout() async => await supabase.auth.signOut();
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> register(String email, String password) async {
     final response = await supabase.auth.signUp(
       email: email,
       password: password,
     );
 
     if (response.user == null) {
-      throw Exception("Errore nella registrazione");
+      throw Exception("Errore nella registrazione.");
     }
   }
 
-  bool isLogged() {
-    final session = supabase.auth.currentSession;
-    return session != null;
-  }
+  bool isLogged() => supabase.auth.currentSession != null;
 }
 
 class AuthException implements Exception {
