@@ -23,7 +23,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     emitter(const TryRegisterState());
     try {
       var e = event as TryRegisterEvent;
-      await loginRepository.login(e.username, e.password);
+      await loginRepository.register(e.username, e.password);
       emitter(const ResultRegisterState());
     } catch (e) {
       emitter(ErrorRegisterState(e.toString()));

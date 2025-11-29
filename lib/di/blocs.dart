@@ -7,4 +7,10 @@ final List<BlocProvider> _blocs = [
           loginRepository: context.read(),
         ),
   ),
+  BlocProvider<RegisterBloc>(
+    create:
+        (context) => RegisterBloc(
+          loginRepository: context.read(),
+        ),
+  ),
 ];

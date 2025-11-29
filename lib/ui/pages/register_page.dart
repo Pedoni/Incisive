@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/state_management/blocs/register_bloc/register_bloc.dart';
+import 'package:incisive/ui/pages/home_page.dart';
+import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
 import 'package:incisive/ui/widgets/login_textfield.dart';
 
@@ -65,13 +69,27 @@ class _RegisterPageState extends State<RegisterPage> {
                               const SizedBox(height: 10),
                               LoginTextField(isTextVisible: false, title: "Confirm password", controller: _passwordController),
                               const SizedBox(height: 15),
-                              LoginButton(
-                                usernameController: _usernameController,
-                                passwordController: _passwordController,
-                                isLoading: false,
-                                login: () {},
-                                color: Color.fromARGB(255, 141, 90, 35),
-                                title: 'Create account',
+                              BlocConsumer<RegisterBloc, RegisterState>(
+                                listener: (context, state) {
+                                  if (state is ResultRegisterState) {
+                                    Navigator.pushNamed(context, HomePage.routeName);
+                                  } else if (state is ErrorRegisterState) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto'),
+                                    );
+                                  }
+                                },
+                                builder: (context, state) {
+                                  return LoginButton(
+                                    usernameController: _usernameController,
+                                    passwordController: _passwordController,
+                                    isLoading: false,
+                                    login: () => context.read<RegisterBloc>().register(_usernameController.text, _passwordController.text),
+                                    color: Color.fromARGB(255, 141, 90, 35),
+                                    title: 'Create account',
+                                  );
+                                },
                               ),
                               const SizedBox(height: 20),
                             ],
