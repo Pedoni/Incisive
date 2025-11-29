@@ -29,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _confirmPasswordController = TextEditingController();
   }
 
-  void _login() {
+  void _register() {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty || _confirmPasswordController.text.isEmpty) {
       showDialog(
         context: context,
@@ -110,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     passwordController: _passwordController,
                                     isLoading: false,
 
-                                    login: _login,
+                                    login: _register,
                                     color: Color.fromARGB(255, 141, 90, 35),
                                     title: 'Create account',
                                   );
@@ -164,5 +164,6 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
   }
 }
