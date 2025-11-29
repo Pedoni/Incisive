@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:incisive_demo/ui/widgets/login_button.dart';
-import 'package:incisive_demo/ui/widgets/login_textfield.dart';
+import 'package:incisive/ui/widgets/login_button.dart';
+import 'package:incisive/ui/widgets/login_textfield.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/loginPage';

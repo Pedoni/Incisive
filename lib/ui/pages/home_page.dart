@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:incisive_demo/ui/pages/balcony_page.dart';
-import 'package:incisive_demo/ui/pages/diary_page.dart';
-import 'package:incisive_demo/ui/pages/turntable_page.dart';
+import 'package:incisive/ui/pages/balcony_page.dart';
+import 'package:incisive/ui/pages/diary_page.dart';
+import 'package:incisive/ui/pages/turntable_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

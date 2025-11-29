@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:incisive_demo/ui/pages/home_page.dart';
+import 'package:incisive/ui/pages/home_page.dart';
 
 class LoginButton extends StatelessWidget {
   final TextEditingController usernameController;

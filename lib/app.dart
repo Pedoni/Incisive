@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:incisive_demo/ui/pages/balcony_page.dart';
-import 'package:incisive_demo/ui/pages/diary_page.dart';
-import 'package:incisive_demo/ui/pages/home_page.dart';
-import 'package:incisive_demo/ui/pages/login_page.dart';
-import 'package:incisive_demo/ui/pages/turntable_page.dart';
+import 'package:incisive/ui/pages/balcony_page.dart';
+import 'package:incisive/ui/pages/diary_page.dart';
+import 'package:incisive/ui/pages/home_page.dart';
+import 'package:incisive/ui/pages/login_page.dart';
+import 'package:incisive/ui/pages/turntable_page.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
