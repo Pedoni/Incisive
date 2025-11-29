@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
 import 'package:incisive/ui/widgets/login_textfield.dart';
@@ -16,13 +17,14 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
-  String? enteDesctiption;
+  late TapGestureRecognizer _tapRecognizer;
 
   @override
   void initState() {
     super.initState();
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
+    _tapRecognizer = TapGestureRecognizer()..onTap = () {};
   }
 
   Widget _buildLoginContent() {
@@ -30,41 +32,47 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          //Image.asset(widget.logo, height: 80),
-          const Text("Incisive logo"),
+          Image.asset("assets/images/logo_brown.png", height: 150),
+          Image.asset("assets/images/logo_text.png", height: 20, fit: BoxFit.fitHeight),
           const SizedBox(height: 25),
-          if (enteDesctiption != null)
-            Text(enteDesctiption!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: widget.color)),
-          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Card(
-              color: const Color.fromARGB(255, 241, 243, 244),
-              elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-                child: IntrinsicWidth(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 20),
-                      LoginTextField(isTextVisible: true, title: "Username", controller: _usernameController),
-                      const SizedBox(height: 10),
-                      LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
-                      const SizedBox(height: 15),
-                      LoginButton(
-                        usernameController: _usernameController,
-                        passwordController: _passwordController,
-                        isLoading: false,
-                        login: () {},
-                        color: widget.color,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+              child: IntrinsicWidth(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 20),
+                    LoginTextField(isTextVisible: true, title: "Username", controller: _usernameController),
+                    const SizedBox(height: 10),
+                    LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
+                    const SizedBox(height: 15),
+                    LoginButton(
+                      usernameController: _usernameController,
+                      passwordController: _passwordController,
+                      isLoading: false,
+                      login: () {},
+                      color: Color.fromARGB(255, 141, 90, 35),
+                    ),
+                    const SizedBox(height: 20),
+                    RichText(
+                      text: TextSpan(
+                        text: 'or ',
+                        style: TextStyle(color: Color.fromARGB(255, 141, 90, 35)),
+                        children: [
+                          TextSpan(
+                            text: 'register',
+                            style: TextStyle(color: Color.fromARGB(255, 141, 90, 35), decoration: TextDecoration.underline),
+                            recognizer: _tapRecognizer,
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
             ),
@@ -81,7 +89,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: null,
       extendBody: true,
