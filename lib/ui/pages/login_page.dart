@@ -18,14 +18,25 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late TextEditingController _usernameController;
+  late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TapGestureRecognizer _tapRecognizer;
+
+  void _login() {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => ErrorDialog(title: "Errore", text: "Compilare tutti i campi."),
+      );
+    } else {
+      context.read<LoginBloc>().login(_emailController.text, _passwordController.text);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
+    _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _tapRecognizer = TapGestureRecognizer()..onTap = () => Navigator.pushNamed(context, RegisterPage.routeName);
   }
@@ -67,14 +78,14 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              LoginTextField(isTextVisible: true, title: "Email", controller: _usernameController),
+                              LoginTextField(isTextVisible: true, title: "Email", controller: _emailController),
                               const SizedBox(height: 10),
                               LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
                               const SizedBox(height: 15),
                               BlocConsumer<LoginBloc, LoginState>(
                                 listener: (context, state) {
                                   if (state is ResultLoginState) {
-                                    Navigator.pushNamed(context, HomePage.routeName);
+                                    Navigator.pushReplacementNamed(context, HomePage.routeName);
                                   } else if (state is ErrorLoginState) {
                                     showDialog(
                                       context: context,
@@ -84,10 +95,10 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 builder: (context, state) {
                                   return LoginButton(
-                                    usernameController: _usernameController,
+                                    usernameController: _emailController,
                                     passwordController: _passwordController,
                                     isLoading: state is TryLoginState,
-                                    login: () => context.read<LoginBloc>().login(_usernameController.text, _passwordController.text),
+                                    login: _login,
                                     color: Color.fromARGB(255, 141, 90, 35),
                                     title: 'Enter',
                                   );
@@ -150,7 +161,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     super.dispose();
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
+    _tapRecognizer.dispose();
   }
 }

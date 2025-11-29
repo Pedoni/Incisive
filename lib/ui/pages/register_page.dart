@@ -1,4 +1,9 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/state_management/blocs/register_bloc/register_bloc.dart';
+import 'package:incisive/ui/pages/home_page.dart';
+import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
 import 'package:incisive/ui/widgets/login_textfield.dart';
 
@@ -12,14 +17,37 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  late TextEditingController _usernameController;
+  late TextEditingController _emailController;
   late TextEditingController _passwordController;
+  late TextEditingController _confirmPasswordController;
 
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
+    _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
+  }
+
+  void _register() {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty || _confirmPasswordController.text.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => ErrorDialog(title: "Errore", text: "Compilare tutti i campi."),
+      );
+    } else if (_passwordController.text != _confirmPasswordController.text) {
+      showDialog(
+        context: context,
+        builder: (context) => ErrorDialog(title: "Errore", text: "Le password non coincidono."),
+      );
+    } else if (!EmailValidator.validate(_emailController.text)) {
+      showDialog(
+        context: context,
+        builder: (context) => ErrorDialog(title: "Errore", text: "Email non valida."),
+      );
+    } else {
+      context.read<RegisterBloc>().register(_emailController.text, _passwordController.text);
+    }
   }
 
   Widget _buildRegisterContent() {
@@ -59,19 +87,34 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              LoginTextField(isTextVisible: true, title: "Email", controller: _usernameController),
+                              LoginTextField(isTextVisible: true, title: "Email", controller: _emailController),
                               const SizedBox(height: 10),
                               LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
                               const SizedBox(height: 10),
-                              LoginTextField(isTextVisible: false, title: "Confirm password", controller: _passwordController),
+                              LoginTextField(isTextVisible: false, title: "Confirm password", controller: _confirmPasswordController),
                               const SizedBox(height: 15),
-                              LoginButton(
-                                usernameController: _usernameController,
-                                passwordController: _passwordController,
-                                isLoading: false,
-                                login: () {},
-                                color: Color.fromARGB(255, 141, 90, 35),
-                                title: 'Create account',
+                              BlocConsumer<RegisterBloc, RegisterState>(
+                                listener: (context, state) {
+                                  if (state is ResultRegisterState) {
+                                    Navigator.pushReplacementNamed(context, HomePage.routeName);
+                                  } else if (state is ErrorRegisterState) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto'),
+                                    );
+                                  }
+                                },
+                                builder: (context, state) {
+                                  return LoginButton(
+                                    usernameController: _emailController,
+                                    passwordController: _passwordController,
+                                    isLoading: false,
+
+                                    login: _register,
+                                    color: Color.fromARGB(255, 141, 90, 35),
+                                    title: 'Create account',
+                                  );
+                                },
                               ),
                               const SizedBox(height: 20),
                             ],
@@ -119,7 +162,8 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void dispose() {
     super.dispose();
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
   }
 }
