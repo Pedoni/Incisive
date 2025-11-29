@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/login_bloc/login_bloc.dart';
 import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/pages/register_page.dart';
+import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
 import 'package:incisive/ui/widgets/login_textfield.dart';
-import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/loginPage';
@@ -71,16 +71,23 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(height: 10),
                               LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
                               const SizedBox(height: 15),
-                              BlocBuilder<LoginBloc, LoginState>(
+                              BlocConsumer<LoginBloc, LoginState>(
+                                listener: (context, state) {
+                                  if (state is ResultLoginState) {
+                                    Navigator.pushNamed(context, HomePage.routeName);
+                                  } else if (state is ErrorLoginState) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto'),
+                                    );
+                                  }
+                                },
                                 builder: (context, state) {
                                   return LoginButton(
                                     usernameController: _usernameController,
                                     passwordController: _passwordController,
                                     isLoading: state is TryLoginState,
-                                    login: () {
-                                      context.read<LoginBloc>().login(_usernameController.text, _passwordController.text);
-                                      Navigator.pushNamed(context, HomePage.routeName);
-                                    },
+                                    login: () => context.read<LoginBloc>().login(_usernameController.text, _passwordController.text),
                                     color: Color.fromARGB(255, 141, 90, 35),
                                     title: 'Enter',
                                   );

@@ -1,14 +1,23 @@
 import 'package:incisive/main.dart';
+import 'package:supabase/supabase.dart';
 
 class LoginService {
   Future<void> login(String email, String password) async {
-    final response = await supabase.auth.signInWithPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      final response = await supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
 
-    if (response.session == null) {
-      throw Exception("Credenziali sbagliate");
+      if (response.session == null) {
+        throw AuthException("Credenziali errate.");
+      }
+    } catch (e) {
+      if (e is AuthApiException) {
+        throw AuthException("Credenziali errate.");
+      } else {
+        rethrow;
+      }
     }
   }
 
@@ -31,4 +40,12 @@ class LoginService {
     final session = supabase.auth.currentSession;
     return session != null;
   }
+}
+
+class AuthException implements Exception {
+  final String message;
+  AuthException(this.message);
+
+  @override
+  String toString() => message;
 }
