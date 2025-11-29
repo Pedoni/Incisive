@@ -6,9 +6,7 @@ import 'package:incisive/ui/widgets/login_textfield.dart';
 class LoginPage extends StatefulWidget {
   static const routeName = '/loginPage';
 
-  final Color color;
-
-  const LoginPage({required this.color, super.key});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
