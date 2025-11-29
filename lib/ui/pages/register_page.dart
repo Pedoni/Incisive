@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/register_bloc/register_bloc.dart';
@@ -16,20 +17,20 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  late TextEditingController _usernameController;
+  late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TextEditingController _confirmPasswordController;
 
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
+    _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
   }
 
   void _login() {
-    if (_usernameController.text.isEmpty || _passwordController.text.isEmpty || _confirmPasswordController.text.isEmpty) {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty || _confirmPasswordController.text.isEmpty) {
       showDialog(
         context: context,
         builder: (context) => ErrorDialog(title: "Errore", text: "Compilare tutti i campi."),
@@ -39,8 +40,13 @@ class _RegisterPageState extends State<RegisterPage> {
         context: context,
         builder: (context) => ErrorDialog(title: "Errore", text: "Le password non coincidono."),
       );
+    } else if (!EmailValidator.validate(_emailController.text)) {
+      showDialog(
+        context: context,
+        builder: (context) => ErrorDialog(title: "Errore", text: "Email non valida."),
+      );
     } else {
-      context.read<RegisterBloc>().register(_usernameController.text, _passwordController.text);
+      context.read<RegisterBloc>().register(_emailController.text, _passwordController.text);
     }
   }
 
@@ -81,7 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              LoginTextField(isTextVisible: true, title: "Email", controller: _usernameController),
+                              LoginTextField(isTextVisible: true, title: "Email", controller: _emailController),
                               const SizedBox(height: 10),
                               LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
                               const SizedBox(height: 10),
@@ -100,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 },
                                 builder: (context, state) {
                                   return LoginButton(
-                                    usernameController: _usernameController,
+                                    usernameController: _emailController,
                                     passwordController: _passwordController,
                                     isLoading: false,
 
@@ -156,7 +162,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void dispose() {
     super.dispose();
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
   }
 }
