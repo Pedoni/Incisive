@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    LoginTextField(isTextVisible: true, title: "Username", controller: _usernameController),
+                    LoginTextField(isTextVisible: true, title: "Email", controller: _usernameController),
                     const SizedBox(height: 10),
                     LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
                     const SizedBox(height: 15),
