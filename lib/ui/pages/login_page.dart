@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                               BlocConsumer<LoginBloc, LoginState>(
                                 listener: (context, state) {
                                   if (state is ResultLoginState) {
-                                    Navigator.pushNamed(context, HomePage.routeName);
+                                    Navigator.pushReplacementNamed(context, HomePage.routeName);
                                   } else if (state is ErrorLoginState) {
                                     showDialog(
                                       context: context,

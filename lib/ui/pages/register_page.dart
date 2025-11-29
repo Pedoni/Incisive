@@ -96,7 +96,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               BlocConsumer<RegisterBloc, RegisterState>(
                                 listener: (context, state) {
                                   if (state is ResultRegisterState) {
-                                    Navigator.pushNamed(context, HomePage.routeName);
+                                    Navigator.pushReplacementNamed(context, HomePage.routeName);
                                   } else if (state is ErrorRegisterState) {
                                     showDialog(
                                       context: context,
