@@ -65,6 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                       isLoading: false,
                       login: () {},
                       color: Color.fromARGB(255, 141, 90, 35),
+                      title: 'Enter',
                     ),
                     const SizedBox(height: 20),
                     RichText(

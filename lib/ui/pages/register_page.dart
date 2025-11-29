@@ -63,6 +63,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       isLoading: false,
                       login: () {},
                       color: Color.fromARGB(255, 141, 90, 35),
+                      title: 'Create account',
                     ),
                     const SizedBox(height: 20),
                   ],
