@@ -18,12 +18,30 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
+  late TextEditingController _confirmPasswordController;
 
   @override
   void initState() {
     super.initState();
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
+  }
+
+  void _login() {
+    if (_usernameController.text.isEmpty || _passwordController.text.isEmpty || _confirmPasswordController.text.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => ErrorDialog(title: "Errore", text: "Compilare tutti i campi."),
+      );
+    } else if (_passwordController.text != _confirmPasswordController.text) {
+      showDialog(
+        context: context,
+        builder: (context) => ErrorDialog(title: "Errore", text: "Le password non coincidono."),
+      );
+    } else {
+      context.read<RegisterBloc>().register(_usernameController.text, _passwordController.text);
+    }
   }
 
   Widget _buildRegisterContent() {
@@ -67,7 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               const SizedBox(height: 10),
                               LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
                               const SizedBox(height: 10),
-                              LoginTextField(isTextVisible: false, title: "Confirm password", controller: _passwordController),
+                              LoginTextField(isTextVisible: false, title: "Confirm password", controller: _confirmPasswordController),
                               const SizedBox(height: 15),
                               BlocConsumer<RegisterBloc, RegisterState>(
                                 listener: (context, state) {
@@ -85,7 +103,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     usernameController: _usernameController,
                                     passwordController: _passwordController,
                                     isLoading: false,
-                                    login: () => context.read<RegisterBloc>().register(_usernameController.text, _passwordController.text),
+
+                                    login: _login,
                                     color: Color.fromARGB(255, 141, 90, 35),
                                     title: 'Create account',
                                   );
