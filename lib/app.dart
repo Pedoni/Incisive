@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:incisive/di/dependency_injector.dart';
 import 'package:incisive/ui/pages/balcony_page.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/home_page.dart';
@@ -11,19 +12,21 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Incisive',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
-      home: LoginPage(),
-      routes: {
-        LoginPage.routeName: (context) => LoginPage(),
-        RegisterPage.routeName: (context) => RegisterPage(),
-        HomePage.routeName: (context) => const HomePage(),
-        DiaryPage.routeName: (context) => const DiaryPage(),
-        TurntablePage.routeName: (context) => const TurntablePage(),
-        BalconyPage.routeName: (context) => const BalconyPage(),
-      },
+    return DependencyInjector(
+      child: MaterialApp(
+        title: 'Incisive',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+        home: LoginPage(),
+        routes: {
+          LoginPage.routeName: (context) => LoginPage(),
+          RegisterPage.routeName: (context) => RegisterPage(),
+          HomePage.routeName: (context) => const HomePage(),
+          DiaryPage.routeName: (context) => const DiaryPage(),
+          TurntablePage.routeName: (context) => const TurntablePage(),
+          BalconyPage.routeName: (context) => const BalconyPage(),
+        },
+      ),
     );
   }
 }
