@@ -1,4 +1,4 @@
-package com.example.incisive_demo
+package it.unibo.incisive
 
 import io.flutter.embedding.android.FlutterActivity
 
