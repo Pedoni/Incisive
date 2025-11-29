@@ -1,32 +1,28 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:incisive/ui/pages/register_page.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
 import 'package:incisive/ui/widgets/login_textfield.dart';
 
-class LoginPage extends StatefulWidget {
-  static const routeName = '/loginPage';
+class RegisterPage extends StatefulWidget {
+  static const routeName = '/registerPage';
 
-  const LoginPage({super.key});
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
-  late TapGestureRecognizer _tapRecognizer;
 
   @override
   void initState() {
     super.initState();
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
-    _tapRecognizer = TapGestureRecognizer()..onTap = () => Navigator.pushNamed(context, RegisterPage.routeName);
   }
 
-  Widget _buildLoginContent() {
+  Widget _buildRegisterContent() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -45,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
-                      "LOGIN",
+                      "REGISTER",
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: 24,
@@ -58,6 +54,8 @@ class _LoginPageState extends State<LoginPage> {
                     LoginTextField(isTextVisible: true, title: "Email", controller: _usernameController),
                     const SizedBox(height: 10),
                     LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
+                    const SizedBox(height: 10),
+                    LoginTextField(isTextVisible: false, title: "Confirm password", controller: _passwordController),
                     const SizedBox(height: 15),
                     LoginButton(
                       usernameController: _usernameController,
@@ -65,21 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                       isLoading: false,
                       login: () {},
                       color: Color.fromARGB(255, 141, 90, 35),
-                      title: 'Enter',
-                    ),
-                    const SizedBox(height: 20),
-                    RichText(
-                      text: TextSpan(
-                        text: 'or ',
-                        style: TextStyle(color: Color.fromARGB(255, 141, 90, 35)),
-                        children: [
-                          TextSpan(
-                            text: 'register',
-                            style: TextStyle(color: Color.fromARGB(255, 141, 90, 35), decoration: TextDecoration.underline),
-                            recognizer: _tapRecognizer,
-                          ),
-                        ],
-                      ),
+                      title: 'Create account',
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -96,21 +80,16 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildMobileLayout(BuildContext context) {
-    return Center(child: _buildLoginContent());
+    return Center(child: _buildRegisterContent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: SafeArea(
-        child: Scaffold(
-          appBar: null,
-          extendBody: true,
-          extendBodyBehindAppBar: true,
-          body: SizedBox(child: SizedBox(child: _buildMobileLayout(context))),
-        ),
-      ),
+    return Scaffold(
+      appBar: AppBar(foregroundColor: Color.fromARGB(255, 141, 90, 35)),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      body: SizedBox(child: SizedBox(child: _buildMobileLayout(context))),
     );
   }
 

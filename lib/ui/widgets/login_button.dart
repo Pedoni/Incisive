@@ -7,6 +7,7 @@ class LoginButton extends StatelessWidget {
   final bool isLoading;
   final Function() login;
   final Color color;
+  final String title;
 
   const LoginButton({
     required this.usernameController,
@@ -14,6 +15,7 @@ class LoginButton extends StatelessWidget {
     required this.isLoading,
     required this.login,
     required this.color,
+    required this.title,
     super.key,
   });
 
@@ -28,7 +30,7 @@ class LoginButton extends StatelessWidget {
       ),
       onPressed: () => Navigator.pushNamed(context, HomePage.routeName),
       child: Text(
-        "Enter",
+        title,
         style: const TextStyle(
           height: 1,
           color: Colors.white,

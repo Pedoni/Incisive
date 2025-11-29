@@ -29,14 +29,15 @@ class _LoginTextFieldState extends State<LoginTextField> {
         enableSuggestions: true,
         keyboardType: widget.title == "Email" ? TextInputType.emailAddress : TextInputType.text,
         controller: widget.controller,
-        cursorColor: Colors.blueGrey,
+        cursorColor: Color.fromARGB(255, 141, 90, 35),
         obscureText: !widget.isTextVisible && !show,
         decoration: InputDecoration(
           hintText: widget.title,
-          hintStyle: const TextStyle(color: Color.fromARGB(255, 131, 128, 128)),
+          hintStyle: const TextStyle(color: Color.fromARGB(138, 94, 59, 21)),
           enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(50.0)),
           focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(50.0)),
-          prefixIconColor: Colors.black,
+          prefixIconColor: Color.fromARGB(255, 141, 90, 35),
+          suffixIconColor: Color.fromARGB(255, 141, 90, 35),
           filled: true,
           fillColor: const Color.fromARGB(101, 255, 255, 255),
           suffixIcon:
@@ -44,7 +45,13 @@ class _LoginTextFieldState extends State<LoginTextField> {
                   ? null
                   : GestureDetector(onTap: () => setState(() => show = !show), child: Icon(show ? Icons.visibility_off : Icons.visibility)),
         ),
-        style: const TextStyle(height: 1, decoration: TextDecoration.none, decorationThickness: 0, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          height: 1,
+          decoration: TextDecoration.none,
+          decorationThickness: 0,
+          fontWeight: FontWeight.bold,
+          color: Color.fromARGB(255, 141, 90, 35),
+        ),
       ),
     );
   }
