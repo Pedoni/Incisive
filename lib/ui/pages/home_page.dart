@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:incisive_demo/ui/pages/balcony_page.dart';
+import 'package:incisive_demo/ui/pages/diary_page.dart';
+import 'package:incisive_demo/ui/pages/turntable_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -33,7 +36,7 @@ class _HomePageState extends State<HomePage> {
 
   double _calculateOverlayOpacity() {
     final diff = (_currentPage - _currentPage.round()).abs();
-    return (diff * 4).clamp(0.0, 1.0) * 0.8;
+    return (diff * 4).clamp(0.0, 1.0);
   }
 
   @override
@@ -45,7 +48,7 @@ class _HomePageState extends State<HomePage> {
           PageView.builder(
             controller: _controller,
             itemCount: _images.length,
-            itemBuilder: (context, index) => StanzaWidget(imagePath: _images[index]),
+            itemBuilder: (context, index) => StanzaWidget(imagePath: _images[index], stanzaIndex: index),
           ),
           Container(
             alignment: Alignment.center,
@@ -83,11 +86,56 @@ class _HomePageState extends State<HomePage> {
 
 class StanzaWidget extends StatelessWidget {
   final String imagePath;
+  final int stanzaIndex;
 
-  const StanzaWidget({super.key, required this.imagePath});
+  const StanzaWidget({super.key, required this.imagePath, required this.stanzaIndex});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(child: Image.asset(imagePath, fit: BoxFit.cover));
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final height = constraints.maxHeight;
+
+        return Stack(
+          children: [
+            Positioned.fill(child: Image.asset(imagePath, fit: BoxFit.cover)),
+            if (stanzaIndex == 0)
+              Positioned(
+                left: width * 0.45,
+                top: height * 0.47,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, DiaryPage.routeName);
+                  },
+                  child: Hero(tag: "diario", child: Image.asset('assets/images/diary_icon.png', width: width * 0.12)),
+                ),
+              ),
+            if (stanzaIndex == 1)
+              Positioned(
+                left: width * 0.6,
+                top: height * 0.37,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, TurntablePage.routeName);
+                  },
+                  child: Hero(tag: "giradischi", child: Image.asset('assets/images/turntable.png', width: width * 0.2)),
+                ),
+              ),
+            if (stanzaIndex == 2)
+              Positioned(
+                left: width * 0.42,
+                top: height * 0.53,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, BalconyPage.routeName);
+                  },
+                  child: Hero(tag: "giradischi", child: Image.asset('assets/images/piantina.png', width: width * 0.3)),
+                ),
+              ),
+          ],
+        );
+      },
+    );
   }
 }
