@@ -28,17 +28,26 @@ class LoginButton extends StatelessWidget {
         foregroundColor: Colors.white,
         fixedSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
       ),
-      onPressed: () => Navigator.pushNamed(context, HomePage.routeName),
-      child: Text(
-        title,
-        style: const TextStyle(
-          height: 1,
-          color: Colors.white,
-          decoration: TextDecoration.none,
-          decorationThickness: 0,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      onPressed: login,
+      child:
+          isLoading
+              ? const Center(
+                child: SizedBox(
+                  height: 18,
+                  width: 18,
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+              )
+              : Text(
+                title,
+                style: const TextStyle(
+                  height: 1,
+                  color: Colors.white,
+                  decoration: TextDecoration.none,
+                  decorationThickness: 0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
     );
   }
 }
