@@ -19,6 +19,11 @@ dependencies:
   equatable: ^2.0.7
   supabase: ^2.10.0
   supabase_auth_ui: ^0.5.5
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  intl: any
+  logger: ^2.6.2
+  file_picker: ^10.3.7
 
 dev_dependencies:
   flutter_test:
