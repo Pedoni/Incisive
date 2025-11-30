@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:incisive/ui/pages/balcony_page.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
-import 'package:incisive/ui/pages/turntable_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -117,9 +115,7 @@ class StanzaWidget extends StatelessWidget {
                 left: width * 0.6,
                 top: height * 0.37,
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, TurntablePage.routeName);
-                  },
+                  onTap: () {},
                   child: Hero(tag: "giradischi", child: Image.asset('assets/images/turntable.png', width: width * 0.2)),
                 ),
               ),
@@ -128,9 +124,7 @@ class StanzaWidget extends StatelessWidget {
                 left: width * 0.42,
                 top: height * 0.53,
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, BalconyPage.routeName);
-                  },
+                  onTap: () {},
                   child: Hero(tag: "giradischi", child: Image.asset('assets/images/piantina.png', width: width * 0.3)),
                 ),
               ),

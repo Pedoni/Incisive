@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:incisive/di/dependency_injector.dart';
-import 'package:incisive/ui/pages/balcony_page.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/pages/login_page.dart';
 import 'package:incisive/ui/pages/register_page.dart';
-import 'package:incisive/ui/pages/turntable_page.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -23,8 +21,6 @@ class App extends StatelessWidget {
           RegisterPage.routeName: (context) => RegisterPage(),
           HomePage.routeName: (context) => const HomePage(),
           DiaryPage.routeName: (context) => const DiaryPage(),
-          TurntablePage.routeName: (context) => const TurntablePage(),
-          BalconyPage.routeName: (context) => const BalconyPage(),
         },
       ),
     );
