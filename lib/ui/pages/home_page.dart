@@ -50,31 +50,32 @@ class _HomePageState extends State<HomePage> {
             itemCount: _images.length,
             itemBuilder: (context, index) => StanzaWidget(imagePath: _images[index], stanzaIndex: index),
           ),
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.all(16.0),
-            height: 80,
-            width: MediaQuery.of(context).size.width * 0.9,
-            decoration: BoxDecoration(color: const Color.fromARGB(83, 255, 255, 255), borderRadius: BorderRadius.circular(20)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
-                  child: const Icon(Icons.info_outline_rounded, size: 28, color: Colors.black),
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
-                  child: const Icon(Icons.account_circle_rounded, size: 28, color: Colors.black),
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
-                  child: const Icon(Icons.settings, size: 28, color: Colors.black),
-                ),
-              ],
+          SafeArea(
+            child: Container(
+              alignment: Alignment.center,
+              height: 80,
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: BoxDecoration(color: const Color.fromARGB(83, 255, 255, 255), borderRadius: BorderRadius.circular(20)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
+                    child: const Icon(Icons.info_outline_rounded, size: 28, color: Colors.black),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
+                    child: const Icon(Icons.account_circle_rounded, size: 28, color: Colors.black),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
+                    child: const Icon(Icons.settings, size: 28, color: Colors.black),
+                  ),
+                ],
+              ),
             ),
           ),
           IgnorePointer(child: Container(color: Colors.black.withOpacity(_calculateOverlayOpacity()))),
