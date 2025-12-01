@@ -1,8 +1,6 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
-import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/utils/constants.dart';
-import 'package:intl/intl.dart';
 
 class DiaryPage extends StatefulWidget {
   const DiaryPage({super.key});
@@ -15,21 +13,6 @@ class DiaryPage extends StatefulWidget {
 
 class _DiaryPageState extends State<DiaryPage> {
   late DateTime _selectedDate;
-
-  DateTime getDateForIndex(int index) {
-    return DateTime.now().add(Duration(days: index));
-  }
-
-  DiaryEntry getEntryForIndex(int index) {
-    final date = getDateForIndex(index);
-    final text =
-        "Pensieri del giorno\n\n"
-        "Questa è una pagina di diario di esempio.\n"
-        "La data attuale è:\n\n"
-        "${DateFormat('dd/MM/yyyy').format(date)}\n\n"
-        "Puoi aggiungere contenuti personalizzati qui.";
-    return DiaryEntry(date, text);
-  }
 
   @override
   void initState() {
@@ -79,7 +62,7 @@ class _DiaryPageState extends State<DiaryPage> {
                         focusedDate: _selectedDate,
                         firstDate: DateTime(2000, 1, 1),
                         lastDate: DateTime(2030, 12, 31),
-                        timelineOptions: TimelineOptions(height: 100),
+                        timelineOptions: TimelineOptions(height: 90),
                         locale: Localizations.localeOf(context),
                         onDateChange: (date) => setState(() => _selectedDate = date),
                       ),
