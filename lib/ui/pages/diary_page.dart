@@ -81,12 +81,13 @@ class _DiaryPageState extends State<DiaryPage> {
                 const Divider(height: 32),
 
                 Expanded(
-                  child: ListView(
-                    children: [
-                      BlocBuilder<DiaryPageBloc, DiaryPageState>(
-                        builder: (context, state) {
-                          final text = state is ResultDiaryPageState ? state.text : Constants.mockedDiaryEntry.text;
-                          return Skeletonizer(
+                  child: BlocBuilder<DiaryPageBloc, DiaryPageState>(
+                    builder: (context, state) {
+                      final text = state is ResultDiaryPageState ? state.text : Constants.mockedDiaryEntry.text;
+                      return ListView(
+                        physics: state is TryDiaryPageState ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
+                        children: [
+                          Skeletonizer(
                             effect: const ShimmerEffect(
                               baseColor: Color.fromARGB(255, 238, 229, 207),
                               highlightColor: Color.fromARGB(255, 217, 204, 173),
@@ -104,10 +105,10 @@ class _DiaryPageState extends State<DiaryPage> {
                                         fontFamily: "Nunito Sans",
                                       ),
                                     ),
-                          );
-                        },
-                      ),
-                    ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ],
