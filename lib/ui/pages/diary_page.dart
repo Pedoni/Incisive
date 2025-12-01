@@ -1,6 +1,9 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class DiaryPage extends StatefulWidget {
   const DiaryPage({super.key});
@@ -18,11 +21,11 @@ class _DiaryPageState extends State<DiaryPage> {
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
+    context.read<DiaryPageBloc>().getPage(_selectedDate);
   }
 
   @override
   Widget build(BuildContext context) {
-    final entry = Constants.mockedDiaryEntry;
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -67,7 +70,11 @@ class _DiaryPageState extends State<DiaryPage> {
                     lastDate: DateTime(2030, 12, 31),
                     timelineOptions: TimelineOptions(height: 90),
                     locale: Localizations.localeOf(context),
-                    onDateChange: (date) => setState(() => _selectedDate = date),
+                    onDateChange:
+                        (date) => setState(() {
+                          _selectedDate = date;
+                          context.read<DiaryPageBloc>().getPage(date);
+                        }),
                   ),
                 ),
 
@@ -76,13 +83,29 @@ class _DiaryPageState extends State<DiaryPage> {
                 Expanded(
                   child: ListView(
                     children: [
-                      Text(
-                        entry.text,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          height: 1.4,
-                          fontFamily: "Nunito Sans",
-                        ),
+                      BlocBuilder<DiaryPageBloc, DiaryPageState>(
+                        builder: (context, state) {
+                          final text = state is ResultDiaryPageState ? state.text : Constants.mockedDiaryEntry.text;
+                          return Skeletonizer(
+                            effect: const ShimmerEffect(
+                              baseColor: Color.fromARGB(255, 238, 229, 207),
+                              highlightColor: Color.fromARGB(255, 217, 204, 173),
+                              duration: Duration(seconds: 1),
+                            ),
+                            enabled: state is! ResultDiaryPageState,
+                            child:
+                                text.isEmpty
+                                    ? Center(child: Text("Nessuna informazione inserita"))
+                                    : Text(
+                                      text,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        height: 1.4,
+                                        fontFamily: "Nunito Sans",
+                                      ),
+                                    ),
+                          );
+                        },
                       ),
                     ],
                   ),

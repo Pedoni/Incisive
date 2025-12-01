@@ -16,7 +16,8 @@ class TryDiaryPageState extends DiaryPageState {
 }
 
 class ResultDiaryPageState extends DiaryPageState {
-  const ResultDiaryPageState();
+  final String text;
+  const ResultDiaryPageState({required this.text});
 }
 
 class EmptyDiaryPageState extends DiaryPageState {
