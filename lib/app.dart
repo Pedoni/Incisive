@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:incisive/di/dependency_injector.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/home_page.dart';
@@ -14,7 +15,24 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'Incisive',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+        localeResolutionCallback: (locale, supportedLocales) {
+          return locale;
+        },
+
+        supportedLocales: const [
+          Locale('it'),
+          Locale('en'),
+          Locale('es'),
+          Locale('fr'),
+          Locale('de'),
+        ],
+
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 141, 90, 35))),
         home: LoginPage(),
         routes: {
           LoginPage.routeName: (context) => LoginPage(),

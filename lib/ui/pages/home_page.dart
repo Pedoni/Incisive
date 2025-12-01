@@ -107,7 +107,11 @@ class StanzaWidget extends StatelessWidget {
                   onTap: () {
                     Navigator.pushNamed(context, DiaryPage.routeName);
                   },
-                  child: Hero(tag: "diario", child: Image.asset('assets/images/diary_icon.png', width: width * 0.12)),
+                  child: Hero(
+                    tag: "diary",
+                    transitionOnUserGestures: true,
+                    child: Image.asset('assets/images/diary_icon.png', width: width * 0.12),
+                  ),
                 ),
               ),
             if (stanzaIndex == 1)

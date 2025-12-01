@@ -25,6 +25,12 @@ dependencies:
   logger: ^2.6.2
   file_picker: ^10.3.7
   email_validator: ^2.1.17
+  easy_date_timeline: ^2.0.9
+  skeletonizer: ^2.1.1
+
+  flutter_localizations:
+    sdk: flutter
+
 
 dev_dependencies:
   flutter_test:

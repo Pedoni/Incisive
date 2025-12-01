@@ -13,4 +13,10 @@ final List<BlocProvider> _blocs = [
           loginRepository: context.read(),
         ),
   ),
+  BlocProvider<DiaryPageBloc>(
+    create:
+        (context) => DiaryPageBloc(
+          diaryRepository: context.read(),
+        ),
+  ),
 ];
