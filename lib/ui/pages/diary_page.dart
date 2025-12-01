@@ -55,12 +55,10 @@ class _DiaryPageState extends State<DiaryPage> {
           child: Container(
             height: double.infinity,
             decoration: BoxDecoration(color: const Color(0xFFFFF8E8)),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
@@ -84,29 +82,51 @@ class _DiaryPageState extends State<DiaryPage> {
                   child: BlocBuilder<DiaryPageBloc, DiaryPageState>(
                     builder: (context, state) {
                       final text = state is ResultDiaryPageState ? state.text : Constants.mockedDiaryEntry.text;
-                      return ListView(
+                      return SingleChildScrollView(
                         physics: state is TryDiaryPageState ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
-                        children: [
-                          Skeletonizer(
-                            effect: const ShimmerEffect(
-                              baseColor: Color.fromARGB(255, 238, 229, 207),
-                              highlightColor: Color.fromARGB(255, 217, 204, 173),
-                              duration: Duration(seconds: 1),
-                            ),
-                            enabled: state is! ResultDiaryPageState,
-                            child:
-                                text.isEmpty
-                                    ? Center(child: Text("Nessuna informazione inserita"))
-                                    : Text(
-                                      text,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        height: 1.4,
-                                        fontFamily: "Nunito Sans",
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Skeletonizer(
+                              effect: const ShimmerEffect(
+                                baseColor: Color.fromARGB(255, 238, 229, 207),
+                                highlightColor: Color.fromARGB(255, 217, 204, 173),
+                                duration: Duration(seconds: 1),
+                              ),
+                              enabled: state is TryDiaryPageState || state is InitDiaryPageState,
+                              child: switch (state) {
+                                ErrorDiaryPageState() => Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.error),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        "Errore nel caricamento",
+                                        style: TextStyle(fontFamily: 'Nunito Sans'),
                                       ),
-                                    ),
-                          ),
-                        ],
+                                    ],
+                                  ),
+                                ),
+                                EmptyDiaryPageState() => Container(
+                                  //color: Colors.red,
+                                  child: Center(
+                                    child: Text("Nessuna informazione inserita"),
+                                  ),
+                                ),
+                                _ => Text(
+                                  text,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    height: 1.4,
+                                    fontFamily: "Nunito Sans",
+                                  ),
+                                ),
+                              },
+                            ),
+                          ],
+                        ),
                       );
                     },
                   ),

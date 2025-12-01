@@ -23,7 +23,7 @@ class DiaryPageBloc extends Bloc<DiaryPageEvent, DiaryPageState> {
     emitter(const TryDiaryPageState());
     try {
       final entry = await diaryRepository.getPage(event.dateTime);
-      emitter(ResultDiaryPageState(text: entry.text));
+      emitter(entry != null ? ResultDiaryPageState(text: entry.text) : EmptyDiaryPageState());
     } catch (e) {
       emitter(ErrorDiaryPageState(e.toString()));
     }

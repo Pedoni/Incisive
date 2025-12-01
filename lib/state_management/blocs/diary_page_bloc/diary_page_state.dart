@@ -1,6 +1,6 @@
 part of 'diary_page_bloc.dart';
 
-abstract class DiaryPageState extends Equatable {
+sealed class DiaryPageState extends Equatable {
   const DiaryPageState();
 
   @override
