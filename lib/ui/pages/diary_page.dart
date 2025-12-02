@@ -2,6 +2,7 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
+import 'package:incisive/ui/widgets/mood_gauge.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -42,11 +43,22 @@ class _DiaryPageState extends State<DiaryPage> {
         backgroundColor: const Color(0xFFFFF8E8),
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Color.fromARGB(255, 141, 90, 35),
-
-        child: Icon(Icons.chat, color: Colors.white),
+      floatingActionButton: BlocBuilder<DiaryPageBloc, DiaryPageState>(
+        builder: (context, state) {
+          return FloatingActionButton(
+            backgroundColor: Color.fromARGB(255, 141, 90, 35),
+            onPressed: switch (state) {
+              InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,
+              EmptyDiaryPageState() => () {},
+              ResultDiaryPageState(text: final text) => () {},
+            },
+            child: switch (state) {
+              InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,
+              EmptyDiaryPageState() => Icon(Icons.add, color: Colors.white),
+              ResultDiaryPageState(text: final text) => Icon(Icons.edit, color: Colors.white),
+            },
+          );
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Container(
@@ -75,27 +87,54 @@ class _DiaryPageState extends State<DiaryPage> {
                         }),
                   ),
                 ),
-
-                const Divider(height: 32),
+                SizedBox(height: 30),
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Colors.grey,
+                ),
 
                 Expanded(
                   child: BlocBuilder<DiaryPageBloc, DiaryPageState>(
                     builder: (context, state) {
+                      if (state is EmptyDiaryPageState) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 42,
+                                color: Colors.black54,
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                "Nessuna informazione inserita",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'Nunito Sans',
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                       final text = state is ResultDiaryPageState ? state.text : Constants.mockedDiaryEntry.text;
                       return SingleChildScrollView(
                         physics: state is TryDiaryPageState ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Skeletonizer(
-                              effect: const ShimmerEffect(
-                                baseColor: Color.fromARGB(255, 238, 229, 207),
-                                highlightColor: Color.fromARGB(255, 217, 204, 173),
-                                duration: Duration(seconds: 1),
-                              ),
-                              enabled: state is TryDiaryPageState || state is InitDiaryPageState,
-                              child: switch (state) {
+                        child: Skeletonizer(
+                          effect: const ShimmerEffect(
+                            baseColor: Color.fromARGB(255, 238, 229, 207),
+                            highlightColor: Color.fromARGB(255, 217, 204, 173),
+                            duration: Duration(seconds: 1),
+                          ),
+                          enabled: state is TryDiaryPageState || state is InitDiaryPageState,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              switch (state) {
                                 ErrorDiaryPageState() => Center(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -109,23 +148,23 @@ class _DiaryPageState extends State<DiaryPage> {
                                     ],
                                   ),
                                 ),
-                                EmptyDiaryPageState() => Container(
-                                  //color: Colors.red,
-                                  child: Center(
-                                    child: Text("Nessuna informazione inserita"),
-                                  ),
-                                ),
-                                _ => Text(
-                                  text,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    height: 1.4,
-                                    fontFamily: "Nunito Sans",
-                                  ),
+                                EmptyDiaryPageState() => Center(child: Text("Nessuna informazione inserita")),
+                                _ => Column(
+                                  children: [
+                                    if (state is ResultDiaryPageState) MoodGauge(mood: 0),
+                                    Text(
+                                      text,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        height: 1.4,
+                                        fontFamily: "Nunito Sans",
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               },
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },
