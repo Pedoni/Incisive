@@ -13,7 +13,13 @@ class DiaryRepository {
       MainLogger.logInfo("Try to get page");
       final userId = supabase.auth.currentUser!.id;
       final res = await diaryService.getPage(userId: userId, date: dateTime);
-      return res != null ? DiaryEntry(dateTime, res["text"] as String) : null;
+      return res != null
+          ? DiaryEntry(
+            dateTime,
+            res["text"] as String,
+            res["score"] as double,
+          )
+          : null;
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
       rethrow;
