@@ -30,7 +30,7 @@ class _DiaryPageState extends State<DiaryPage> {
       appBar: AppBar(
         scrolledUnderElevation: 0,
         title: Text(
-          "Daily gratitude",
+          "Diario",
           style: TextStyle(
             fontSize: 25,
             fontFamily: 'Poppins',
