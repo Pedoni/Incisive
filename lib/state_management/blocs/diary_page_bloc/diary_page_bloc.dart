@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/repositories/diary_repository.dart';
 
 part 'diary_page_event.dart';
@@ -23,7 +24,7 @@ class DiaryPageBloc extends Bloc<DiaryPageEvent, DiaryPageState> {
     emitter(const TryDiaryPageState());
     try {
       final entry = await diaryRepository.getPage(event.dateTime);
-      emitter(ResultDiaryPageState(text: entry.text));
+      emitter(entry != null ? ResultDiaryPageState(entry: entry) : EmptyDiaryPageState());
     } catch (e) {
       emitter(ErrorDiaryPageState(e.toString()));
     }

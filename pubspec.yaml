@@ -27,6 +27,7 @@ dependencies:
   email_validator: ^2.1.17
   easy_date_timeline: ^2.0.9
   skeletonizer: ^2.1.1
+  syncfusion_flutter_gauges: ^31.2.16
 
   flutter_localizations:
     sdk: flutter

@@ -17,5 +17,6 @@ class Constants {
     " che non posso controllare. Non è semplice, ma ci sto lavorando. Forse"
     " non è stata una giornata perfetta… ma ci sono stati momenti belli, e"
     " va bene così.",
+    0.3,
   );
 }
