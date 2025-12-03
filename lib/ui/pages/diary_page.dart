@@ -50,12 +50,12 @@ class _DiaryPageState extends State<DiaryPage> {
             onPressed: switch (state) {
               InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,
               EmptyDiaryPageState() => () {},
-              ResultDiaryPageState(text: final text) => () {},
+              ResultDiaryPageState(entry: final entry) => () {},
             },
             child: switch (state) {
               InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,
               EmptyDiaryPageState() => Icon(Icons.add, color: Colors.white),
-              ResultDiaryPageState(text: final text) => Icon(Icons.edit, color: Colors.white),
+              ResultDiaryPageState(entry: final entry) => Icon(Icons.edit, color: Colors.white),
             },
           );
         },
@@ -120,7 +120,7 @@ class _DiaryPageState extends State<DiaryPage> {
                           ),
                         );
                       }
-                      final text = state is ResultDiaryPageState ? state.text : Constants.mockedDiaryEntry.text;
+                      final entry = state is ResultDiaryPageState ? state.entry : Constants.mockedDiaryEntry;
                       return SingleChildScrollView(
                         physics: state is TryDiaryPageState ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
                         child: Skeletonizer(
@@ -151,9 +151,9 @@ class _DiaryPageState extends State<DiaryPage> {
                                 EmptyDiaryPageState() => Center(child: Text("Nessuna informazione inserita")),
                                 _ => Column(
                                   children: [
-                                    if (state is ResultDiaryPageState) MoodGauge(mood: 0),
+                                    if (state is ResultDiaryPageState) MoodGauge(mood: entry.score),
                                     Text(
-                                      text,
+                                      entry.text,
                                       style: const TextStyle(
                                         fontSize: 20,
                                         height: 1.4,

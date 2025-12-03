@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class MoodGauge extends StatelessWidget {
-  final int mood;
+  final double mood;
 
   const MoodGauge({super.key, required this.mood});
 
+  double mapMood(double x) => ((x + 1) / 2) * 4;
+
   @override
   Widget build(BuildContext context) {
-    final clampedMood = mood.clamp(0, 4);
-    final double pointerValue = clampedMood + 0.5;
+    final pointerValue = mapMood(mood);
 
     return SizedBox(
       height: 200,
