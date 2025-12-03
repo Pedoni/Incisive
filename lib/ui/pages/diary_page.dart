@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
 import 'package:incisive/ui/components/lined_paper.dart';
+import 'package:incisive/ui/pages/diary_upsert_page.dart';
 import 'package:incisive/ui/widgets/mood_gauge.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -50,8 +51,20 @@ class _DiaryPageState extends State<DiaryPage> {
             backgroundColor: Color.fromARGB(255, 141, 90, 35),
             onPressed: switch (state) {
               InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,
-              EmptyDiaryPageState() => () {},
-              ResultDiaryPageState(entry: final entry) => () {},
+              EmptyDiaryPageState() => () {
+                Navigator.pushNamed(
+                  context,
+                  UpsertDiaryPage.routeName,
+                  arguments: [_selectedDate, null],
+                );
+              },
+              ResultDiaryPageState(entry: final entry) => () {
+                Navigator.pushNamed(
+                  context,
+                  UpsertDiaryPage.routeName,
+                  arguments: [_selectedDate, entry],
+                );
+              },
             },
             child: switch (state) {
               InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:incisive/di/dependency_injector.dart';
+import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
+import 'package:incisive/ui/pages/diary_upsert_page.dart';
 import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/pages/login_page.dart';
 import 'package:incisive/ui/pages/register_page.dart';
@@ -18,7 +20,21 @@ class App extends StatelessWidget {
         localeResolutionCallback: (locale, supportedLocales) {
           return locale;
         },
-
+        onGenerateRoute: (settings) {
+          if (settings.name == '/upsertDiaryPage') {
+            final list = settings.arguments as List<dynamic>;
+            final selectedDate = list[0] as DateTime;
+            final entry = list[1] as DiaryEntry?;
+            return MaterialPageRoute(
+              builder:
+                  (_) => UpsertDiaryPage(
+                    date: selectedDate,
+                    existingEntry: entry,
+                  ),
+            );
+          }
+          return null;
+        },
         supportedLocales: const [
           Locale('it'),
           Locale('en'),
