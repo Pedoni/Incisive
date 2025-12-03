@@ -2,6 +2,7 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
+import 'package:incisive/ui/components/lined_paper.dart';
 import 'package:incisive/ui/widgets/mood_gauge.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -152,8 +153,9 @@ class _DiaryPageState extends State<DiaryPage> {
                                 _ => Column(
                                   children: [
                                     if (state is ResultDiaryPageState) MoodGauge(mood: entry.score),
-                                    Text(
-                                      entry.text,
+                                    LinedPaper(
+                                      enabled: state is ResultDiaryPageState,
+                                      text: entry.text,
                                       style: const TextStyle(
                                         fontSize: 20,
                                         height: 1.4,
