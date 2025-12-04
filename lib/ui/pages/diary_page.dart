@@ -2,6 +2,8 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
+import 'package:incisive/ui/components/lined_paper.dart';
+import 'package:incisive/ui/pages/diary_upsert_page.dart';
 import 'package:incisive/ui/widgets/mood_gauge.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -49,8 +51,20 @@ class _DiaryPageState extends State<DiaryPage> {
             backgroundColor: Color.fromARGB(255, 141, 90, 35),
             onPressed: switch (state) {
               InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,
-              EmptyDiaryPageState() => () {},
-              ResultDiaryPageState(entry: final entry) => () {},
+              EmptyDiaryPageState() => () {
+                Navigator.pushNamed(
+                  context,
+                  UpsertDiaryPage.routeName,
+                  arguments: [_selectedDate, null],
+                );
+              },
+              ResultDiaryPageState(entry: final entry) => () {
+                Navigator.pushNamed(
+                  context,
+                  UpsertDiaryPage.routeName,
+                  arguments: [_selectedDate, entry],
+                );
+              },
             },
             child: switch (state) {
               InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,
@@ -119,6 +133,28 @@ class _DiaryPageState extends State<DiaryPage> {
                             ],
                           ),
                         );
+                      } else if (state is ErrorDiaryPageState) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error,
+                                size: 42,
+                                color: Colors.black54,
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                "Errore nel caricamento",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'Nunito Sans',
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
                       }
                       final entry = state is ResultDiaryPageState ? state.entry : Constants.mockedDiaryEntry;
                       return SingleChildScrollView(
@@ -134,35 +170,16 @@ class _DiaryPageState extends State<DiaryPage> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              switch (state) {
-                                ErrorDiaryPageState() => Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.error),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        "Errore nel caricamento",
-                                        style: TextStyle(fontFamily: 'Nunito Sans'),
-                                      ),
-                                    ],
-                                  ),
+                              if (state is ResultDiaryPageState) MoodGauge(mood: entry.score),
+                              LinedPaper(
+                                enabled: state is ResultDiaryPageState,
+                                text: entry.text,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  height: 1.4,
+                                  fontFamily: "Nunito Sans",
                                 ),
-                                EmptyDiaryPageState() => Center(child: Text("Nessuna informazione inserita")),
-                                _ => Column(
-                                  children: [
-                                    if (state is ResultDiaryPageState) MoodGauge(mood: entry.score),
-                                    Text(
-                                      entry.text,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        height: 1.4,
-                                        fontFamily: "Nunito Sans",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              },
+                              ),
                             ],
                           ),
                         ),
