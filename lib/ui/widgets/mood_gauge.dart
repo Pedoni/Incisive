@@ -6,7 +6,7 @@ class MoodGauge extends StatelessWidget {
 
   const MoodGauge({super.key, required this.mood});
 
-  double mapMood(double x) => ((x + 1) / 2) * 4;
+  double mapMood(double x) => ((x + 1) / 2) * 5;
 
   @override
   Widget build(BuildContext context) {

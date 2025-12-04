@@ -133,6 +133,28 @@ class _DiaryPageState extends State<DiaryPage> {
                             ],
                           ),
                         );
+                      } else if (state is ErrorDiaryPageState) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error,
+                                size: 42,
+                                color: Colors.black54,
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                "Errore nel caricamento",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'Nunito Sans',
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
                       }
                       final entry = state is ResultDiaryPageState ? state.entry : Constants.mockedDiaryEntry;
                       return SingleChildScrollView(
@@ -148,36 +170,16 @@ class _DiaryPageState extends State<DiaryPage> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              switch (state) {
-                                ErrorDiaryPageState() => Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.error),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        "Errore nel caricamento",
-                                        style: TextStyle(fontFamily: 'Nunito Sans'),
-                                      ),
-                                    ],
-                                  ),
+                              if (state is ResultDiaryPageState) MoodGauge(mood: entry.score),
+                              LinedPaper(
+                                enabled: state is ResultDiaryPageState,
+                                text: entry.text,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  height: 1.4,
+                                  fontFamily: "Nunito Sans",
                                 ),
-                                EmptyDiaryPageState() => Center(child: Text("Nessuna informazione inserita")),
-                                _ => Column(
-                                  children: [
-                                    if (state is ResultDiaryPageState) MoodGauge(mood: entry.score),
-                                    LinedPaper(
-                                      enabled: state is ResultDiaryPageState,
-                                      text: entry.text,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        height: 1.4,
-                                        fontFamily: "Nunito Sans",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              },
+                              ),
                             ],
                           ),
                         ),
