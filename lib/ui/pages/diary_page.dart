@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
 import 'package:incisive/ui/components/lined_paper.dart';
 import 'package:incisive/ui/pages/diary_upsert_page.dart';
-import 'package:incisive/ui/widgets/mood_gauge.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -101,12 +100,7 @@ class _DiaryPageState extends State<DiaryPage> {
                         }),
                   ),
                 ),
-                SizedBox(height: 30),
-                Divider(
-                  height: 0,
-                  thickness: 1,
-                  color: Colors.grey,
-                ),
+                SizedBox(height: 20),
 
                 Expanded(
                   child: BlocBuilder<DiaryPageBloc, DiaryPageState>(
@@ -170,7 +164,7 @@ class _DiaryPageState extends State<DiaryPage> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              if (state is ResultDiaryPageState) MoodGauge(mood: entry.score),
+                              const SizedBox(height: 20),
                               LinedPaper(
                                 enabled: state is ResultDiaryPageState,
                                 text: entry.text,
