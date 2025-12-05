@@ -36,6 +36,10 @@ class DiaryService {
       body: {'text': text},
     );
 
+    if (response.data['sentiment'] == "unknown") {
+      throw Exception(response.data['reason']);
+    }
+
     if (response.data['error'] != null) {
       throw Exception(response.data['error']);
     }
