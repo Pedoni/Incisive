@@ -51,4 +51,25 @@ class DiaryService {
       'score': (response.data['score'] as num).toDouble(),
     });
   }
+
+  Map<DateTime, double> _extractDateScoreMap(List<dynamic> rows) {
+    final map = <DateTime, double>{};
+
+    for (final row in rows) {
+      final date = DateTime.parse(row['date']);
+      final score = (row['score'] as num).toDouble();
+      map[date] = score;
+    }
+
+    return map;
+  }
+
+  Future<Map<DateTime, double>?> getMood() async {
+    final supabase = Supabase.instance.client;
+    final userId = supabase.auth.currentUser!.id;
+
+    final response = await supabase.from('diary_page').select().eq('user_id', userId).order('date');
+
+    return _extractDateScoreMap(response);
+  }
 }
