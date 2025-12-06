@@ -115,6 +115,7 @@ class _MoodCalendarState extends State<MoodCalendar> {
   Widget _buildCalendarGrid(List<DateTime> days, Map<DateTime, double> moodValues) {
     return Expanded(
       child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: days.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
@@ -137,7 +138,7 @@ class _MoodCalendarState extends State<MoodCalendar> {
           return Container(
             decoration: BoxDecoration(
               color: color,
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(50),
             ),
             alignment: Alignment.center,
             child: Text(
