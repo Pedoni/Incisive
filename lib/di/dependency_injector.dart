@@ -6,6 +6,7 @@ import 'package:incisive/source/remote/diary_service.dart';
 import 'package:incisive/source/remote/login_service.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
 import 'package:incisive/state_management/blocs/login_bloc/login_bloc.dart';
+import 'package:incisive/state_management/blocs/mood_tracker_bloc/mood_tracker_bloc.dart';
 import 'package:incisive/state_management/blocs/register_bloc/register_bloc.dart';
 import 'package:incisive/state_management/blocs/upsert_page_bloc/upsert_page_bloc.dart';
 import 'package:pine/di/dependency_injector_helper.dart';

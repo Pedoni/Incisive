@@ -36,4 +36,14 @@ class DiaryRepository {
       rethrow;
     }
   }
+
+  Future<Map<DateTime, double>?> getMood() async {
+    try {
+      MainLogger.logInfo("Try to get mood");
+      return await diaryService.getMood();
+    } catch (e, stackTrace) {
+      MainLogger.logError(e, stackTrace);
+      rethrow;
+    }
+  }
 }

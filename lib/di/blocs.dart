@@ -13,4 +13,7 @@ final List<BlocProvider> _blocs = [
   BlocProvider<UpsertPageBloc>(
     create: (context) => UpsertPageBloc(diaryRepository: context.read()),
   ),
+  BlocProvider<MoodTrackerBloc>(
+    create: (context) => MoodTrackerBloc(diaryRepository: context.read()),
+  ),
 ];

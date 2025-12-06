@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/state_management/blocs/mood_tracker_bloc/mood_tracker_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class MoodCalendar extends StatefulWidget {
-  final Map<DateTime, double> moodValues;
-
-  const MoodCalendar({
-    super.key,
-    required this.moodValues,
-  });
+  const MoodCalendar({super.key});
 
   @override
   State<MoodCalendar> createState() => _MoodCalendarState();
@@ -38,19 +36,27 @@ class _MoodCalendarState extends State<MoodCalendar> {
   Widget build(BuildContext context) {
     final days = _generateDays(_focusedMonth);
 
-    return Container(
-      decoration: BoxDecoration(color: const Color(0xFFFFF8E8)),
-      padding: EdgeInsets.all(12.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildHeader(),
-          const SizedBox(height: 12),
-          _buildWeekDaysRow(),
-          const SizedBox(height: 6),
-          _buildCalendarGrid(days),
-        ],
-      ),
+    return BlocBuilder<MoodTrackerBloc, MoodTrackerState>(
+      builder: (context, state) {
+        final Map<DateTime, double> data = state is ResultMoodTrackerState ? state.map : {};
+        return Skeletonizer(
+          enabled: state is! ResultMoodTrackerState,
+          child: Container(
+            decoration: BoxDecoration(color: const Color(0xFFFFF8E8)),
+            padding: EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildHeader(),
+                const SizedBox(height: 12),
+                _buildWeekDaysRow(),
+                const SizedBox(height: 6),
+                _buildCalendarGrid(days, data),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -106,7 +112,7 @@ class _MoodCalendarState extends State<MoodCalendar> {
     );
   }
 
-  Widget _buildCalendarGrid(List<DateTime> days) {
+  Widget _buildCalendarGrid(List<DateTime> days, Map<DateTime, double> moodValues) {
     return Expanded(
       child: GridView.builder(
         itemCount: days.length,
@@ -119,7 +125,7 @@ class _MoodCalendarState extends State<MoodCalendar> {
           final day = days[index];
           final inMonth = day.month == _focusedMonth.month;
 
-          final mood = widget.moodValues[DateTime(day.year, day.month, day.day)];
+          final mood = moodValues[DateTime(day.year, day.month, day.day)];
 
           final color =
               !inMonth
@@ -150,7 +156,6 @@ class _MoodCalendarState extends State<MoodCalendar> {
   List<DateTime> _generateDays(DateTime month) {
     final first = DateTime(month.year, month.month, 1);
 
-    // Allinea la griglia al lunedì
     final start = first.subtract(Duration(days: first.weekday - 1));
 
     final last = DateTime(month.year, month.month + 1, 0);
