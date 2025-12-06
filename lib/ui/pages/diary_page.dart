@@ -5,12 +5,13 @@ import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.
 import 'package:incisive/ui/components/lined_paper.dart';
 import 'package:incisive/ui/pages/diary_upsert_page.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class DiaryPage extends StatefulWidget {
-  const DiaryPage({super.key});
-
   static const routeName = '/diaryPage';
+
+  const DiaryPage({super.key});
 
   @override
   State<DiaryPage> createState() => _DiaryPageState();
@@ -110,12 +111,13 @@ class _DiaryPageState extends State<DiaryPage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.info_outline,
-                                size: 42,
-                                color: Colors.black54,
+                              Lottie.asset(
+                                "assets/animations/empty_state.json",
+                                width: 200,
+                                height: 200,
+                                repeat: false,
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 30),
                               Text(
                                 "Nessuna informazione inserita",
                                 style: TextStyle(

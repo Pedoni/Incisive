@@ -28,6 +28,7 @@ dependencies:
   easy_date_timeline: ^2.0.9
   skeletonizer: ^2.1.1
   syncfusion_flutter_gauges: ^31.2.16
+  lottie: ^3.3.2
 
   flutter_localizations:
     sdk: flutter
@@ -46,6 +47,8 @@ flutter:
  
   assets:
     - assets/images/
+    - assets/icons/
+    - assets/animations/
 
   fonts:
     - family: Poppins
