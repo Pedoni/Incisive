@@ -6,6 +6,7 @@ import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/diary_upsert_page.dart';
 import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/pages/login_page.dart';
+import 'package:incisive/ui/pages/mood_calendar_page.dart';
 import 'package:incisive/ui/pages/register_page.dart';
 
 class App extends StatelessWidget {
@@ -55,6 +56,7 @@ class App extends StatelessWidget {
           RegisterPage.routeName: (context) => RegisterPage(),
           HomePage.routeName: (context) => const HomePage(),
           DiaryPage.routeName: (context) => const DiaryPage(),
+          MoodCalendarPage.routeName: (context) => MoodCalendarPage(),
         },
       ),
     );
