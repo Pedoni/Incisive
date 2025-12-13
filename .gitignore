@@ -119,6 +119,6 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 
 # Unity exports (DO NOT COMMIT)
-android/unity/
+android/unityLibrary/
 ios/unityLibrary/
 ios/UnityExport/
