@@ -29,6 +29,8 @@ dependencies:
   skeletonizer: ^2.1.1
   syncfusion_flutter_gauges: ^31.2.16
   lottie: ^3.3.2
+  flutter_embed_unity: ^1.4.0
+  flutter_embed_unity_6000_0_android: ^1.2.3
 
   flutter_localizations:
     sdk: flutter

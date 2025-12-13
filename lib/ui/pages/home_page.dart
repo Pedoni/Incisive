@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:incisive/ui/pages/diary_page.dart';
+import 'package:flutter_embed_unity/flutter_embed_unity.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,8 +13,79 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final PageController _controller = PageController();
   double _currentPage = 0.0;
+  int currentIndex = 0;
+  bool _isAnimating = false;
 
-  final List<String> _images = ['assets/images/bedroom.jpeg', 'assets/images/living.jpeg', 'assets/images/balcony.jpeg'];
+  final List<String> _images = ['assets/images/stanza_letto.png', 'assets/images/soggiorno.png', 'assets/images/balcone.png'];
+
+  Widget _buildFloatingBar() {
+    return Positioned(
+      bottom: 20,
+      left: 30,
+      right: 30,
+      child: Container(
+        height: 70,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(128, 218, 193, 150),
+
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _navItem(Icons.bed, 0),
+            _navItem(Icons.chair, 1),
+            _navItem(Icons.balcony, 2),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _navItem(IconData icon, int index) {
+    final isSelected = currentIndex == index;
+
+    return GestureDetector(
+      onTap: () {
+        _isAnimating = true;
+
+        setState(() {
+          currentIndex = index;
+        });
+
+        _controller
+            .animateToPage(
+              index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            )
+            .then((_) {
+              _isAnimating = false;
+            });
+      },
+
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 200),
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isSelected ? Color.fromARGB(255, 141, 90, 35) : Colors.transparent,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          size: 28,
+          color: isSelected ? Colors.white : Colors.white,
+        ),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -43,40 +114,42 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
-          PageView.builder(
+          EmbedUnity(
+            onMessageFromUnity: (msg) {
+              if (msg == "open_diary") {
+                Navigator.pushNamed(context, '/diary');
+              }
+            },
+          ),
+
+          /*PageView.builder(
+            physics: const ClampingScrollPhysics(),
             controller: _controller,
             itemCount: _images.length,
-            itemBuilder: (context, index) => StanzaWidget(imagePath: _images[index], stanzaIndex: index),
-          ),
-          SafeArea(
-            child: Container(
-              alignment: Alignment.center,
-              height: 80,
-              width: MediaQuery.of(context).size.width * 0.9,
-              decoration: BoxDecoration(color: const Color.fromARGB(83, 255, 255, 255), borderRadius: BorderRadius.circular(20)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
-                    child: const Icon(Icons.info_outline_rounded, size: 28, color: Colors.black),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
-                    child: const Icon(Icons.account_circle_rounded, size: 28, color: Colors.black),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
-                    child: const Icon(Icons.settings, size: 28, color: Colors.black),
-                  ),
-                ],
-              ),
+            onPageChanged: (index) {
+              if (_isAnimating) return;
+
+              setState(() {
+                currentIndex = index;
+              });
+            },
+            itemBuilder:
+                (context, index) => StanzaWidget(
+                  imagePath: _images[index],
+                  stanzaIndex: index,
+                ),
+          ),*/
+          Positioned(
+            right: 20,
+            top: 20,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
+              child: const Icon(Icons.settings, size: 28, color: Color.fromARGB(255, 0, 0, 0)),
             ),
           ),
           IgnorePointer(child: Container(color: Colors.black.withOpacity(_calculateOverlayOpacity()))),
+          _buildFloatingBar(),
         ],
       ),
     );
@@ -99,39 +172,6 @@ class StanzaWidget extends StatelessWidget {
         return Stack(
           children: [
             Positioned.fill(child: Image.asset(imagePath, fit: BoxFit.cover)),
-            if (stanzaIndex == 0)
-              Positioned(
-                left: width * 0.45,
-                top: height * 0.47,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, DiaryPage.routeName);
-                  },
-                  child: Hero(
-                    tag: "diary",
-                    transitionOnUserGestures: true,
-                    child: Image.asset('assets/images/diary_icon.png', width: width * 0.12),
-                  ),
-                ),
-              ),
-            if (stanzaIndex == 1)
-              Positioned(
-                left: width * 0.6,
-                top: height * 0.37,
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Hero(tag: "giradischi", child: Image.asset('assets/images/turntable.png', width: width * 0.2)),
-                ),
-              ),
-            if (stanzaIndex == 2)
-              Positioned(
-                left: width * 0.42,
-                top: height * 0.53,
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Hero(tag: "giradischi", child: Image.asset('assets/images/piantina.png', width: width * 0.3)),
-                ),
-              ),
           ],
         );
       },
