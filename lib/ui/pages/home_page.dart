@@ -120,6 +120,13 @@ class _HomePageState extends State<HomePage> {
             physics: const ClampingScrollPhysics(),
             controller: _controller,
             itemCount: _images.length,
+            onPageChanged: (index) {
+              if (_isAnimating) return;
+
+              setState(() {
+                currentIndex = index;
+              });
+            },
             itemBuilder: (context, index) => StanzaWidget(imagePath: _images[index], stanzaIndex: index),
           ),
           SafeArea(
