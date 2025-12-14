@@ -122,3 +122,5 @@ app.*.symbols
 android/unityLibrary/
 ios/unityLibrary/
 ios/UnityExport/
+
+.DS_Store
