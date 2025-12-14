@@ -4,7 +4,6 @@ import 'package:flame/game.dart';
 import 'package:flame/components.dart';
 import 'package:flame_lottie/flame_lottie.dart';
 import 'package:incisive/ui/components/clickable_object.dart';
-import 'package:lottie/lottie.dart';
 
 class GardenGame extends FlameGame {
   final VoidCallback onStatueTap;
@@ -16,8 +15,8 @@ class GardenGame extends FlameGame {
     final background = await loadSprite('garden_unity.png');
     final buddhaSprite = await loadSprite('buddha.png');
 
-    final asset = Lottie.asset('assets/animations/birds.json');
-    final animation = await loadLottie(asset);
+    final birds = Lottie.asset('assets/animations/birds.json');
+    final birdsAnimation = await loadLottie(birds);
 
     add(
       SpriteComponent(
@@ -25,9 +24,10 @@ class GardenGame extends FlameGame {
         size: size,
       ),
     );
+
     add(
       LottieComponent(
-          animation,
+          birdsAnimation,
           repeating: true,
         )
         ..size = Vector2(size.x, size.y * 0.2)
