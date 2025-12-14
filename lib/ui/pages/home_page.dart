@@ -176,8 +176,8 @@ class StanzaWidget extends StatelessWidget {
             Positioned.fill(child: Image.asset(imagePath, fit: BoxFit.cover)),
             if (stanzaIndex == 0)
               Positioned(
-                left: width * 0.45,
-                top: height * 0.47,
+                left: width * 0.1,
+                top: height * 0.503,
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, DiaryPage.routeName);
@@ -185,7 +185,7 @@ class StanzaWidget extends StatelessWidget {
                   child: Hero(
                     tag: "diary",
                     transitionOnUserGestures: true,
-                    child: Image.asset('assets/images/diary_icon.png', width: width * 0.12),
+                    child: Image.asset('assets/images/diary.png', width: width * 0.12),
                   ),
                 ),
               ),
