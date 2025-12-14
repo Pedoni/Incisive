@@ -112,7 +112,9 @@ class _HomePageState extends State<HomePage> {
       },
     );
 
-    livingRoomGame = LivingRoomGame();
+    livingRoomGame = LivingRoomGame(
+      onStereoTap: () => print("Stereo tapped"),
+    );
     gardenGame = GardenGame();
   }
 
