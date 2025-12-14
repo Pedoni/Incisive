@@ -1,8 +1,8 @@
 import 'dart:ui';
 
-import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/components.dart';
+import 'package:incisive/ui/components/clickable_object.dart';
 
 class LivingRoomGame extends FlameGame {
   final VoidCallback onStereoTap;
@@ -11,31 +11,23 @@ class LivingRoomGame extends FlameGame {
 
   @override
   Future<void> onLoad() async {
+    final background = await loadSprite('living_unity.png');
+    final stereoSprite = await loadSprite('radio.png');
+
     add(
       SpriteComponent(
-        sprite: await loadSprite('living_unity.png'),
+        sprite: background,
         size: size,
       ),
     );
 
     add(
-      StereoComponent(
-          sprite: await loadSprite('radio.png'),
+      ClickableObject(
+          sprite: stereoSprite,
           onTap: onStereoTap,
         )
-        ..size = Vector2(size.x * 0.15, size.x * 0.20)
-        ..position = Vector2(size.x * 0.38, size.y * 0.535),
+        ..size = stereoSprite.originalSize * 0.065
+        ..position = Vector2(size.x * 0.38, size.y * 0.53),
     );
-  }
-}
-
-class StereoComponent extends SpriteComponent with TapCallbacks {
-  StereoComponent({required super.sprite, required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  void onTapDown(TapDownEvent event) {
-    onTap();
   }
 }
