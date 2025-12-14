@@ -26,8 +26,8 @@ class LivingRoomGame extends FlameGame {
           sprite: stereoSprite,
           onTap: onStereoTap,
         )
-        ..size = stereoSprite.originalSize * 0.065
-        ..position = Vector2(size.x * 0.38, size.y * 0.53),
+        ..size = stereoSprite.originalSize * 0.075
+        ..position = Vector2(size.x * 0.38, size.y * 0.54),
     );
   }
 }
