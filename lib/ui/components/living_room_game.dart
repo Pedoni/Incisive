@@ -12,7 +12,7 @@ class LivingRoomGame extends FlameGame {
   @override
   Future<void> onLoad() async {
     final background = await loadSprite('living_unity.png');
-    final stereoSprite = await loadSprite('radio.png');
+    final stereoSprite = await loadSprite('echodot.png');
 
     add(
       SpriteComponent(
@@ -26,8 +26,8 @@ class LivingRoomGame extends FlameGame {
           sprite: stereoSprite,
           onTap: onStereoTap,
         )
-        ..size = stereoSprite.originalSize * 0.075
-        ..position = Vector2(size.x * 0.38, size.y * 0.54),
+        ..size = stereoSprite.originalSize * 0.039
+        ..position = Vector2(size.x * 0.42, size.y * 0.565),
     );
   }
 }
