@@ -154,28 +154,18 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           SafeArea(
-            child: Container(
-              alignment: Alignment.center,
-              height: 80,
-              width: MediaQuery.of(context).size.width * 0.9,
-              decoration: BoxDecoration(color: const Color.fromARGB(83, 255, 255, 255), borderRadius: BorderRadius.circular(20)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
-                    child: const Icon(Icons.info_outline_rounded, size: 28, color: Colors.black),
+                  _TopIcon(
+                    icon: Icons.person,
+                    onTap: () {},
                   ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
-                    child: const Icon(Icons.account_circle_rounded, size: 28, color: Colors.black),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50), shape: const CircleBorder(), padding: EdgeInsets.zero),
-                    child: const Icon(Icons.settings, size: 28, color: Colors.black),
+                  _TopIcon(
+                    icon: Icons.settings,
+                    onTap: () {},
                   ),
                 ],
               ),
@@ -223,6 +213,28 @@ class StanzaWidget extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _TopIcon extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _TopIcon({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.4),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: Color.fromARGB(255, 141, 90, 35)),
+      ),
     );
   }
 }
