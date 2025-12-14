@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_embed_unity/flutter_embed_unity.dart';
+import 'package:incisive/ui/pages/diary_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -117,7 +118,7 @@ class _HomePageState extends State<HomePage> {
           EmbedUnity(
             onMessageFromUnity: (msg) {
               if (msg == "open_diary") {
-                Navigator.pushNamed(context, '/diary');
+                Navigator.pushNamed(context, DiaryPage.routeName);
               }
             },
           ),
