@@ -1,4 +1,8 @@
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:incisive/ui/components/bedroom_game.dart';
+import 'package:incisive/ui/components/garden_game.dart';
+import 'package:incisive/ui/components/living_room_game.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -89,6 +93,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  late final BedroomGame bedroomGame;
+  late final LivingRoomGame livingRoomGame;
+  late final GardenGame gardenGame;
+
   @override
   void initState() {
     super.initState();
@@ -97,6 +105,15 @@ class _HomePageState extends State<HomePage> {
         _currentPage = _controller.page ?? 0.0;
       });
     });
+
+    bedroomGame = BedroomGame(
+      onDiaryTap: () {
+        Navigator.pushNamed(context, DiaryPage.routeName);
+      },
+    );
+
+    livingRoomGame = LivingRoomGame();
+    gardenGame = GardenGame();
   }
 
   @override
@@ -127,7 +144,14 @@ class _HomePageState extends State<HomePage> {
                 currentIndex = index;
               });
             },
-            itemBuilder: (context, index) => StanzaWidget(imagePath: _images[index], stanzaIndex: index),
+            itemBuilder: (context, index) {
+              return switch (index) {
+                0 => GameWidget(game: bedroomGame),
+                1 => GameWidget(game: livingRoomGame),
+                2 => GameWidget(game: gardenGame),
+                _ => const SizedBox.shrink(),
+              };
+            },
           ),
           SafeArea(
             child: Container(
