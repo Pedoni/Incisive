@@ -20,30 +20,32 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildFloatingBar() {
     return Positioned(
-      bottom: 20,
+      bottom: 5,
       left: 30,
       right: 30,
-      child: Container(
-        height: 70,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(128, 218, 193, 150),
+      child: SafeArea(
+        child: Container(
+          height: 70,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(128, 218, 193, 150),
 
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _navItem(Icons.bed, 0),
-            _navItem(Icons.chair, 1),
-            _navItem(Icons.balcony, 2),
-          ],
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _navItem(Icons.bed, 0),
+              _navItem(Icons.chair, 1),
+              _navItem(Icons.balcony, 2),
+            ],
+          ),
         ),
       ),
     );
@@ -115,6 +117,7 @@ class _HomePageState extends State<HomePage> {
         alignment: Alignment.topCenter,
         children: [
           PageView.builder(
+            physics: const ClampingScrollPhysics(),
             controller: _controller,
             itemCount: _images.length,
             itemBuilder: (context, index) => StanzaWidget(imagePath: _images[index], stanzaIndex: index),
