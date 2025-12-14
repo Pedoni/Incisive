@@ -115,7 +115,9 @@ class _HomePageState extends State<HomePage> {
     livingRoomGame = LivingRoomGame(
       onStereoTap: () => print("Stereo tapped"),
     );
-    gardenGame = GardenGame();
+    gardenGame = GardenGame(
+      onStatueTap: () => print("Statue tapped"),
+    );
   }
 
   @override
