@@ -29,6 +29,7 @@ dependencies:
   skeletonizer: ^2.1.1
   syncfusion_flutter_gauges: ^31.2.16
   lottie: ^3.3.2
+  flame: ^1.34.0
 
   flutter_localizations:
     sdk: flutter
