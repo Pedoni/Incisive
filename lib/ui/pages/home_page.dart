@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               _navItem(Icons.bed, 0),
               _navItem(Icons.chair, 1),
-              _navItem(Icons.balcony, 2),
+              _navItem(Icons.grass_sharp, 2),
             ],
           ),
         ),
