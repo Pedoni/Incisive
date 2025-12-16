@@ -44,10 +44,13 @@ class HomeToolbar extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 5),
-                        Image.asset(
-                          "assets/icons/germoglio.png",
-                          height: 40,
-                          width: 40,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            "assets/icons/leaf.png",
+                            height: 30,
+                            width: 30,
+                          ),
                         ),
                       ],
                     ),
