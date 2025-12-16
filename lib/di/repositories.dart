@@ -7,4 +7,7 @@ final List<RepositoryProvider> _repositories = [
   RepositoryProvider<DiaryRepository>(
     create: ((context) => DiaryRepository(diaryService: context.read())),
   ),
+  RepositoryProvider<UserRepository>(
+    create: ((context) => UserRepository(userService: context.read())),
+  ),
 ];
