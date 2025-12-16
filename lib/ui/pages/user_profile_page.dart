@@ -15,7 +15,7 @@ class UserProfilePage extends StatelessWidget {
       foregroundColor: Color(0xFFFFF8E8),
       elevation: 0,
       title: const Text(
-        'User Profile',
+        'Profilo',
         style: TextStyle(
           fontSize: 25,
           fontFamily: 'Poppins',
