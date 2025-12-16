@@ -19,4 +19,7 @@ final List<BlocProvider> _blocs = [
   BlocProvider<ProfileBloc>(
     create: (context) => ProfileBloc(userRepository: context.read()),
   ),
+  BlocProvider<GratitudePageBloc>(
+    create: (context) => GratitudePageBloc(gratitudeRepository: context.read()),
+  ),
 ];

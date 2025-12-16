@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/repositories/diary_repository.dart';
+import 'package:incisive/repositories/gratitude_repository.dart';
 import 'package:incisive/repositories/login_repository.dart';
 import 'package:incisive/repositories/user_repository.dart';
 import 'package:incisive/source/remote/diary_service.dart';
+import 'package:incisive/source/remote/gratitude_service.dart';
 import 'package:incisive/source/remote/login_service.dart';
 import 'package:incisive/source/remote/user_service.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
+import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/state_management/blocs/login_bloc/login_bloc.dart';
 import 'package:incisive/state_management/blocs/mood_tracker_bloc/mood_tracker_bloc.dart';
 import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';

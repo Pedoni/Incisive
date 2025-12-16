@@ -1,6 +1,6 @@
 part of 'diary_page_bloc.dart';
 
-abstract class DiaryPageEvent {
+sealed class DiaryPageEvent {
   const DiaryPageEvent();
 
   @override
