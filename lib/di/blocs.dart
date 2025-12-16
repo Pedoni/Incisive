@@ -16,4 +16,7 @@ final List<BlocProvider> _blocs = [
   BlocProvider<MoodTrackerBloc>(
     create: (context) => MoodTrackerBloc(diaryRepository: context.read()),
   ),
+  BlocProvider<ProfileBloc>(
+    create: (context) => ProfileBloc(userRepository: context.read()),
+  ),
 ];

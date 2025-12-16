@@ -4,6 +4,7 @@ import 'package:incisive/ui/components/bedroom_game.dart';
 import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
+import 'package:incisive/ui/widgets/home_toolbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -157,24 +158,7 @@ class _HomePageState extends State<HomePage> {
               };
             },
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _TopIcon(
-                    icon: Icons.person,
-                    onTap: () {},
-                  ),
-                  _TopIcon(
-                    icon: Icons.settings,
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ),
-          ),
+          HomeToolbar(),
           IgnorePointer(child: Container(color: Colors.black.withOpacity(_calculateOverlayOpacity()))),
           _buildFloatingBar(),
         ],
@@ -217,28 +201,6 @@ class StanzaWidget extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _TopIcon extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _TopIcon({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.4),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(icon, color: Color.fromARGB(255, 141, 90, 35)),
-      ),
     );
   }
 }

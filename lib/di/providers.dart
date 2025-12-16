@@ -7,4 +7,7 @@ final List<SingleChildWidget> _providers = [
   Provider<DiaryService>(
     create: (context) => DiaryService(),
   ),
+  Provider<UserService>(
+    create: (context) => UserService(),
+  ),
 ];
