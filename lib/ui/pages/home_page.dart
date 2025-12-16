@@ -4,6 +4,7 @@ import 'package:incisive/ui/components/bedroom_game.dart';
 import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
+import 'package:incisive/ui/pages/gratitude_page.dart';
 import 'package:incisive/ui/widgets/home_toolbar.dart';
 
 class HomePage extends StatefulWidget {
@@ -114,7 +115,9 @@ class _HomePageState extends State<HomePage> {
     );
 
     livingRoomGame = LivingRoomGame(
-      onBlackboardTap: () => print("Blackboard tapped"),
+      onBlackboardTap: () {
+        Navigator.pushNamed(context, GratitudePage.routeName);
+      },
     );
     gardenGame = GardenGame(
       onStatueTap: () => print("Statue tapped"),
