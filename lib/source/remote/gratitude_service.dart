@@ -2,53 +2,63 @@ import 'package:incisive/utils/functions.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class GratitudeService {
-  Future<Map<String, dynamic>?> getPage({required DateTime date}) async {
-    final supabase = Supabase.instance.client;
+  final _supabase = Supabase.instance.client;
 
-    final userId = supabase.auth.currentUser!.id;
+  Future<Map<String, dynamic>> getPage({required DateTime date}) async {
+    final userId = _supabase.auth.currentUser!.id;
+    final dateSql = toSqlDate(date);
 
-    final response =
-        await supabase
+    final page = await _supabase.from('gratitude_page').select().eq('user_id', userId).eq('date', dateSql).maybeSingle();
+    if (page != null) {
+      return page;
+    }
+
+    final inserted =
+        await _supabase
             .from('gratitude_page')
+            .insert({
+              'user_id': userId,
+              'date': dateSql,
+            })
             .select()
-            .eq(
-              'user_id',
-              userId,
-            )
-            .eq(
-              'date',
-              date.toIso8601String().substring(0, 10),
-            )
-            .maybeSingle();
+            .single();
 
-    return response;
+    return inserted;
   }
 
-  Future<void> upsertPage({
-    required DateTime date,
+  Future<List<Map<String, dynamic>>?> getNotes({required String pageId}) async {
+    final notes = await _supabase.from('gratitude_note').select().eq('page_id', pageId).order('order');
+    return notes.isEmpty ? null : List<Map<String, dynamic>>.from(notes);
+  }
+
+  Future<void> upsertNote({
+    required String pageId,
+    required int order,
     required String text,
   }) async {
-    final supabase = Supabase.instance.client;
-    final userId = supabase.auth.currentUser!.id;
-
-    final response = await supabase.functions.invoke(
-      'sentiment-analysis',
-      body: {'text': text},
-    );
-
-    if (response.data['sentiment'] == "unknown") {
-      throw Exception(response.data['reason']);
-    }
-
-    if (response.data['error'] != null) {
-      throw Exception(response.data['error']);
-    }
-
-    await supabase.from('gratitude_page').upsert({
-      'user_id': userId,
-      'date': toSqlDate(date),
+    await _supabase.from('gratitude_note').upsert({
+      'page_id': pageId,
+      'order': order,
       'text': text,
-      'score': (response.data['score'] as num).toDouble(),
     });
+  }
+
+  Future<void> upsertNotes({
+    required String pageId,
+    required List<String> texts,
+  }) async {
+    if (texts.isEmpty) return;
+
+    final payload = <Map<String, dynamic>>[];
+
+    for (int i = 0; i < texts.length; i++) {
+      payload.add({
+        'page_id': pageId,
+        'order': i,
+        'text': texts[i],
+      });
+    }
+
+    await _supabase.from('gratitude_note').upsert(payload);
   }
 }

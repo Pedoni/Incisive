@@ -10,13 +10,12 @@ class GratitudeRepository {
   Future<GratitudePageModel?> getPage(DateTime dateTime) async {
     try {
       MainLogger.logInfo("Try to get page");
-      final res = await gratitudeService.getPage(date: dateTime);
-      return res != null
-          ? GratitudePageModel(
-            date: dateTime,
-            list: (res["list"] as List<dynamic>).map((e) => e.toString()).toList(),
-          )
-          : null;
+      final page = await gratitudeService.getPage(date: dateTime);
+      final notes = await gratitudeService.getNotes(pageId: page['id']);
+      return GratitudePageModel(
+        date: dateTime,
+        list: notes == null ? [] : (notes as List<dynamic>).map((e) => e["text"] as String).toList(),
+      );
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
       rethrow;
@@ -24,12 +23,12 @@ class GratitudeRepository {
   }
 
   Future<void> upsertPage({
-    required DateTime date,
-    required String text,
+    required String pageId,
+    required List<String> texts,
   }) async {
     try {
       MainLogger.logInfo("Try to upsert page");
-      await gratitudeService.upsertPage(text: text, date: date);
+      await gratitudeService.upsertNotes(pageId: pageId, texts: texts);
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
       rethrow;

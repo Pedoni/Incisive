@@ -24,7 +24,7 @@ class GratitudePageBloc extends Bloc<GratitudePageEvent, GratitudePageState> {
     emitter(LoadingGratitudeState());
     try {
       final entry = await gratitudeRepository.getPage(event.dateTime);
-      emitter(entry != null ? ResultGratitudeState(entry: entry) : EmptyGratitudeState());
+      emitter(entry != null && entry.list.isNotEmpty ? ResultGratitudeState(entry: entry) : EmptyGratitudeState());
     } catch (e) {
       emitter(ErrorGratitudeState(e.toString()));
     }
