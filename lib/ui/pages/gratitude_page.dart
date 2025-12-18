@@ -88,7 +88,7 @@ class _GratitudePageState extends State<GratitudePage> {
                         }),
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 30),
 
                 Expanded(
                   child: BlocBuilder<GratitudePageBloc, GratitudePageState>(
@@ -139,7 +139,7 @@ class _GratitudePageState extends State<GratitudePage> {
                           ),
                         );
                       }
-                      final entry = state is ResultGratitudeState ? state.entry : Constants.mockedDiaryEntry;
+                      final entry = state is ResultGratitudeState ? state.entry : Constants.mockedGratitudeEntry;
                       return SingleChildScrollView(
                         physics: state is LoadingGratitudeState ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
                         child: Skeletonizer(
@@ -152,8 +152,50 @@ class _GratitudePageState extends State<GratitudePage> {
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 20),
+                              if (state is ResultGratitudeState) ...[
+                                Text(
+                                  "Sono grato per...",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 141, 90, 35),
+                                  ),
+                                ),
+                                SizedBox(height: 16),
+                              ],
+                              ...(entry.list
+                                  .map(
+                                    (e) => Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      child: Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(12),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              blurRadius: 4,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        padding: const EdgeInsets.all(16),
+                                        child: Text(
+                                          e,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'Nunito Sans',
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList()),
                             ],
                           ),
                         ),
