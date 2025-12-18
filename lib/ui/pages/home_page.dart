@@ -4,6 +4,7 @@ import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bl
 import 'package:incisive/ui/components/bedroom_game.dart';
 import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';
+import 'package:incisive/ui/components/square_game.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/gratitude_page.dart';
 import 'package:incisive/ui/widgets/home_toolbar.dart';
@@ -24,7 +25,12 @@ class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   bool _isAnimating = false;
 
-  final List<String> _images = ['assets/images/bedroom_unity.png', 'assets/images/living_unity.png', 'assets/images/garden_unity.png'];
+  final List<String> _images = [
+    'assets/images/bedroom_unity.png',
+    'assets/images/living_unity.png',
+    'assets/images/garden_unity.png',
+    'assets/images/square.png',
+  ];
 
   Widget _buildFloatingBar() {
     return Positioned(
@@ -52,6 +58,7 @@ class _HomePageState extends State<HomePage> {
               _navItem(Icons.bed, 0),
               _navItem(Icons.chair, 1),
               _navItem(Icons.grass_sharp, 2),
+              _navItem(Icons.location_city, 3),
             ],
           ),
         ),
@@ -100,6 +107,7 @@ class _HomePageState extends State<HomePage> {
   late final BedroomGame bedroomGame;
   late final LivingRoomGame livingRoomGame;
   late final GardenGame gardenGame;
+  late final SquareGame squareGame;
 
   @override
   void initState() {
@@ -122,9 +130,12 @@ class _HomePageState extends State<HomePage> {
         Navigator.pushNamed(context, GratitudePage.routeName);
       },
     );
+
     gardenGame = GardenGame(
       onStatueTap: () => print("Statue tapped"),
     );
+
+    squareGame = SquareGame();
   }
 
   @override
@@ -160,6 +171,7 @@ class _HomePageState extends State<HomePage> {
                 0 => GameWidget(game: bedroomGame),
                 1 => GameWidget(game: livingRoomGame),
                 2 => GameWidget(game: gardenGame),
+                3 => GameWidget(game: squareGame),
                 _ => const SizedBox.shrink(),
               };
             },
