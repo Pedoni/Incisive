@@ -5,14 +5,14 @@ import 'package:flame/components.dart';
 import 'package:incisive/ui/components/clickable_object.dart';
 
 class LivingRoomGame extends FlameGame {
-  final VoidCallback onStereoTap;
+  final VoidCallback onBlackboardTap;
 
-  LivingRoomGame({required this.onStereoTap});
+  LivingRoomGame({required this.onBlackboardTap});
 
   @override
   Future<void> onLoad() async {
     final background = await loadSprite('living_unity.png');
-    final stereoSprite = await loadSprite('echodot.png');
+    final blackboardSprite = await loadSprite('blackboard.png');
 
     add(
       SpriteComponent(
@@ -23,11 +23,11 @@ class LivingRoomGame extends FlameGame {
 
     add(
       ClickableObject(
-          sprite: stereoSprite,
-          onTap: onStereoTap,
+          sprite: blackboardSprite,
+          onTap: onBlackboardTap,
         )
-        ..size = stereoSprite.originalSize * 0.039
-        ..position = Vector2(size.x * 0.42, size.y * 0.565),
+        ..size = blackboardSprite.originalSize * 0.28
+        ..position = Vector2(size.x * 0.48, size.y * 0.25),
     );
   }
 }

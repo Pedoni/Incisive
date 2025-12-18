@@ -4,6 +4,7 @@ import 'package:incisive/di/dependency_injector.dart';
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/diary_upsert_page.dart';
+import 'package:incisive/ui/pages/gratitude_page.dart';
 import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/pages/login_page.dart';
 import 'package:incisive/ui/pages/mood_calendar_page.dart';
@@ -57,6 +58,7 @@ class App extends StatelessWidget {
           RegisterPage.routeName: (context) => RegisterPage(),
           HomePage.routeName: (context) => const HomePage(),
           DiaryPage.routeName: (context) => const DiaryPage(),
+          GratitudePage.routeName: (context) => const GratitudePage(),
           MoodCalendarPage.routeName: (context) => MoodCalendarPage(),
           UserProfilePage.routeName: (context) => UserProfilePage(),
         },

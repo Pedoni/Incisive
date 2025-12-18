@@ -1,10 +1,13 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/ui/components/bedroom_game.dart';
 import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
+import 'package:incisive/ui/pages/gratitude_page.dart';
 import 'package:incisive/ui/widgets/home_toolbar.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -114,7 +117,10 @@ class _HomePageState extends State<HomePage> {
     );
 
     livingRoomGame = LivingRoomGame(
-      onStereoTap: () => print("Stereo tapped"),
+      onBlackboardTap: () {
+        context.read<GratitudePageBloc>().getGratitudePage(DateTime.now());
+        Navigator.pushNamed(context, GratitudePage.routeName);
+      },
     );
     gardenGame = GardenGame(
       onStatueTap: () => print("Statue tapped"),

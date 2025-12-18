@@ -1,4 +1,5 @@
 import 'package:incisive/models/diary_model.dart';
+import 'package:incisive/models/gratitude_page_model.dart';
 
 class Constants {
   static DiaryEntry mockedDiaryEntry = DiaryEntry(
@@ -18,5 +19,10 @@ class Constants {
     " non è stata una giornata perfetta… ma ci sono stati momenti belli, e"
     " va bene così.",
     0.3,
+  );
+
+  static GratitudePageModel mockedGratitudeEntry = GratitudePageModel(
+    date: DateTime.now(),
+    list: List.generate(20, (index) => "Apprezzo il tempo trascorso all'aria aperta."),
   );
 }
