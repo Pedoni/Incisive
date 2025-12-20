@@ -4,7 +4,6 @@ import 'package:incisive/models/gratitude_page_model.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_upsert/gratitude_upsert_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
-import 'package:provider/provider.dart';
 
 class GratitudeUpsertPage extends StatefulWidget {
   static const routeName = '/upsertGratitudePage';
