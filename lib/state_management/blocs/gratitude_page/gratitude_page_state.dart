@@ -11,7 +11,10 @@ final class InitialGratitudeState extends GratitudePageState {}
 
 final class LoadingGratitudeState extends GratitudePageState {}
 
-final class EmptyGratitudeState extends GratitudePageState {}
+final class EmptyGratitudeState extends GratitudePageState {
+  final GratitudePageModel entry;
+  const EmptyGratitudeState({required this.entry});
+}
 
 final class ResultGratitudeState extends GratitudePageState {
   final GratitudePageModel entry;

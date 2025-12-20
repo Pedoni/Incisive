@@ -2,6 +2,7 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
+import 'package:incisive/ui/pages/gratitude_upsert_page.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:lottie/lottie.dart';
 
@@ -50,8 +51,14 @@ class _GratitudePageState extends State<GratitudePage> {
             backgroundColor: Color.fromARGB(255, 141, 90, 35),
             onPressed: switch (state) {
               InitialGratitudeState() || LoadingGratitudeState() || ErrorGratitudeState() => null,
-              EmptyGratitudeState() => () {},
-              ResultGratitudeState(entry: final entry) => () {},
+
+              EmptyGratitudeState(entry: final entry) || ResultGratitudeState(entry: final entry) => () {
+                Navigator.pushNamed(
+                  context,
+                  GratitudeUpsertPage.routeName,
+                  arguments: [entry, _selectedDate],
+                );
+              },
             },
             child: switch (state) {
               InitialGratitudeState() || LoadingGratitudeState() || ErrorGratitudeState() => null,
@@ -89,7 +96,6 @@ class _GratitudePageState extends State<GratitudePage> {
                   ),
                 ),
                 SizedBox(height: 30),
-
                 Expanded(
                   child: BlocBuilder<GratitudePageBloc, GratitudePageState>(
                     builder: (context, state) {
@@ -166,7 +172,7 @@ class _GratitudePageState extends State<GratitudePage> {
                                 ),
                                 SizedBox(height: 16),
                               ],
-                              ...(entry.list
+                              ...(entry.list!
                                   .map(
                                     (e) => Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 8.0),

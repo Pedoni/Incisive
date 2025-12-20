@@ -10,6 +10,7 @@ import 'package:incisive/source/remote/login_service.dart';
 import 'package:incisive/source/remote/user_service.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
+import 'package:incisive/state_management/blocs/gratitude_upsert/gratitude_upsert_bloc.dart';
 import 'package:incisive/state_management/blocs/login_bloc/login_bloc.dart';
 import 'package:incisive/state_management/blocs/mood_tracker_bloc/mood_tracker_bloc.dart';
 import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';

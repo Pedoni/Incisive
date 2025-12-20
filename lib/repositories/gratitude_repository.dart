@@ -7,12 +7,13 @@ class GratitudeRepository {
 
   GratitudeRepository({required this.gratitudeService});
 
-  Future<GratitudePageModel?> getPage(DateTime dateTime) async {
+  Future<GratitudePageModel> getPage(DateTime dateTime) async {
     try {
       MainLogger.logInfo("Try to get page");
       final page = await gratitudeService.getPage(date: dateTime);
       final notes = await gratitudeService.getNotes(pageId: page['id']);
       return GratitudePageModel(
+        id: page['id'] as String,
         date: dateTime,
         list: notes == null ? [] : (notes as List<dynamic>).map((e) => e["text"] as String).toList(),
       );
