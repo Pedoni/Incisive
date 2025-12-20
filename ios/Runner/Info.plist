@@ -47,5 +47,9 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>Needed for the speech to text of the diary pages</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Needed for the speech to text of the diary pages</string>
 	</dict>
 </plist>

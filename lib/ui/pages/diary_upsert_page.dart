@@ -4,6 +4,7 @@ import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
 import 'package:incisive/state_management/blocs/upsert_page_bloc/upsert_page_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
+import 'package:incisive/ui/widgets/speech_dialog.dart';
 
 class UpsertDiaryPage extends StatefulWidget {
   static const routeName = '/upsertDiaryPage';
@@ -72,13 +73,36 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Scrivi qui i tuoi pensieri",
-                style: TextStyle(
-                  color: Color.fromARGB(255, 112, 66, 16),
-                  fontFamily: 'Nunito Sans',
-                  fontSize: 16,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Scrivi qui i tuoi pensieri",
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 112, 66, 16),
+                      fontFamily: 'Nunito Sans',
+                      fontSize: 16,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      final result = await showDialog<String>(
+                        context: context,
+                        builder: (_) => const SpeechDialog(),
+                      );
+
+                      if (result != null && result.isNotEmpty) {
+                        setState(() {
+                          _controller.text += (_controller.text.isNotEmpty ? " " : "") + result;
+                        });
+                      }
+                    },
+                    child: Icon(
+                      Icons.mic,
+                      color: Color.fromARGB(255, 112, 66, 16),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
               Expanded(
@@ -86,7 +110,7 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
                   controller: _controller,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
-                  maxLength: 500,
+                  maxLength: 1000,
                   expands: true,
                   textAlignVertical: TextAlignVertical.top,
                   decoration: InputDecoration(
