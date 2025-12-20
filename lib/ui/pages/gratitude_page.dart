@@ -2,6 +2,7 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
+import 'package:incisive/ui/pages/gratitude_upsert_page.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:lottie/lottie.dart';
 
@@ -50,8 +51,20 @@ class _GratitudePageState extends State<GratitudePage> {
             backgroundColor: Color.fromARGB(255, 141, 90, 35),
             onPressed: switch (state) {
               InitialGratitudeState() || LoadingGratitudeState() || ErrorGratitudeState() => null,
-              EmptyGratitudeState() => () {},
-              ResultGratitudeState(entry: final entry) => () {},
+              EmptyGratitudeState() => () {
+                Navigator.pushNamed(
+                  context,
+                  GratitudeUpsertPage.routeName,
+                  arguments: [_selectedDate, null],
+                );
+              },
+              ResultGratitudeState(entry: final entry) => () {
+                Navigator.pushNamed(
+                  context,
+                  GratitudeUpsertPage.routeName,
+                  arguments: [_selectedDate, entry],
+                );
+              },
             },
             child: switch (state) {
               InitialGratitudeState() || LoadingGratitudeState() || ErrorGratitudeState() => null,

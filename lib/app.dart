@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:incisive/di/dependency_injector.dart';
 import 'package:incisive/models/diary_model.dart';
+import 'package:incisive/models/gratitude_page_model.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/diary_upsert_page.dart';
 import 'package:incisive/ui/pages/gratitude_page.dart';
+import 'package:incisive/ui/pages/gratitude_upsert_page.dart';
 import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/pages/login_page.dart';
 import 'package:incisive/ui/pages/mood_calendar_page.dart';
@@ -24,7 +26,7 @@ class App extends StatelessWidget {
           return locale;
         },
         onGenerateRoute: (settings) {
-          if (settings.name == '/upsertDiaryPage') {
+          if (settings.name == DiaryPage.routeName) {
             final list = settings.arguments as List<dynamic>;
             final selectedDate = list[0] as DateTime;
             final entry = list[1] as DiaryEntry?;
@@ -34,6 +36,13 @@ class App extends StatelessWidget {
                     date: selectedDate,
                     existingEntry: entry,
                   ),
+            );
+          } else if (settings.name == GratitudeUpsertPage.routeName) {
+            final list = settings.arguments as List<dynamic>;
+            final selectedDate = list[0] as DateTime;
+            final entry = list[1] as GratitudePageModel?;
+            return MaterialPageRoute(
+              builder: (_) => GratitudeUpsertPage(),
             );
           }
           return null;
