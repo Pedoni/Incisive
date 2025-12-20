@@ -39,10 +39,9 @@ class App extends StatelessWidget {
             );
           } else if (settings.name == GratitudeUpsertPage.routeName) {
             final list = settings.arguments as List<dynamic>;
-            final selectedDate = list[0] as DateTime;
-            final entry = list[1] as GratitudePageModel?;
+            final entry = list[0] as GratitudePageModel?;
             return MaterialPageRoute(
-              builder: (_) => GratitudeUpsertPage(),
+              builder: (_) => GratitudeUpsertPage(existingEntry: entry),
             );
           }
           return null;

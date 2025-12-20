@@ -55,14 +55,14 @@ class _GratitudePageState extends State<GratitudePage> {
                 Navigator.pushNamed(
                   context,
                   GratitudeUpsertPage.routeName,
-                  arguments: [_selectedDate, null],
+                  arguments: [null],
                 );
               },
               ResultGratitudeState(entry: final entry) => () {
                 Navigator.pushNamed(
                   context,
                   GratitudeUpsertPage.routeName,
-                  arguments: [_selectedDate, entry],
+                  arguments: [entry],
                 );
               },
             },
