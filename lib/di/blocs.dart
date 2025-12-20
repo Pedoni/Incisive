@@ -22,4 +22,7 @@ final List<BlocProvider> _blocs = [
   BlocProvider<GratitudePageBloc>(
     create: (context) => GratitudePageBloc(gratitudeRepository: context.read()),
   ),
+  BlocProvider<GratitudeUpsertBloc>(
+    create: (context) => GratitudeUpsertBloc(gratitudeRepository: context.read()),
+  ),
 ];
