@@ -26,7 +26,7 @@ class App extends StatelessWidget {
           return locale;
         },
         onGenerateRoute: (settings) {
-          if (settings.name == DiaryPage.routeName) {
+          if (settings.name == UpsertDiaryPage.routeName) {
             final list = settings.arguments as List<dynamic>;
             final selectedDate = list[0] as DateTime;
             final entry = list[1] as DiaryEntry?;
@@ -39,9 +39,14 @@ class App extends StatelessWidget {
             );
           } else if (settings.name == GratitudeUpsertPage.routeName) {
             final list = settings.arguments as List<dynamic>;
-            final entry = list[0] as GratitudePageModel?;
+            final entry = list[0] as GratitudePageModel;
+            final date = list[1] as DateTime;
             return MaterialPageRoute(
-              builder: (_) => GratitudeUpsertPage(existingEntry: entry),
+              builder:
+                  (_) => GratitudeUpsertPage(
+                    existingEntry: entry,
+                    date: date,
+                  ),
             );
           }
           return null;

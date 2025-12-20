@@ -31,34 +31,22 @@ class GratitudeService {
     return notes.isEmpty ? null : List<Map<String, dynamic>>.from(notes);
   }
 
-  Future<void> upsertNote({
-    required String pageId,
-    required int order,
-    required String text,
-  }) async {
-    await _supabase.from('gratitude_note').upsert({
-      'page_id': pageId,
-      'order': order,
-      'text': text,
-    });
-  }
-
   Future<void> upsertNotes({
     required String pageId,
     required List<String> texts,
   }) async {
+    await _supabase.from('gratitude_note').delete().eq('page_id', pageId);
+
     if (texts.isEmpty) return;
 
-    final payload = <Map<String, dynamic>>[];
-
-    for (int i = 0; i < texts.length; i++) {
-      payload.add({
+    final payload = List.generate(texts.length, (i) {
+      return {
         'page_id': pageId,
         'order': i,
         'text': texts[i],
-      });
-    }
+      };
+    });
 
-    await _supabase.from('gratitude_note').upsert(payload);
+    await _supabase.from('gratitude_note').insert(payload);
   }
 }

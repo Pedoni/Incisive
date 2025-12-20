@@ -51,18 +51,12 @@ class _GratitudePageState extends State<GratitudePage> {
             backgroundColor: Color.fromARGB(255, 141, 90, 35),
             onPressed: switch (state) {
               InitialGratitudeState() || LoadingGratitudeState() || ErrorGratitudeState() => null,
-              EmptyGratitudeState() => () {
+
+              EmptyGratitudeState(entry: final entry) || ResultGratitudeState(entry: final entry) => () {
                 Navigator.pushNamed(
                   context,
                   GratitudeUpsertPage.routeName,
-                  arguments: [null],
-                );
-              },
-              ResultGratitudeState(entry: final entry) => () {
-                Navigator.pushNamed(
-                  context,
-                  GratitudeUpsertPage.routeName,
-                  arguments: [entry],
+                  arguments: [entry, _selectedDate],
                 );
               },
             },
@@ -102,7 +96,6 @@ class _GratitudePageState extends State<GratitudePage> {
                   ),
                 ),
                 SizedBox(height: 30),
-
                 Expanded(
                   child: BlocBuilder<GratitudePageBloc, GratitudePageState>(
                     builder: (context, state) {
@@ -179,7 +172,7 @@ class _GratitudePageState extends State<GratitudePage> {
                                 ),
                                 SizedBox(height: 16),
                               ],
-                              ...(entry.list
+                              ...(entry.list!
                                   .map(
                                     (e) => Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 8.0),

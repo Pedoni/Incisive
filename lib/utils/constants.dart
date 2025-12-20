@@ -22,6 +22,7 @@ class Constants {
   );
 
   static GratitudePageModel mockedGratitudeEntry = GratitudePageModel(
+    id: "mocked_gratitude_id",
     date: DateTime.now(),
     list: List.generate(20, (index) => "Apprezzo il tempo trascorso all'aria aperta."),
   );

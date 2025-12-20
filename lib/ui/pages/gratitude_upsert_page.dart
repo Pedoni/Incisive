@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
+import 'package:incisive/state_management/blocs/gratitude_upsert/gratitude_upsert_bloc.dart';
+import 'package:incisive/ui/widgets/error_dialog.dart';
+import 'package:provider/provider.dart';
 
 class GratitudeUpsertPage extends StatefulWidget {
   static const routeName = '/upsertGratitudePage';
 
-  final GratitudePageModel? existingEntry;
+  final GratitudePageModel existingEntry;
+  final DateTime date;
 
   const GratitudeUpsertPage({
     super.key,
-    this.existingEntry,
+    required this.existingEntry,
+    required this.date,
   });
 
   @override
@@ -23,10 +30,10 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
   void initState() {
     super.initState();
 
-    isEditing = widget.existingEntry != null;
+    isEditing = widget.existingEntry.list!.isNotEmpty;
 
     if (isEditing) {
-      final existing = widget.existingEntry!.list;
+      final existing = widget.existingEntry.list!;
 
       // 1. Aggiungi i controller già compilati
       for (final text in existing) {
@@ -68,9 +75,10 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
 
   void _onConfirm() {
     final gratitudes = _controllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
-
-    // QUI puoi salvarle (Supabase, bloc, ecc.)
-    Navigator.of(context).pop(gratitudes);
+    context.read<GratitudeUpsertBloc>().upsertGratitude(
+      widget.existingEntry.id,
+      gratitudes,
+    );
   }
 
   @override
@@ -99,56 +107,68 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
         elevation: 0,
       ),
       backgroundColor: const Color(0xFFFFF8E8),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(20),
-                itemCount: _controllers.length,
-                itemBuilder: (context, index) {
-                  final isExtra = index >= 3;
+      body: BlocListener<GratitudeUpsertBloc, GratitudeUpsertState>(
+        listener: (context, state) {
+          if (state is ResultUpsertPageState) {
+            context.read<GratitudePageBloc>().getGratitudePage(widget.date);
+            Navigator.of(context).pop();
+          } else if (state is ErrorUpsertPageState) {
+            showDialog(
+              context: context,
+              builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto.'),
+            );
+          }
+        },
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(20),
+                  itemCount: _controllers.length,
+                  itemBuilder: (context, index) {
+                    final isExtra = index >= 3;
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: GratitudeField(
-                      controller: _controllers[index],
-                      isExtra: isExtra,
-                      onChanged: _onTextChanged,
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // BOTTONE CONFERMA
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _filledGratitudes >= 3 ? _onConfirm : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 141, 90, 35),
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor: const Color.fromARGB(255, 184, 181, 181),
-
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  child: const Text(
-                    'Conferma',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: GratitudeField(
+                        controller: _controllers[index],
+                        isExtra: isExtra,
+                        onChanged: _onTextChanged,
+                      ),
+                    );
+                  },
                 ),
               ),
-            ),
-          ],
+
+              // BOTTONE CONFERMA
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                child: BlocBuilder<GratitudeUpsertBloc, GratitudeUpsertState>(
+                  builder: (context, state) {
+                    final screenWidth = MediaQuery.sizeOf(context).width;
+                    return ElevatedButton(
+                      onPressed: _filledGratitudes >= 3 ? _onConfirm : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 141, 90, 35),
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: const Color.fromARGB(255, 184, 181, 181),
+                        fixedSize: Size.fromWidth(screenWidth * 0.4),
+                      ),
+                      child:
+                          state is LoadingUpsertPageState
+                              ? SizedBox(
+                                height: 25,
+                                width: 25,
+                                child: CircularProgressIndicator(color: Colors.white),
+                              )
+                              : Text("Conferma"),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
