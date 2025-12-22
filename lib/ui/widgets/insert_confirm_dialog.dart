@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
-
-class ErrorDialog extends StatelessWidget {
-  final String title;
-  final String text;
-
-  const ErrorDialog({
-    super.key,
-    required this.title,
-    required this.text,
-  });
+class InsertConfirmDialog extends StatelessWidget {
+  const InsertConfirmDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +17,12 @@ class ErrorDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
-            "assets/images/cat_doubt.png",
+            "assets/images/cat_happy.png",
             width: 120,
           ),
           const SizedBox(height: 12),
           Text(
-            title,
-            textAlign: TextAlign.center,
+            "Inserito!",
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 25,
@@ -43,7 +33,7 @@ class ErrorDialog extends StatelessWidget {
       ),
 
       content: Text(
-        text,
+        "Inserimento avvenuto con successo.",
         textAlign: TextAlign.center,
         style: const TextStyle(
           fontSize: 18,

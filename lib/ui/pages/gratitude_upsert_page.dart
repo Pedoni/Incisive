@@ -4,6 +4,7 @@ import 'package:incisive/models/gratitude_page_model.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_upsert/gratitude_upsert_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
+import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 
 class GratitudeUpsertPage extends StatefulWidget {
   static const routeName = '/upsertGratitudePage';
@@ -34,20 +35,15 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
     if (isEditing) {
       final existing = widget.existingEntry.list!;
 
-      // 1. Aggiungi i controller già compilati
       for (final text in existing) {
         _controllers.add(TextEditingController(text: text));
       }
 
-      // 2. Garantisce almeno 3 slot
       while (_controllers.length < 3) {
         _addController();
       }
-
-      // 3. Slot extra vuoto
       _addController();
     } else {
-      // Nuova pagina → 3 slot vuoti
       _addController();
       _addController();
       _addController();
@@ -111,6 +107,11 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
           if (state is ResultUpsertPageState) {
             context.read<GratitudePageBloc>().getGratitudePage(widget.date);
             Navigator.of(context).pop();
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => const InsertConfirmDialog(),
+            );
           } else if (state is ErrorUpsertPageState) {
             showDialog(
               context: context,
