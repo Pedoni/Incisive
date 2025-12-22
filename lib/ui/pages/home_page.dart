@@ -5,6 +5,7 @@ import 'package:incisive/ui/components/bedroom_game.dart';
 import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';
 import 'package:incisive/ui/components/square_game.dart';
+import 'package:incisive/ui/pages/chat_page.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/gratitude_page.dart';
 import 'package:incisive/ui/widgets/home_toolbar.dart';
@@ -38,29 +39,40 @@ class _HomePageState extends State<HomePage> {
       left: 30,
       right: 30,
       child: SafeArea(
-        child: Container(
-          height: 70,
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(128, 218, 193, 150),
-
-            borderRadius: BorderRadius.circular(30),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10,
-                offset: Offset(0, 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              onPressed: () => Navigator.pushNamed(context, ChatPage.routeName),
+              foregroundColor: Color.fromARGB(255, 141, 90, 35),
+              shape: const CircleBorder(),
+              child: Icon(Icons.pets),
+            ),
+            SizedBox(height: 20),
+            Container(
+              height: 70,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(128, 218, 193, 150),
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _navItem(Icons.bed, 0),
-              _navItem(Icons.chair, 1),
-              _navItem(Icons.grass_sharp, 2),
-              _navItem(Icons.location_city, 3),
-            ],
-          ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _navItem(Icons.bed, 0),
+                  _navItem(Icons.chair, 1),
+                  _navItem(Icons.grass_sharp, 2),
+                  _navItem(Icons.location_city, 3),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
