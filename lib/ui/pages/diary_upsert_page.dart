@@ -4,6 +4,7 @@ import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
 import 'package:incisive/state_management/blocs/upsert_page_bloc/upsert_page_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
+import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/ui/widgets/speech_dialog.dart';
 
 class UpsertDiaryPage extends StatefulWidget {
@@ -61,6 +62,11 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
           if (state is ResultUpsertPageState) {
             context.read<DiaryPageBloc>().getPage(widget.date);
             Navigator.pop(context);
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => const InsertConfirmDialog(),
+            );
           } else if (state is ErrorUpsertPageState) {
             showDialog(
               context: context,
