@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:chat_bubbles/bubbles/bubble_normal.dart';
+import 'package:incisive/models/chat_session.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class ChatPage extends StatefulWidget {
@@ -16,7 +17,7 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  final List<_ChatMessage> _messages = [];
+  late final List<ChatMessage> _messages;
 
   bool _isTyping = false;
 
@@ -32,16 +33,19 @@ non dai consigli medici. Usi un tono calmo, accogliente e rassicurante.
   void _addInitialBotMessage() {
     _messages.insert(
       0,
-      _ChatMessage.bot(
-        "Hey 🌱",
-      ),
+      ChatMessage(false, "Hey 🌱"),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    _addInitialBotMessage();
+
+    _messages = ChatSession.messages;
+
+    if (_messages.isEmpty) {
+      _addInitialBotMessage();
+    }
   }
 
   Future<void> _sendMessage() async {
@@ -51,7 +55,7 @@ non dai consigli medici. Usi un tono calmo, accogliente e rassicurante.
     _controller.clear();
 
     setState(() {
-      _messages.insert(0, _ChatMessage.user(text));
+      _messages.insert(0, ChatMessage(true, text));
       _isTyping = true;
     });
 
@@ -75,7 +79,7 @@ non dai consigli medici. Usi un tono calmo, accogliente e rassicurante.
       final reply = response.data['reply'];
       setState(() {
         _isTyping = false;
-        _messages.insert(0, _ChatMessage.bot(reply));
+        _messages.insert(0, ChatMessage(false, reply));
       });
 
       _scrollToTop();
