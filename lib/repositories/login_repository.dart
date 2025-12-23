@@ -16,10 +16,15 @@ class LoginRepository {
     }
   }
 
-  Future<void> register(String email, String password) async {
+  Future<void> register(
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+  ) async {
     try {
       MainLogger.logInfo("Try to login");
-      await loginService.register(email, password);
+      await loginService.register(email, password, firstName, lastName);
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
       rethrow;

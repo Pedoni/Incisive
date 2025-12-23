@@ -20,6 +20,8 @@ class _RegisterPageState extends State<RegisterPage> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TextEditingController _confirmPasswordController;
+  late TextEditingController _firstNameController;
+  late TextEditingController _lastNameController;
 
   @override
   void initState() {
@@ -27,10 +29,16 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
+    _firstNameController = TextEditingController();
+    _lastNameController = TextEditingController();
   }
 
   void _register() {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty || _confirmPasswordController.text.isEmpty) {
+    if (_emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty ||
+        _firstNameController.text.isEmpty ||
+        _lastNameController.text.isEmpty) {
       showDialog(
         context: context,
         builder: (context) => ErrorDialog(title: "Errore", text: "Compilare tutti i campi."),
@@ -46,7 +54,12 @@ class _RegisterPageState extends State<RegisterPage> {
         builder: (context) => ErrorDialog(title: "Errore", text: "Email non valida."),
       );
     } else {
-      context.read<RegisterBloc>().register(_emailController.text, _passwordController.text);
+      context.read<RegisterBloc>().register(
+        _emailController.text,
+        _passwordController.text,
+        _firstNameController.text,
+        _lastNameController.text,
+      );
     }
   }
 
@@ -87,6 +100,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                               const SizedBox(height: 20),
+                              LoginTextField(isTextVisible: true, title: "First Name", controller: _firstNameController),
+                              const SizedBox(height: 10),
+                              LoginTextField(isTextVisible: true, title: "Last Name", controller: _lastNameController),
+                              const SizedBox(height: 10),
                               LoginTextField(isTextVisible: true, title: "Email", controller: _emailController),
                               const SizedBox(height: 10),
                               LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
@@ -108,8 +125,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   return LoginButton(
                                     usernameController: _emailController,
                                     passwordController: _passwordController,
-                                    isLoading: false,
-
+                                    isLoading: state is TryRegisterState,
                                     login: _register,
                                     color: Color.fromARGB(255, 141, 90, 35),
                                     title: 'Create account',

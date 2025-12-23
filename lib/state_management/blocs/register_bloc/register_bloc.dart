@@ -14,7 +14,19 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<TryRegisterEvent>(_register);
   }
 
-  void register(String username, String password) => add(TryRegisterEvent(username: username, password: password));
+  void register(
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+  ) => add(
+    TryRegisterEvent(
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+    ),
+  );
 
   FutureOr<void> _register(
     RegisterEvent event,
@@ -23,7 +35,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     emitter(const TryRegisterState());
     try {
       var e = event as TryRegisterEvent;
-      await loginRepository.register(e.username, e.password);
+      await loginRepository.register(
+        e.email,
+        e.password,
+        e.firstName,
+        e.lastName,
+      );
       emitter(const ResultRegisterState());
     } catch (e) {
       emitter(ErrorRegisterState(e.toString()));

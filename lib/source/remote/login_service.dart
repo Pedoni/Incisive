@@ -23,14 +23,31 @@ class LoginService {
 
   Future<void> logout() async => await supabase.auth.signOut();
 
-  Future<void> register(String email, String password) async {
+  Future<void> register(
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+  ) async {
     final response = await supabase.auth.signUp(
       email: email,
       password: password,
     );
 
-    if (response.user == null) {
+    final user = response.user;
+    if (user == null) {
       throw Exception("Errore nella registrazione.");
+    }
+
+    final insertRes = await supabase.from('user').insert({
+      'id': user.id,
+      'firstName': firstName,
+      'lastName': lastName,
+      'points': 0,
+    });
+
+    if (insertRes != null) {
+      throw Exception("Errore creazione profilo utente");
     }
   }
 
