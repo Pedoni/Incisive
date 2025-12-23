@@ -14,29 +14,51 @@ class BedroomGame extends FlameGame {
 
   @override
   Future<void> onLoad() async {
+    final bg = await loadSprite('bedroom_unity.png');
+    final diary = await loadSprite('diary.png');
+    final cat = await loadSprite('sleeping_cat.png');
+
+    // Background
     add(
       SpriteComponent(
-        sprite: await loadSprite('bedroom_unity.png'),
+        sprite: bg,
         size: size,
       ),
     );
 
+    // Diario
     add(
       ClickableObject(
-          sprite: await loadSprite('diary.png'),
+          sprite: diary,
           onTap: onDiaryTap,
         )
         ..size = Vector2(size.x * 0.12, size.x * 0.12)
-        ..position = Vector2(size.x * 0.10, size.y * 0.503),
+        ..position = Vector2(size.x * 0.10, size.y * 0.50),
     );
 
+    // OMBRA (finta ma giusta)
+    add(
+      RectangleComponent(
+        size: Vector2(size.x * 0.22, size.x * 0.04),
+        position: Vector2(
+          size.x * 0.20,
+          size.y * 0.78,
+        ),
+        paint:
+            Paint()
+              ..color = Colors.black.withValues(alpha: 0.18)
+              ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18),
+      ),
+    );
+
+    // Gatto
     add(
       ClickableObject(
-          sprite: await loadSprite('sleeping_cat.png'),
+          sprite: cat,
           onTap: onPetTap,
         )
-        ..size = Vector2(size.x * 0.30, size.x * 0.30)
-        ..position = Vector2(size.x * 0.16, size.y * 0.70),
+        ..size = Vector2(size.x * 0.28, size.x * 0.28)
+        ..position = Vector2(size.x * 0.16, size.y * 0.68),
     );
   }
 }
