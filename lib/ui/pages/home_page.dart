@@ -43,13 +43,13 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            FloatingActionButton(
+            /*FloatingActionButton(
               onPressed: () => Navigator.pushNamed(context, ChatPage.routeName),
               foregroundColor: Color.fromARGB(255, 141, 90, 35),
               shape: const CircleBorder(),
               child: Icon(Icons.pets),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 20),*/
             Container(
               height: 70,
               decoration: BoxDecoration(
@@ -136,6 +136,7 @@ class _HomePageState extends State<HomePage> {
       onDiaryTap: () {
         Navigator.pushNamed(context, DiaryPage.routeName);
       },
+      onPetTap: () => Navigator.pushNamed(context, ChatPage.routeName),
     );
 
     livingRoomGame = LivingRoomGame(
