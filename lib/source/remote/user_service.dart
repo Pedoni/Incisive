@@ -16,4 +16,18 @@ class UserService {
       points: user['points'],
     );
   }
+
+  Future<void> addPoints({required int points}) async {
+    try {
+      await _supabase.rpc(
+        'add_points',
+        params: {
+          'p_user_id': _supabase.auth.currentUser!.id,
+          'p_points': points,
+        },
+      );
+    } on PostgrestException catch (_) {
+      rethrow;
+    }
+  }
 }

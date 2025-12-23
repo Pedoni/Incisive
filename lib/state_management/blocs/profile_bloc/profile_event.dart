@@ -13,3 +13,12 @@ class GetProfileEvent extends ProfileEvent {
   @override
   List<Object> get props => [];
 }
+
+class AddPointsEvent extends ProfileEvent {
+  final int points;
+
+  const AddPointsEvent({required this.points});
+
+  @override
+  List<Object> get props => [];
+}

@@ -16,4 +16,14 @@ class UserRepository {
       rethrow;
     }
   }
+
+  Future<void> addPoints({required int points}) async {
+    try {
+      MainLogger.logInfo("Try to add points");
+      await userService.addPoints(points: points);
+    } catch (e, stackTrace) {
+      MainLogger.logError(e, stackTrace);
+      rethrow;
+    }
+  }
 }
