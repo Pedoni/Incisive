@@ -1,6 +1,5 @@
 import 'package:flame/game.dart';
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:incisive/ui/components/clickable_object.dart';
 

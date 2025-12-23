@@ -47,7 +47,7 @@ class _SpeechDialogState extends State<SpeechDialog> {
 
     await _speech.listen(
       localeId: 'it_IT',
-      listenMode: stt.ListenMode.confirmation,
+      listenOptions: stt.SpeechListenOptions(listenMode: stt.ListenMode.confirmation),
       onResult: (result) {
         setState(() {
           _recognizedText = result.recognizedWords;

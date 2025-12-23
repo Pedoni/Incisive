@@ -85,100 +85,6 @@ class HomeToolbar extends StatelessWidget {
   }
 }
 
-class _IconButtonWithBadge extends StatelessWidget {
-  final IconData icon;
-  final int? badgeCount;
-
-  const _IconButtonWithBadge({
-    required this.icon,
-    this.badgeCount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.blueGrey.shade800,
-          ),
-          child: Icon(icon, color: Colors.white),
-        ),
-        if (badgeCount != null && badgeCount! > 0)
-          Positioned(
-            top: -4,
-            right: -4,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.red,
-              ),
-              child: Text(
-                badgeCount.toString(),
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _CurrencySection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: const [
-        _CurrencyItem(
-          icon: Icons.monetization_on,
-          value: '22519046',
-        ),
-        SizedBox(width: 12),
-        _CurrencyItem(
-          icon: Icons.diamond,
-          value: '8899',
-        ),
-      ],
-    );
-  }
-}
-
-class _CurrencyItem extends StatelessWidget {
-  final IconData icon;
-  final String value;
-
-  const _CurrencyItem({
-    required this.icon,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: Colors.amberAccent),
-        const SizedBox(width: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _TopIcon extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
@@ -201,7 +107,7 @@ class _TopIcon extends StatelessWidget {
         child: Icon(
           icon,
           size: 28,
-          color: const Color(0xFFF3ECDC).withOpacity(0.85),
+          color: const Color(0xFFF3ECDC).withValues(alpha: 0.85),
           shadows: const [
             Shadow(
               color: Colors.black26,

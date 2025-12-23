@@ -130,9 +130,9 @@ class _MoodCalendarState extends State<MoodCalendar> {
 
           final color =
               !inMonth
-                  ? Colors.grey.withOpacity(0.1) // fuori mese
+                  ? Colors.grey.withValues(alpha: 0.1)
                   : mood == null
-                  ? Colors.grey.withOpacity(0.25) // nessun dato
+                  ? Colors.grey.withValues(alpha: 0.25)
                   : moodToColor(mood); // colore mood
 
           return Container(

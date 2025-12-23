@@ -146,7 +146,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     gardenGame = GardenGame(
-      onStatueTap: () => print("Statue tapped"),
+      onStatueTap: () {},
     );
 
     squareGame = SquareGame();
@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           HomeToolbar(),
-          IgnorePointer(child: Container(color: Colors.black.withOpacity(_calculateOverlayOpacity()))),
+          IgnorePointer(child: Container(color: Colors.black.withValues(alpha: _calculateOverlayOpacity()))),
           _buildFloatingBar(),
         ],
       ),

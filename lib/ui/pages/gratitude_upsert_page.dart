@@ -196,7 +196,7 @@ class GratitudeField extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: isExtra ? Colors.brown.withOpacity(0.5) : Colors.brown,
+          color: isExtra ? Colors.brown.withValues(alpha: 0.5) : Colors.brown,
           width: 1.4,
         ),
         borderRadius: BorderRadius.circular(14),
