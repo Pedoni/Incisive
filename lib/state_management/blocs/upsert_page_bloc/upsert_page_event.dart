@@ -1,6 +1,6 @@
 part of 'upsert_page_bloc.dart';
 
-abstract class UpsertPageEvent {
+sealed class UpsertPageEvent {
   const UpsertPageEvent();
 
   List<Object> get props => [];
