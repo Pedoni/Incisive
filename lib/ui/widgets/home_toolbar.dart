@@ -35,13 +35,19 @@ class HomeToolbar extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        Text(
-                          "100",
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
+                        BlocBuilder<ProfileBloc, ProfileState>(
+                          builder: (context, state) {
+                            return state is ResultProfileState
+                                ? Text(
+                                  state.user.points.toString(),
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
+                                )
+                                : SizedBox();
+                          },
                         ),
                         SizedBox(width: 5),
                         Padding(
