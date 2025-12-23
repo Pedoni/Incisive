@@ -1,6 +1,6 @@
 part of 'login_bloc.dart';
 
-abstract class LoginEvent {
+sealed class LoginEvent extends Equatable {
   const LoginEvent();
 
   @override

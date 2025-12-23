@@ -20,9 +20,7 @@ class SquareGame extends FlameGame {
     add(
       ClickableObject(
           sprite: bulletinSprite,
-          onTap: () {
-            print("Bulletin board tapped");
-          },
+          onTap: () {},
         )
         ..size = Vector2(bulletinSprite.originalSize.x * 0.083, size.x * 0.14)
         ..position = Vector2(size.x * 0.35, size.y * 0.46),

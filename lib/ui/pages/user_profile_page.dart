@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/state_management/blocs/login_bloc/login_bloc.dart';
+import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
+import 'package:incisive/ui/pages/login_page.dart';
+import 'package:incisive/ui/widgets/logout_dialog.dart';
+import 'package:incisive/utils/constants.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class UserProfilePage extends StatelessWidget {
   static const routeName = '/userProfilePage';
@@ -33,41 +40,48 @@ class UserProfilePage extends StatelessWidget {
       backgroundColor: const Color(0xFFFFF8E8),
       extendBodyBehindAppBar: true,
       appBar: appbar,
-      body: Stack(
-        children: [
-          // HEADER
-          const _TopHeader(height: headerHeight),
+      body: BlocBuilder<ProfileBloc, ProfileState>(
+        builder: (context, state) {
+          final user = state is ResultProfileState ? state.user : Constants.mockedUser;
+          return Stack(
+            children: [
+              const _TopHeader(height: headerHeight),
 
-          Positioned(
-            top: headerHeight - avatarRadius - 30,
-            left: 0,
-            right: 0,
-            child: const _AvatarSection(),
-          ),
-
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.only(top: headerHeight - appbar.preferredSize.height),
-              child: Column(
-                children: const [
-                  _InfoField(
-                    icon: Icons.person,
-                    text: 'Emanuele Lamagna',
-                  ),
-                  SizedBox(height: 12),
-                  _InfoField(
-                    icon: Icons.email,
-                    text: 'emanuele.lamagna@studio.unibo.it',
-                  ),
-                  Spacer(),
-                ],
+              Positioned(
+                top: headerHeight - avatarRadius - 30,
+                left: 0,
+                right: 0,
+                child: const _AvatarSection(),
               ),
-            ),
-          ),
 
-          // LOGOUT IN BASSO
-          const _LogoutAlignedBottom(),
-        ],
+              SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(top: headerHeight - appbar.preferredSize.height),
+                  child: Skeletonizer(
+                    enabled: state is LoadingProfileState || state is InitialProfileState,
+                    child: Column(
+                      children: [
+                        _InfoField(
+                          icon: Icons.person,
+                          text: '${user.firstName} ${user.lastName}',
+                        ),
+                        SizedBox(height: 12),
+                        _InfoField(
+                          icon: Icons.email,
+                          text: user.email,
+                        ),
+                        Spacer(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // LOGOUT IN BASSO
+              const _LogoutAlignedBottom(),
+            ],
+          );
+        },
       ),
     );
   }
@@ -193,7 +207,19 @@ class _LogoutAlignedBottom extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
           ),
-          onPressed: () {},
+          onPressed: () async {
+            final bool res = await showDialog(
+              context: context,
+              builder: (ctx) => LogoutDialog(),
+            );
+            if (res) {
+              await context.read<LoginBloc>().logout();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                LoginPage.routeName,
+                (Route<dynamic> route) => false,
+              );
+            }
+          },
           icon: const Icon(Icons.logout),
           label: const Text('Logout'),
         ),

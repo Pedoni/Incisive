@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_upsert/gratitude_upsert_bloc.dart';
+import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 
@@ -106,11 +107,14 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
         listener: (context, state) {
           if (state is ResultUpsertPageState) {
             context.read<GratitudePageBloc>().getGratitudePage(widget.date);
+            if (!isEditing) {
+              context.read<ProfileBloc>().addPoints(10);
+            }
             Navigator.of(context).pop();
             showDialog(
               context: context,
               barrierDismissible: false,
-              builder: (context) => const InsertConfirmDialog(),
+              builder: (context) => InsertConfirmDialog(isEdit: isEditing),
             );
           } else if (state is ErrorUpsertPageState) {
             showDialog(
@@ -192,7 +196,7 @@ class GratitudeField extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: isExtra ? Colors.brown.withOpacity(0.5) : Colors.brown,
+          color: isExtra ? Colors.brown.withValues(alpha: 0.5) : Colors.brown,
           width: 1.4,
         ),
         borderRadius: BorderRadius.circular(14),

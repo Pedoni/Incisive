@@ -83,7 +83,7 @@ class _DiaryPageState extends State<DiaryPage> {
             child: switch (state) {
               InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,
               EmptyDiaryPageState() => Icon(Icons.add, color: Colors.white),
-              ResultDiaryPageState(entry: final entry) => Icon(Icons.edit, color: Colors.white),
+              ResultDiaryPageState(entry: final _) => Icon(Icons.edit, color: Colors.white),
             },
           );
         },

@@ -260,24 +260,6 @@ essere la prima volta che l'utente interagisce con te, quindi non lo dare per sc
   }
 }
 
-class _ChatMessage {
-  final bool isUser;
-  final String text;
-
-  _ChatMessage._(this.isUser, this.text);
-
-  factory _ChatMessage.user(String text) => _ChatMessage._(true, text);
-
-  factory _ChatMessage.bot(String text) => _ChatMessage._(false, text);
-
-  Map<String, String> toOpenAi() {
-    return {
-      'role': isUser ? 'user' : 'assistant',
-      'content': text,
-    };
-  }
-}
-
 class BotAvatar extends StatelessWidget {
   const BotAvatar({super.key});
 

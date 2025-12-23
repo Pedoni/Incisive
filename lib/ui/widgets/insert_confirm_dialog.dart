@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class InsertConfirmDialog extends StatelessWidget {
-  const InsertConfirmDialog({super.key});
+  final bool isEdit;
+  final int? points;
+
+  const InsertConfirmDialog({
+    required this.isEdit,
+    this.points,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +29,7 @@ class InsertConfirmDialog extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            "Inserito!",
+            isEdit ? "Modificato!" : "Inserito!",
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 25,
@@ -33,7 +40,7 @@ class InsertConfirmDialog extends StatelessWidget {
       ),
 
       content: Text(
-        "Inserimento avvenuto con successo.",
+        "${isEdit ? "Modifica avvenuta" : "Inserimento avvenuto"} con successo.",
         textAlign: TextAlign.center,
         style: const TextStyle(
           fontSize: 18,
@@ -42,11 +49,31 @@ class InsertConfirmDialog extends StatelessWidget {
         ),
       ),
 
-      actionsPadding: const EdgeInsets.only(bottom: 12, right: 12),
+      actionsPadding: const EdgeInsets.only(bottom: 12, right: 12, left: 12),
+      actionsAlignment: points != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
       actions: [
+        if (points != null)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "+ $points",
+                style: TextStyle(
+                  fontFamily: 'Nunito Sans',
+                  fontSize: 18,
+                ),
+              ),
+              SizedBox(width: 10),
+              Image.asset(
+                "assets/icons/leaf.png",
+                height: 30,
+                width: 30,
+              ),
+            ],
+          ),
         TextButton(
           style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

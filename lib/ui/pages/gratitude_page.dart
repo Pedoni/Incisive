@@ -63,7 +63,7 @@ class _GratitudePageState extends State<GratitudePage> {
             child: switch (state) {
               InitialGratitudeState() || LoadingGratitudeState() || ErrorGratitudeState() => null,
               EmptyGratitudeState() => Icon(Icons.add, color: Colors.white),
-              ResultGratitudeState(entry: final entry) => Icon(Icons.edit, color: Colors.white),
+              ResultGratitudeState(entry: final _) => Icon(Icons.edit, color: Colors.white),
             },
           );
         },

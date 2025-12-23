@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
+import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
 import 'package:incisive/ui/components/bedroom_game.dart';
 import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';
@@ -124,6 +125,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    context.read<ProfileBloc>().getProfile();
     _controller.addListener(() {
       setState(() {
         _currentPage = _controller.page ?? 0.0;
@@ -144,7 +146,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     gardenGame = GardenGame(
-      onStatueTap: () => print("Statue tapped"),
+      onStatueTap: () {},
     );
 
     squareGame = SquareGame();
@@ -189,7 +191,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           HomeToolbar(),
-          IgnorePointer(child: Container(color: Colors.black.withOpacity(_calculateOverlayOpacity()))),
+          IgnorePointer(child: Container(color: Colors.black.withValues(alpha: _calculateOverlayOpacity()))),
           _buildFloatingBar(),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
+import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
 import 'package:incisive/state_management/blocs/upsert_page_bloc/upsert_page_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
@@ -62,10 +63,17 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
           if (state is ResultUpsertPageState) {
             context.read<DiaryPageBloc>().getPage(widget.date);
             Navigator.pop(context);
+            if (widget.existingEntry == null) {
+              context.read<ProfileBloc>().addPoints(10);
+            }
             showDialog(
               context: context,
               barrierDismissible: false,
-              builder: (context) => const InsertConfirmDialog(),
+              builder:
+                  (context) => InsertConfirmDialog(
+                    isEdit: isEditing,
+                    points: isEditing ? null : 10,
+                  ),
             );
           } else if (state is ErrorUpsertPageState) {
             showDialog(

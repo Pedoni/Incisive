@@ -29,4 +29,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emitter(ErrorLoginState(e.toString()));
     }
   }
+
+  Future<void> logout() async => await loginRepository.logout();
 }
