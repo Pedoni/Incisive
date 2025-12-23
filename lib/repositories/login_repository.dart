@@ -16,6 +16,16 @@ class LoginRepository {
     }
   }
 
+  Future<void> logout() async {
+    try {
+      MainLogger.logInfo("Try to logout");
+      await loginService.logout();
+    } catch (e, stackTrace) {
+      MainLogger.logError(e, stackTrace);
+      rethrow;
+    }
+  }
+
   Future<void> register(
     String email,
     String password,

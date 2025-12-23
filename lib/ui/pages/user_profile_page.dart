@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/state_management/blocs/login_bloc/login_bloc.dart';
 import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
+import 'package:incisive/ui/pages/login_page.dart';
+import 'package:incisive/ui/widgets/logout_dialog.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -204,7 +207,19 @@ class _LogoutAlignedBottom extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
           ),
-          onPressed: () {},
+          onPressed: () async {
+            final bool res = await showDialog(
+              context: context,
+              builder: (ctx) => LogoutDialog(),
+            );
+            if (res) {
+              await context.read<LoginBloc>().logout();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                LoginPage.routeName,
+                (Route<dynamic> route) => false,
+              );
+            }
+          },
           icon: const Icon(Icons.logout),
           label: const Text('Logout'),
         ),
