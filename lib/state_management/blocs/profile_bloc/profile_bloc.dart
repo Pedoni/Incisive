@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/models/user_model.dart';
 import 'package:incisive/repositories/user_repository.dart';
 
 part 'profile_event.dart';
@@ -22,8 +23,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     emitter(LoadingProfileState());
     try {
-      await userRepository.getUser();
-      emitter(ResultProfileState());
+      final user = await userRepository.getUser();
+      emitter(ResultProfileState(user!));
     } catch (e) {
       emitter(ErrorProfileState(e.toString()));
     }

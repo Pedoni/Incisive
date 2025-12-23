@@ -13,7 +13,10 @@ final class LoadingProfileState extends ProfileState {}
 
 final class EmptyProfileState extends ProfileState {}
 
-final class ResultProfileState extends ProfileState {}
+final class ResultProfileState extends ProfileState {
+  final UserModel user;
+  const ResultProfileState(this.user);
+}
 
 final class ErrorProfileState extends ProfileState {
   final String? errorString;

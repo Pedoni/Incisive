@@ -1,5 +1,6 @@
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/models/user_model.dart';
 
 class Constants {
   static DiaryEntry mockedDiaryEntry = DiaryEntry(
@@ -25,5 +26,13 @@ class Constants {
     id: "mocked_gratitude_id",
     date: DateTime.now(),
     list: List.generate(20, (index) => "Apprezzo il tempo trascorso all'aria aperta."),
+  );
+
+  static UserModel mockedUser = UserModel(
+    id: "mocked_user_id",
+    firstName: "Emanuele",
+    lastName: "Lamagna",
+    email: "emanuele.lamagna@studio.unibo.it",
+    points: 100,
   );
 }
