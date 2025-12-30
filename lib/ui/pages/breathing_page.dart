@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/breathing/breathing_bloc.dart';
-import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
 import 'package:incisive/ui/widgets/breathing_dialog.dart';
 import 'package:incisive/ui/widgets/loading_spinner.dart';
 
@@ -25,7 +24,7 @@ class _BreathingPageState extends State<BreathingPage> with SingleTickerProvider
   Timer? _phaseTimer;
   int _phaseIndex = 0;
 
-  static const int _totalCycles = 1;
+  static const int _totalCycles = 3;
   int _completedCycles = 0;
 
   final List<_BreathingPhase> _phases = const [
@@ -159,6 +158,13 @@ class _BreathingPageState extends State<BreathingPage> with SingleTickerProvider
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    if (_isRunning) ...[
+                      const SizedBox(height: 16),
+                      BreathingProgressDots(
+                        total: _totalCycles,
+                        completed: _completedCycles,
+                      ),
+                    ],
                     const Spacer(),
                     ScaleTransition(
                       scale: _scaleAnimation,
@@ -237,4 +243,43 @@ class _BreathingPhase {
     required this.text,
     required this.duration,
   });
+}
+
+class BreathingProgressDots extends StatelessWidget {
+  final int total;
+  final int completed;
+
+  const BreathingProgressDots({
+    super.key,
+    required this.total,
+    required this.completed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(total, (index) {
+        final bool isFilled = index < completed;
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.symmetric(horizontal: 6),
+          width: 25,
+          height: 25,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color:
+                isFilled
+                    ? const Color(0xFF6B8E4E) // verde
+                    : Colors.transparent,
+            border: Border.all(
+              color: const Color(0xFF6B8E4E),
+              width: 1.5,
+            ),
+          ),
+        );
+      }),
+    );
+  }
 }
