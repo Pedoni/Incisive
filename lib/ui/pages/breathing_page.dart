@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:incisive/ui/widgets/breathing_dialog.dart';
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class BreathingPage extends StatefulWidget {
   static const routeName = '/breathingPage';
@@ -112,14 +113,20 @@ class _BreathingPageState extends State<BreathingPage> with SingleTickerProvider
   void _finishSession() {
     _cancelBreathing();
 
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 100), () async {
       if (!mounted) return;
+
+      final supabase = Supabase.instance.client;
+
+      final result = await supabase.rpc('complete_breathing');
+
+      final int points = (result as int);
 
       showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) {
-          return BreathingDialog(points: 5);
+          return BreathingDialog(points: points > 0 ? points : null);
         },
       );
 
