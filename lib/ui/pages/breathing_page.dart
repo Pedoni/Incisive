@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/state_management/blocs/breathing/breathing_bloc.dart';
+import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
 import 'package:incisive/ui/widgets/breathing_dialog.dart';
-import 'package:supabase_auth_ui/supabase_auth_ui.dart';
+import 'package:incisive/ui/widgets/loading_spinner.dart';
 
 class BreathingPage extends StatefulWidget {
   static const routeName = '/breathingPage';
@@ -22,7 +25,7 @@ class _BreathingPageState extends State<BreathingPage> with SingleTickerProvider
   Timer? _phaseTimer;
   int _phaseIndex = 0;
 
-  static const int _totalCycles = 3;
+  static const int _totalCycles = 1;
   int _completedCycles = 0;
 
   final List<_BreathingPhase> _phases = const [
@@ -116,96 +119,105 @@ class _BreathingPageState extends State<BreathingPage> with SingleTickerProvider
     Future.delayed(const Duration(milliseconds: 100), () async {
       if (!mounted) return;
 
-      final supabase = Supabase.instance.client;
-
-      final result = await supabase.rpc('complete_breathing');
-
-      final int points = (result as int);
-
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return BreathingDialog(points: points > 0 ? points : null);
-        },
-      );
-
-      // addGermogli(2);
+      context.read<BreathingBloc>().completeBreathing();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFB7C7A3),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: const Color.fromARGB(255, 52, 73, 35),
-      ),
-      body: SafeArea(
-        child: SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
-              ScaleTransition(
-                scale: _scaleAnimation,
-                child: Container(
-                  width: 220,
-                  height: 220,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFFEFEBD8),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.spa,
-                      size: 64,
-                      color: Color(0xFF6B8E4E),
+    return BlocConsumer<BreathingBloc, BreathingState>(
+      listener: (context, state) {
+        if (state is ErrorBreathingState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Errore nel completare la sessione: ${state.message}'),
+            ),
+          );
+        } else if (state is ResultBreathingState) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => BreathingDialog(points: state.points > 0 ? state.points : null),
+          );
+        }
+      },
+      builder: (context, state) {
+        return LoadingOverlay(
+          isLoading: state is LoadingBreathingState,
+          spinner: const LoadingSpinner(),
+          child: Scaffold(
+            backgroundColor: const Color(0xFFB7C7A3),
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              foregroundColor: const Color.fromARGB(255, 52, 73, 35),
+            ),
+            body: SafeArea(
+              child: SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Spacer(),
+                    ScaleTransition(
+                      scale: _scaleAnimation,
+                      child: Container(
+                        width: 220,
+                        height: 220,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color(0xFFEFEBD8),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.spa,
+                            size: 64,
+                            color: Color(0xFF6B8E4E),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
 
-              const SizedBox(height: 80),
+                    const SizedBox(height: 80),
 
-              // TESTO FASE
-              Text(
-                _phaseText,
-                style: const TextStyle(
-                  fontFamily: 'Nunito Sans',
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF3E4E3A),
-                ),
-              ),
-
-              const Spacer(),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 40),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6B8E4E),
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
+                    // TESTO FASE
+                    Text(
+                      _phaseText,
+                      style: const TextStyle(
+                        fontFamily: 'Nunito Sans',
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF3E4E3A),
+                      ),
                     ),
-                  ),
-                  onPressed: _isRunning ? _cancelBreathing : _startBreathing,
-                  child: Text(
-                    _isRunning ? 'Termina' : 'Inizia',
-                    style: const TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+
+                    const Spacer(),
+
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 40),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF6B8E4E),
+                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        onPressed: _isRunning ? _cancelBreathing : _startBreathing,
+                        child: Text(
+                          _isRunning ? 'Termina' : 'Inizia',
+                          style: const TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

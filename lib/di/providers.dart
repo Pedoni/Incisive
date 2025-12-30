@@ -13,4 +13,7 @@ final List<SingleChildWidget> _providers = [
   Provider<GratitudeService>(
     create: (context) => GratitudeService(),
   ),
+  Provider<BreathingService>(
+    create: (context) => BreathingService(),
+  ),
 ];
