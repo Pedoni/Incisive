@@ -25,4 +25,7 @@ final List<BlocProvider> _blocs = [
   BlocProvider<GratitudeUpsertBloc>(
     create: (context) => GratitudeUpsertBloc(gratitudeRepository: context.read()),
   ),
+  BlocProvider<BreathingBloc>(
+    create: (context) => BreathingBloc(breathingRepository: context.read()),
+  ),
 ];

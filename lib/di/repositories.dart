@@ -13,4 +13,7 @@ final List<RepositoryProvider> _repositories = [
   RepositoryProvider<GratitudeRepository>(
     create: ((context) => GratitudeRepository(gratitudeService: context.read())),
   ),
+  RepositoryProvider<BreathingRepository>(
+    create: ((context) => BreathingRepository(breathingService: context.read())),
+  ),
 ];

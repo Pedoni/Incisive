@@ -6,6 +6,7 @@ import 'package:incisive/ui/components/bedroom_game.dart';
 import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';
 import 'package:incisive/ui/components/square_game.dart';
+import 'package:incisive/ui/pages/breathing_page.dart';
 import 'package:incisive/ui/pages/chat_page.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/gratitude_page.dart';
@@ -147,7 +148,9 @@ class _HomePageState extends State<HomePage> {
     );
 
     gardenGame = GardenGame(
-      onStatueTap: () {},
+      onStatueTap: () {
+        Navigator.pushNamed(context, BreathingPage.routeName);
+      },
     );
 
     squareGame = SquareGame();
