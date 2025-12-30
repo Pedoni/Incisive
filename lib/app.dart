@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:incisive/di/dependency_injector.dart';
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/ui/pages/breathing_page.dart';
 import 'package:incisive/ui/pages/chat_page.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/diary_upsert_page.dart';
@@ -76,6 +77,7 @@ class App extends StatelessWidget {
           GratitudePage.routeName: (context) => const GratitudePage(),
           MoodCalendarPage.routeName: (context) => MoodCalendarPage(),
           UserProfilePage.routeName: (context) => UserProfilePage(),
+          BreathingPage.routeName: (context) => const BreathingPage(),
         },
       ),
     );
