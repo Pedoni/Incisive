@@ -2,26 +2,15 @@ import 'package:incisive/utils/functions.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class DiaryService {
-  Future<Map<String, dynamic>?> getPage({required DateTime date}) async {
-    final supabase = Supabase.instance.client;
+  final _supabase = Supabase.instance.client;
 
-    final userId = supabase.auth.currentUser!.id;
+  Future<Map<String, dynamic>?> getPage({
+    required DateTime date,
+  }) async {
+    final userId = _supabase.auth.currentUser!.id;
 
-    final response =
-        await supabase
-            .from('diary_page')
-            .select()
-            .eq(
-              'user_id',
-              userId,
-            )
-            .eq(
-              'date',
-              date.toIso8601String().substring(0, 10),
-            )
-            .maybeSingle();
-
-    return response;
+    final res = await _supabase.from('diary_page').select().eq('user_id', userId).eq('date', toSqlDate(date)).maybeSingle();
+    return res;
   }
 
   Future<void> upsertDiaryPage({
@@ -29,27 +18,25 @@ class DiaryService {
     required String text,
   }) async {
     final supabase = Supabase.instance.client;
-    final userId = supabase.auth.currentUser!.id;
 
-    final response = await supabase.functions.invoke(
+    final res = await supabase.functions.invoke(
       'sentiment-analysis',
-      body: {'text': text},
+      body: {
+        'date': toSqlDate(date),
+        'text': text,
+      },
     );
 
-    if (response.data['sentiment'] == "unknown") {
-      throw Exception(response.data['reason']);
+    if (res.data['error'] != null) {
+      throw Exception(res.data['reason']);
     }
 
-    if (response.data['error'] != null) {
-      throw Exception(response.data['error']);
-    }
+    final data = res.data as Map<String, dynamic>;
 
-    await supabase.from('diary_page').upsert({
-      'user_id': userId,
-      'date': toSqlDate(date),
-      'text': text,
-      'score': (response.data['score'] as num).toDouble(),
-    });
+    if (data['ok'] != true) {
+      // errori "business" dal server
+      throw Exception(data['reason'] ?? data['error'] ?? 'Analisi fallita');
+    }
   }
 
   Map<DateTime, double> _extractDateScoreMap(List<dynamic> rows) {
