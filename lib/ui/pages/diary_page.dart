@@ -22,6 +22,85 @@ class DiaryPage extends StatefulWidget {
 class _DiaryPageState extends State<DiaryPage> {
   late DateTime _selectedDate;
 
+  bool _emotionsOpen = false;
+  bool _areasOpen = false;
+
+  // Mappa icone emozioni (scegli quelle che vuoi)
+  IconData _emotionIcon(String e) {
+    switch (e.toLowerCase()) {
+      case 'gioia':
+        return Icons.sentiment_very_satisfied;
+      case 'serenità':
+        return Icons.self_improvement;
+      case 'gratitudine':
+        return Icons.favorite;
+      case 'calma':
+        return Icons.spa;
+      case 'soddisfazione':
+        return Icons.emoji_events;
+      case 'tristezza':
+        return Icons.sentiment_dissatisfied;
+      case 'ansia':
+        return Icons.psychology;
+      case 'rabbia':
+        return Icons.local_fire_department;
+      case 'frustrazione':
+        return Icons.report_problem;
+      case 'paura':
+        return Icons.warning_amber;
+      default:
+        return Icons.circle;
+    }
+  }
+
+  bool _isPositiveEmotion(String e) {
+    const pos = {'gioia', 'serenità', 'gratitudine', 'calma', 'soddisfazione'};
+    return pos.contains(e.toLowerCase());
+  }
+
+  Widget _pill({
+    required IconData icon,
+    required Color bg,
+    required String label,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18, color: Colors.white),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontFamily: 'Nunito Sans',
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _wrapPills({
+    required List<Widget> children,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: children,
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -118,7 +197,15 @@ class _DiaryPageState extends State<DiaryPage> {
                 SizedBox(height: 20),
 
                 Expanded(
-                  child: BlocBuilder<DiaryPageBloc, DiaryPageState>(
+                  child: BlocConsumer<DiaryPageBloc, DiaryPageState>(
+                    listener: (context, state) {
+                      if (state is ResultDiaryPageState || state is EmptyDiaryPageState) {
+                        setState(() {
+                          _areasOpen = false;
+                          _emotionsOpen = false;
+                        });
+                      }
+                    },
                     builder: (context, state) {
                       if (state is EmptyDiaryPageState) {
                         return Center(
@@ -167,6 +254,13 @@ class _DiaryPageState extends State<DiaryPage> {
                         );
                       }
                       final entry = state is ResultDiaryPageState ? state.entry : Constants.mockedDiaryEntry;
+                      final emotions = entry.emotions;
+                      final gratitudeAreas = entry.gratitudeAreas;
+                      final nonGratitudeAreas = entry.nonGratitudeAreas;
+
+                      const green = Color(0xFF2E7D32);
+                      const red = Color(0xFFC62828);
+
                       return SingleChildScrollView(
                         physics: state is TryDiaryPageState ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
                         child: Skeletonizer(
@@ -180,6 +274,133 @@ class _DiaryPageState extends State<DiaryPage> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
+                              Theme(
+                                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                                child: ExpansionTile(
+                                  tilePadding: const EdgeInsets.symmetric(horizontal: 0),
+                                  childrenPadding: const EdgeInsets.only(bottom: 6),
+                                  onExpansionChanged: (open) {
+                                    setState(() => _emotionsOpen = open);
+                                  },
+                                  title: const Text(
+                                    "Emozioni",
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  trailing: AnimatedRotation(
+                                    turns: _emotionsOpen ? 0.5 : 0.0, // 180°
+                                    duration: const Duration(milliseconds: 200),
+                                    child: const Icon(Icons.expand_more),
+                                  ),
+                                  children: [
+                                    if (emotions.isEmpty)
+                                      const SizedBox(height: 4)
+                                    else
+                                      _wrapPills(
+                                        children:
+                                            emotions.map((e) {
+                                              final isPos = _isPositiveEmotion(e);
+                                              return _pill(
+                                                icon: _emotionIcon(e),
+                                                bg: isPos ? green : red,
+                                                label: e,
+                                              );
+                                            }).toList(),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Theme(
+                                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                                child: ExpansionTile(
+                                  tilePadding: const EdgeInsets.symmetric(horizontal: 0),
+                                  childrenPadding: const EdgeInsets.only(bottom: 6),
+                                  title: const Text(
+                                    "Aree della vita",
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  onExpansionChanged: (open) {
+                                    setState(() => _areasOpen = open);
+                                  },
+
+                                  trailing: AnimatedRotation(
+                                    turns: _areasOpen ? 0.5 : 0.0,
+                                    duration: const Duration(milliseconds: 200),
+                                    child: const Icon(Icons.expand_more),
+                                  ),
+
+                                  children: [
+                                    if (gratitudeAreas.isEmpty && nonGratitudeAreas.isEmpty)
+                                      const SizedBox(height: 4)
+                                    else
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          if (gratitudeAreas.isNotEmpty) ...[
+                                            const Padding(
+                                              padding: EdgeInsets.only(left: 4, top: 6),
+                                              child: Text(
+                                                "Gratitudini",
+                                                style: TextStyle(
+                                                  fontFamily: 'Nunito Sans',
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ),
+                                            _wrapPills(
+                                              children:
+                                                  gratitudeAreas
+                                                      .map(
+                                                        (a) => _pill(
+                                                          icon: Icons.thumb_up,
+                                                          bg: green,
+                                                          label: a,
+                                                        ),
+                                                      )
+                                                      .toList(),
+                                            ),
+                                          ],
+                                          if (nonGratitudeAreas.isNotEmpty) ...[
+                                            const Padding(
+                                              padding: EdgeInsets.only(left: 4, top: 6),
+                                              child: Text(
+                                                "Difficoltà",
+                                                style: TextStyle(
+                                                  fontFamily: 'Nunito Sans',
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ),
+                                            _wrapPills(
+                                              children:
+                                                  nonGratitudeAreas
+                                                      .map(
+                                                        (a) => _pill(
+                                                          icon: Icons.thumb_down,
+                                                          bg: red,
+                                                          label: a,
+                                                        ),
+                                                      )
+                                                      .toList(),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                  ],
+                                ),
+                              ),
                               const SizedBox(height: 20),
                               LinedPaper(
                                 enabled: state is ResultDiaryPageState,

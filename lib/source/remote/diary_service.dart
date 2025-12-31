@@ -8,9 +8,40 @@ class DiaryService {
     required DateTime date,
   }) async {
     final userId = _supabase.auth.currentUser!.id;
+    final sqlDate = toSqlDate(date);
 
-    final res = await _supabase.from('diary_page').select().eq('user_id', userId).eq('date', toSqlDate(date)).maybeSingle();
-    return res;
+    final page = await _supabase.from('diary_page').select().eq('user_id', userId).eq('date', sqlDate).maybeSingle();
+
+    if (page == null) return null;
+
+    final emotionRows = await _supabase.from('diary_emotion').select('emotion(name)').eq('diary_user_id', userId).eq('diary_date', sqlDate);
+
+    final emotions = emotionRows.map((e) => e['emotion']['name'] as String).toList();
+
+    final areaRows = await _supabase
+        .from('diary_life_area')
+        .select('polarity, life_area(name)')
+        .eq('diary_user_id', userId)
+        .eq('diary_date', sqlDate);
+
+    final gratitudeAreas = <String>[];
+    final nonGratitudeAreas = <String>[];
+
+    for (final row in areaRows) {
+      final name = row['life_area']['name'] as String;
+      if (row['polarity'] == 'positive') {
+        gratitudeAreas.add(name);
+      } else if (row['polarity'] == 'negative') {
+        nonGratitudeAreas.add(name);
+      }
+    }
+
+    return {
+      ...page,
+      'emotions': emotions,
+      'gratitudeAreas': gratitudeAreas,
+      'nonGratitudeAreas': nonGratitudeAreas,
+    };
   }
 
   Future<void> upsertDiaryPage({
