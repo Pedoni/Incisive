@@ -10,14 +10,18 @@ class DiaryRepository {
   Future<DiaryEntry?> getPage(DateTime dateTime) async {
     try {
       MainLogger.logInfo("Try to get page");
+
       final res = await diaryService.getPage(date: dateTime);
-      return res != null
-          ? DiaryEntry(
-            dateTime,
-            res["text"] as String,
-            (res["score"] as num).toDouble(),
-          )
-          : null;
+      if (res == null) return null;
+
+      return DiaryEntry(
+        date: dateTime,
+        text: res['text'] as String,
+        score: (res['score'] as num).toDouble(),
+        emotions: List<String>.from(res['emotions'] as List),
+        gratitudeAreas: List<String>.from(res['gratitudeAreas'] as List),
+        nonGratitudeAreas: List<String>.from(res['nonGratitudeAreas'] as List),
+      );
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
       rethrow;
