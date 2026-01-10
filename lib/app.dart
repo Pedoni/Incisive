@@ -13,6 +13,7 @@ import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/pages/login_page.dart';
 import 'package:incisive/ui/pages/mood_calendar_page.dart';
 import 'package:incisive/ui/pages/register_page.dart';
+import 'package:incisive/ui/pages/social_page.dart';
 import 'package:incisive/ui/pages/user_profile_page.dart';
 
 class App extends StatelessWidget {
@@ -78,6 +79,7 @@ class App extends StatelessWidget {
           MoodCalendarPage.routeName: (context) => MoodCalendarPage(),
           UserProfilePage.routeName: (context) => UserProfilePage(),
           BreathingPage.routeName: (context) => const BreathingPage(),
+          SocialPage.routeName: (context) => const SocialPage(),
         },
       ),
     );

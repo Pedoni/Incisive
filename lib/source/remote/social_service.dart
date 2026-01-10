@@ -13,10 +13,10 @@ class SocialService {
     final response = await _supabase
         .from('social_post')
         .select('''
-          title,
-          content,
           datetime,
-          authorId
+          authorId,
+          content,
+          title
         ''')
         .gte('datetime', from.toIso8601String())
         .lt('datetime', to.toIso8601String())
