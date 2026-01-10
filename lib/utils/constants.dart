@@ -2,7 +2,6 @@ import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/models/user_model.dart';
-import 'package:incisive/ui/widgets/social_post_item.dart';
 
 class Constants {
   static DiaryEntry mockedDiaryEntry = DiaryEntry(
