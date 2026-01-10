@@ -20,18 +20,21 @@ class AddPostPage extends StatefulWidget {
 }
 
 class _AddPostPageState extends State<AddPostPage> {
-  late TextEditingController _controller;
+  late TextEditingController _titleController;
+  late TextEditingController _contentController;
   late UpsertPageBloc _upsertPageBloc;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
-    _controller.addListener(() => setState(() {}));
+    _titleController = TextEditingController();
+    _titleController.addListener(() => setState(() {}));
+    _contentController = TextEditingController();
+    _contentController.addListener(() => setState(() {}));
     _upsertPageBloc = context.read<UpsertPageBloc>();
   }
 
-  void _save() => _upsertPageBloc.upsertPage(DateTime.now(), _controller.text);
+  void _save() => _upsertPageBloc.upsertPage(DateTime.now(), _contentController.text);
 
   @override
   Widget build(BuildContext context) {
@@ -93,12 +96,12 @@ class _AddPostPageState extends State<AddPostPage> {
                     onTap: () async {
                       final result = await showDialog<String>(
                         context: context,
-                        builder: (_) => const SpeechDialog(),
+                        builder: (_) => SpeechDialog(description: "Racconta quello che ti senti..."),
                       );
 
                       if (result != null && result.isNotEmpty) {
                         setState(() {
-                          _controller.text += (_controller.text.isNotEmpty ? " " : "") + result;
+                          _contentController.text += (_contentController.text.isNotEmpty ? " " : "") + result;
                         });
                       }
                     },
@@ -110,12 +113,35 @@ class _AddPostPageState extends State<AddPostPage> {
                 ],
               ),
               const SizedBox(height: 20),
+              TextField(
+                controller: _titleController,
+                keyboardType: TextInputType.text,
+                maxLines: 1,
+                maxLength: 50,
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: "Inserisci il titolo...",
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.black26),
+                  ),
+                ),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Nunito Sans",
+                  height: 1.3,
+                ),
+              ),
+              const SizedBox(height: 20),
               Expanded(
                 child: TextField(
-                  controller: _controller,
+                  controller: _contentController,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
-                  maxLength: 1000,
+                  maxLength: 2000,
                   expands: true,
                   textAlignVertical: TextAlignVertical.top,
                   decoration: InputDecoration(
@@ -145,10 +171,12 @@ class _AddPostPageState extends State<AddPostPage> {
                         backgroundColor: Color.fromARGB(255, 141, 90, 35),
                         foregroundColor: Colors.white,
                         disabledBackgroundColor:
-                            _controller.text.length < 10 ? const Color.fromARGB(255, 184, 181, 181) : Color.fromARGB(255, 141, 90, 35),
+                            _contentController.text.length < 10
+                                ? const Color.fromARGB(255, 184, 181, 181)
+                                : Color.fromARGB(255, 141, 90, 35),
                         fixedSize: Size.fromWidth(screenWidth * 0.4),
                       ),
-                      onPressed: _controller.text.length < 20 || state is TryUpsertPageState ? null : _save,
+                      onPressed: _contentController.text.length < 20 || state is TryUpsertPageState ? null : _save,
                       child:
                           state is TryUpsertPageState
                               ? SizedBox(

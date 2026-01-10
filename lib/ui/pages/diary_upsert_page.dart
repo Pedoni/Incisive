@@ -102,7 +102,7 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
                     onTap: () async {
                       final result = await showDialog<String>(
                         context: context,
-                        builder: (_) => const SpeechDialog(),
+                        builder: (_) => SpeechDialog(description: "Racconta della tua giornata..."),
                       );
 
                       if (result != null && result.isNotEmpty) {
