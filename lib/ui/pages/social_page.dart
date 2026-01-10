@@ -144,6 +144,7 @@ class _SocialPageState extends State<SocialPage> {
                   },
                 ),
               ),
+              SizedBox(height: 50),
             ],
           ),
         ),
