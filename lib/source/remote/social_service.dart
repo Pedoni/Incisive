@@ -13,6 +13,7 @@ class SocialService {
     final response = await _supabase
         .from('social_post')
         .select('''
+          id,
           datetime,
           authorId,
           content,

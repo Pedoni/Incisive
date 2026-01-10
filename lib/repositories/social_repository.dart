@@ -14,6 +14,7 @@ class SocialRepository {
       return list
           .map(
             (e) => SocialPostModel(
+              id: e['id'],
               content: e['content'],
               datetime: DateTime.parse(e['datetime']),
               authorId: e['authorId'],
