@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/ui/pages/add_post_page.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
+import 'package:incisive/utils/constants.dart';
 import 'package:lottie/lottie.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SocialPage extends StatefulWidget {
   static const routeName = '/socialPage';
@@ -60,7 +62,6 @@ class _SocialPageState extends State<SocialPage> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              /// TIMELINE
               Center(
                 child: EasyDateTimeLinePicker(
                   focusedDate: _selectedDate,
@@ -77,13 +78,17 @@ class _SocialPageState extends State<SocialPage> {
 
               const SizedBox(height: 20),
 
-              /// FEED
               Expanded(
                 child: BlocBuilder<SocialBloc, SocialState>(
                   builder: (context, state) {
                     if (state is LoadingSocialState || state is InitSocialState) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
+                      final list = List.generate(10, (index) => Constants.mockedPostItem);
+                      return Skeletonizer(
+                        child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: 10,
+                          itemBuilder: (context, index) => SocialPostItem(post: list[index]),
+                        ),
                       );
                     }
 

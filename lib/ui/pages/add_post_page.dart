@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
-import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
+
 import 'package:incisive/state_management/blocs/upsert_page_bloc/upsert_page_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
