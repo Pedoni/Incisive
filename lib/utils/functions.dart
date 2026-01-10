@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 String toSqlDate(DateTime d) =>
     "${d.year.toString().padLeft(4, '0')}-"
     "${d.month.toString().padLeft(2, '0')}-"
@@ -6,3 +8,8 @@ String toSqlDate(DateTime d) =>
 DateTime startOfDay(DateTime date) => DateTime(date.year, date.month, date.day);
 
 DateTime startOfNextDay(DateTime date) => DateTime(date.year, date.month, date.day).add(const Duration(days: 1));
+
+String formatDateItalian(DateTime date) {
+  final formatter = DateFormat('d MMMM y', 'it_IT');
+  return formatter.format(date);
+}

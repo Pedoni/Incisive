@@ -2,6 +2,7 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
+import 'package:incisive/ui/pages/add_post_page.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
 import 'package:lottie/lottie.dart';
 
@@ -29,6 +30,17 @@ class _SocialPageState extends State<SocialPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF8E8),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color.fromARGB(255, 141, 90, 35),
+
+        onPressed:
+            () => Navigator.pushNamed(
+              context,
+              AddPostPage.routeName,
+              arguments: [_selectedDate, null],
+            ),
+        child: Icon(Icons.add, color: Colors.white),
+      ),
       appBar: AppBar(
         scrolledUnderElevation: 0,
         title: const Text(
