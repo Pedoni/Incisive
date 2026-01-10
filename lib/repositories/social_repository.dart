@@ -28,12 +28,12 @@ class SocialRepository {
     }
   }
 
-  Future<void> createPost(SocialPostModel post) async {
+  Future<void> createPost({required String title, required String content}) async {
     try {
       MainLogger.logInfo("Try to add new post");
       await socialService.createPost(
-        content: post.content,
-        title: post.title,
+        content: content,
+        title: title,
       );
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);

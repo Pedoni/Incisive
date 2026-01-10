@@ -14,6 +14,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
     on<GetDailySocialPostsEvent>(_onGetDailyPosts);
   }
 
+  void getDailyPosts(DateTime date) => add(GetDailySocialPostsEvent(date));
+
   Future<void> _onGetDailyPosts(
     GetDailySocialPostsEvent event,
     Emitter<SocialState> emit,

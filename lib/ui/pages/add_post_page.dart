@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
-
-import 'package:incisive/state_management/blocs/upsert_page_bloc/upsert_page_bloc.dart';
+import 'package:incisive/state_management/blocs/create_post/create_post_bloc.dart';
+import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/ui/widgets/speech_dialog.dart';
@@ -22,7 +21,7 @@ class AddPostPage extends StatefulWidget {
 class _AddPostPageState extends State<AddPostPage> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
-  late UpsertPageBloc _upsertPageBloc;
+  late CreatePostBloc _createPostBloc;
 
   @override
   void initState() {
@@ -31,10 +30,10 @@ class _AddPostPageState extends State<AddPostPage> {
     _titleController.addListener(() => setState(() {}));
     _contentController = TextEditingController();
     _contentController.addListener(() => setState(() {}));
-    _upsertPageBloc = context.read<UpsertPageBloc>();
+    _createPostBloc = context.read<CreatePostBloc>();
   }
 
-  void _save() => _upsertPageBloc.upsertPage(DateTime.now(), _contentController.text);
+  void _save() => _createPostBloc.createPost(_titleController.text, _contentController.text);
 
   @override
   Widget build(BuildContext context) {
@@ -54,22 +53,18 @@ class _AddPostPageState extends State<AddPostPage> {
         elevation: 0,
       ),
       backgroundColor: const Color(0xFFFFF8E8),
-      body: BlocListener<UpsertPageBloc, UpsertPageState>(
+      body: BlocListener<CreatePostBloc, CreatePostState>(
         listener: (context, state) {
-          if (state is ResultUpsertPageState) {
-            context.read<DiaryPageBloc>().getPage(DateTime.now());
+          if (state is ResultCreatePostState) {
+            context.read<SocialBloc>().getDailyPosts(DateTime.now());
             Navigator.pop(context);
 
             showDialog(
               context: context,
               barrierDismissible: false,
-              builder:
-                  (context) => InsertConfirmDialog(
-                    isEdit: true,
-                    points: 0,
-                  ),
+              builder: (context) => InsertConfirmDialog(isEdit: false),
             );
-          } else if (state is ErrorUpsertPageState) {
+          } else if (state is ErrorCreatePostState) {
             showDialog(
               context: context,
               builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto.'),
@@ -163,7 +158,7 @@ class _AddPostPageState extends State<AddPostPage> {
               ),
               SizedBox(height: 20),
               Center(
-                child: BlocBuilder<UpsertPageBloc, UpsertPageState>(
+                child: BlocBuilder<CreatePostBloc, CreatePostState>(
                   builder: (context, state) {
                     final screenWidth = MediaQuery.sizeOf(context).width;
                     return ElevatedButton(
@@ -171,14 +166,17 @@ class _AddPostPageState extends State<AddPostPage> {
                         backgroundColor: Color.fromARGB(255, 141, 90, 35),
                         foregroundColor: Colors.white,
                         disabledBackgroundColor:
-                            _contentController.text.length < 10
+                            _titleController.text.length < 5 || _contentController.text.length < 20
                                 ? const Color.fromARGB(255, 184, 181, 181)
                                 : Color.fromARGB(255, 141, 90, 35),
                         fixedSize: Size.fromWidth(screenWidth * 0.4),
                       ),
-                      onPressed: _contentController.text.length < 20 || state is TryUpsertPageState ? null : _save,
+                      onPressed:
+                          _titleController.text.length < 5 || _contentController.text.length < 20 || state is TryCreatePostState
+                              ? null
+                              : _save,
                       child:
-                          state is TryUpsertPageState
+                          state is TryCreatePostState
                               ? SizedBox(
                                 height: 25,
                                 width: 25,
