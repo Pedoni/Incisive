@@ -4,7 +4,12 @@ import 'package:speech_to_text/speech_recognition_error.dart' as stte;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SpeechDialog extends StatefulWidget {
-  const SpeechDialog({super.key});
+  final String description;
+
+  const SpeechDialog({
+    required this.description,
+    super.key,
+  });
 
   @override
   State<SpeechDialog> createState() => _SpeechDialogState();
@@ -90,7 +95,7 @@ class _SpeechDialogState extends State<SpeechDialog> {
       backgroundColor: Colors.white,
 
       title: Row(
-        children: const [
+        children: [
           Icon(
             Icons.mic,
             color: Color.fromARGB(255, 141, 90, 35),
@@ -99,7 +104,7 @@ class _SpeechDialogState extends State<SpeechDialog> {
           SizedBox(width: 10),
           Expanded(
             child: Text(
-              "Racconta della tua giornata...",
+              widget.description,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,

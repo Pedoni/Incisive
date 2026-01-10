@@ -10,6 +10,7 @@ import 'package:incisive/ui/pages/breathing_page.dart';
 import 'package:incisive/ui/pages/chat_page.dart';
 import 'package:incisive/ui/pages/diary_page.dart';
 import 'package:incisive/ui/pages/gratitude_page.dart';
+import 'package:incisive/ui/pages/social_page.dart';
 import 'package:incisive/ui/widgets/home_toolbar.dart';
 import 'package:provider/provider.dart';
 
@@ -153,7 +154,11 @@ class _HomePageState extends State<HomePage> {
       },
     );
 
-    squareGame = SquareGame();
+    squareGame = SquareGame(
+      onBulletinBoardTap: () {
+        Navigator.pushNamed(context, SocialPage.routeName);
+      },
+    );
   }
 
   @override

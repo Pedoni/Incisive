@@ -1,5 +1,6 @@
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/models/user_model.dart';
 
 class Constants {
@@ -38,5 +39,21 @@ class Constants {
     lastName: "Lamagna",
     email: "emanuele.lamagna@studio.unibo.it",
     points: 100,
+  );
+
+  static SocialPostModel mockedPostItem = SocialPostModel(
+    id: "",
+    authorId: "",
+    content:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+        "Quisque tincidunt imperdiet efficitur. Phasellus feugiat mauris id "
+        "ante tempus, dignissim tincidunt nibh auctor. Vestibulum maximus "
+        "sollicitudin dolor, et finibus ipsum dictum sit amet. Aliquam consequat "
+        "ex at vulputate fermentum. Maecenas pellentesque rhoncus tellus id "
+        "tempus. Maecenas massa purus, rhoncus in auctor quis, maximus a nulla. "
+        "Vivamus at neque eget tortor eleifend cursus. Vestibulum lobortis "
+        "placerat mauris, at commodo mauris egestas eu.",
+    datetime: DateTime.now(),
+    title: "Lorem ipsum dolor sit amet",
   );
 }

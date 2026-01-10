@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:flame/game.dart';
 import 'package:flame/components.dart';
 import 'package:incisive/ui/components/clickable_object.dart';
 
 class SquareGame extends FlameGame {
-  SquareGame();
+  final VoidCallback onBulletinBoardTap;
+  SquareGame({required this.onBulletinBoardTap});
 
   @override
   Future<void> onLoad() async {
@@ -20,7 +23,7 @@ class SquareGame extends FlameGame {
     add(
       ClickableObject(
           sprite: bulletinSprite,
-          onTap: () {},
+          onTap: onBulletinBoardTap,
         )
         ..size = Vector2(bulletinSprite.originalSize.x * 0.083, size.x * 0.14)
         ..position = Vector2(size.x * 0.35, size.y * 0.46),
