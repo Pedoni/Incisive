@@ -25,4 +25,26 @@ class SocialService {
 
     return List<Map<String, dynamic>>.from(response);
   }
+
+  Future<void> createPost({
+    required String title,
+    required String content,
+  }) async {
+    try {
+      await _supabase.rpc(
+        'create_social_post',
+        params: {
+          'p_title': title,
+          'p_content': content,
+        },
+      );
+    } catch (e) {
+      if (e.toString().contains('POST_ALREADY_CREATED_TODAY')) {
+        throw Exception(
+          'Hai già pubblicato un post oggi 🌱',
+        );
+      }
+      rethrow;
+    }
+  }
 }

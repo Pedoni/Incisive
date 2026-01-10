@@ -27,4 +27,17 @@ class SocialRepository {
       rethrow;
     }
   }
+
+  Future<void> createPost(SocialPostModel post) async {
+    try {
+      MainLogger.logInfo("Try to add new post");
+      await socialService.createPost(
+        content: post.content,
+        title: post.title,
+      );
+    } catch (e, stackTrace) {
+      MainLogger.logError(e, stackTrace);
+      rethrow;
+    }
+  }
 }
