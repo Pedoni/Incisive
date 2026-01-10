@@ -65,6 +65,27 @@ class SocialPostItem extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
+          SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Icon(
+                Icons.chat_bubble_outline,
+                size: 18,
+                color: Colors.black45,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                "0",
+                style: const TextStyle(
+                  fontFamily: 'Nunito Sans',
+                  fontSize: 16,
+                  color: Colors.black45,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
