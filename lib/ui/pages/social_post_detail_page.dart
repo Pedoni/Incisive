@@ -182,7 +182,7 @@ class _CommentsList extends StatelessWidget {
     }
 
     if (state is EmptySocialCommentState || (state is ResultSocialCommentState && comments.where((c) => c.approved).isEmpty)) {
-      return EmptyWidget(text: "Nessun commento in attesa");
+      return EmptyWidget(text: "Ancora nessun commento");
     }
 
     return ListView.builder(
