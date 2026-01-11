@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/ui/pages/social_post_detail_page.dart';
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class SocialPostItem extends StatelessWidget {
   final SocialPostModel post;
@@ -33,15 +34,25 @@ class SocialPostItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// HEADER
-            Text(
-              '${time.hour.toString().padLeft(2, '0')}:'
-              '${time.minute.toString().padLeft(2, '0')}',
-              style: const TextStyle(
-                fontFamily: 'Nunito Sans',
-                fontSize: 12,
-                color: Colors.black45,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${time.hour.toString().padLeft(2, '0')}:'
+                  '${time.minute.toString().padLeft(2, '0')}',
+                  style: const TextStyle(
+                    fontFamily: 'Nunito Sans',
+                    fontSize: 12,
+                    color: Colors.black45,
+                  ),
+                ),
+
+                if (post.authorId == Supabase.instance.client.auth.currentUser?.id)
+                  Icon(
+                    Icons.person_2_sharp,
+                    size: 15,
+                  ),
+              ],
             ),
 
             const SizedBox(height: 12),
