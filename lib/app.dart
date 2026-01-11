@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:incisive/di/dependency_injector.dart';
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/ui/pages/add_post_page.dart';
 import 'package:incisive/ui/pages/breathing_page.dart';
 import 'package:incisive/ui/pages/chat_page.dart';
@@ -13,8 +14,10 @@ import 'package:incisive/ui/pages/gratitude_upsert_page.dart';
 import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/pages/login_page.dart';
 import 'package:incisive/ui/pages/mood_calendar_page.dart';
+import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/pages/register_page.dart';
 import 'package:incisive/ui/pages/social_page.dart';
+import 'package:incisive/ui/pages/social_post_detail_page.dart';
 import 'package:incisive/ui/pages/user_profile_page.dart';
 
 class App extends StatelessWidget {
@@ -51,6 +54,16 @@ class App extends StatelessWidget {
                     existingEntry: entry,
                     date: date,
                   ),
+            );
+          } else if (settings.name == SocialPostDetailPage.routeName) {
+            final post = settings.arguments as SocialPostModel;
+            return MaterialPageRoute(
+              builder: (_) => SocialPostDetailPage(post: post),
+            );
+          } else if (settings.name == PendingCommentsPage.routeName) {
+            final post = settings.arguments as SocialPostModel;
+            return MaterialPageRoute(
+              builder: (_) => PendingCommentsPage(post: post),
             );
           }
           return null;
