@@ -79,7 +79,7 @@ class SocialPostItem extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  "0",
+                  post.approvedCommentsCount.toString(),
                   style: const TextStyle(
                     fontFamily: 'Nunito Sans',
                     fontSize: 16,

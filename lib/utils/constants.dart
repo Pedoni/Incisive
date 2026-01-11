@@ -44,6 +44,7 @@ class Constants {
   static SocialPostModel mockedPostItem = SocialPostModel(
     id: "",
     authorId: "",
+    approvedCommentsCount: 0,
     content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
         "Quisque tincidunt imperdiet efficitur. Phasellus feugiat mauris id "

@@ -13,17 +13,21 @@ class SocialRepository {
     try {
       MainLogger.logInfo("Try to get daily posts");
       final list = await socialService.getDailyPosts(date: dateTime);
-      return list
-          .map(
-            (e) => SocialPostModel(
-              id: e['id'],
-              content: e['content'],
-              datetime: DateTime.parse(e['datetime']),
-              authorId: e['authorId'],
-              title: e['title'],
-            ),
-          )
-          .toList();
+
+      return list.map((e) {
+        final comments = e['social_comment'] as List<dynamic>?;
+
+        final approvedCount = comments != null && comments.isNotEmpty ? comments.first['count'] as int : 0;
+
+        return SocialPostModel(
+          id: e['id'],
+          content: e['content'],
+          datetime: DateTime.parse(e['datetime']),
+          authorId: e['authorId'],
+          title: e['title'],
+          approvedCommentsCount: approvedCount,
+        );
+      }).toList();
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
       rethrow;

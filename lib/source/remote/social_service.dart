@@ -13,12 +13,14 @@ class SocialService {
     final response = await _supabase
         .from('social_post')
         .select('''
-          id,
-          datetime,
-          authorId,
-          content,
-          title
-        ''')
+        id,
+        datetime,
+        authorId,
+        content,
+        title,
+        social_comment!left(count)
+      ''')
+        .eq('social_comment.approved', true)
         .gte('datetime', from.toIso8601String())
         .lt('datetime', to.toIso8601String())
         .order('datetime', ascending: false);
