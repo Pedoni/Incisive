@@ -25,7 +25,7 @@ class _SocialPageState extends State<SocialPage> {
     super.initState();
     _selectedDate = DateTime.now();
 
-    context.read<SocialBloc>().add(GetDailySocialPostsEvent(_selectedDate));
+    context.read<SocialBloc>().getDailyPosts(_selectedDate);
   }
 
   @override
