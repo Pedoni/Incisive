@@ -5,6 +5,9 @@ import 'package:incisive/models/social_comment_model.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
+import 'package:incisive/ui/widgets/social_post_item.dart';
+import 'package:incisive/utils/constants.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class SocialPostDetailPage extends StatefulWidget {
@@ -164,10 +167,21 @@ class _CommentsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state is LoadingSocialCommentState || state is InitSocialCommentState) {
-      return const Center(child: CircularProgressIndicator());
+      final list = List.generate(10, (index) => Constants.mockedPostItem);
+      return Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(14),
+        child: Skeletonizer(
+          child: ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 10,
+            itemBuilder: (context, index) => SocialPostItem(post: list[index]),
+          ),
+        ),
+      );
     }
 
-    if (state is EmptySocialCommentState) {
+    if (state is EmptySocialCommentState || (state is ResultSocialCommentState && comments.where((c) => c.approved).isEmpty)) {
       return EmptyWidget(text: "Nessun commento in attesa");
     }
 
