@@ -241,8 +241,8 @@ class _CommentItem extends StatelessWidget {
                   icon: const Icon(Icons.thumb_up_alt_outlined, size: 18),
                   onPressed: () {
                     context.read<SocialCommentBloc>().voteComment(
-                      postId,
                       comment.id,
+                      postId,
                       true,
                     );
                   },
@@ -253,8 +253,8 @@ class _CommentItem extends StatelessWidget {
                   icon: const Icon(Icons.thumb_down_alt_outlined, size: 18),
                   onPressed: () {
                     context.read<SocialCommentBloc>().voteComment(
-                      postId,
                       comment.id,
+                      postId,
                       false,
                     );
                   },
