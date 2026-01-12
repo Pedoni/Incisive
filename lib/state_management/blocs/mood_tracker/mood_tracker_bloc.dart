@@ -23,7 +23,7 @@ class MoodTrackerBloc extends Bloc<MoodTrackerEvent, MoodTrackerState> {
     emitter(TryMoodTrackerState());
     try {
       final data = await diaryRepository.getMood();
-      emitter(ResultMoodTrackerState(map: data!));
+      emitter(ResultMoodTrackerState(map: data));
     } catch (e) {
       emitter(ErrorMoodTrackerState(e.toString()));
     }

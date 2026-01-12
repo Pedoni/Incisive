@@ -27,7 +27,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emitter(LoadingProfileState());
     try {
       final user = await userRepository.getUser();
-      emitter(ResultProfileState(user!));
+      emitter(ResultProfileState(user));
     } catch (e) {
       emitter(ErrorProfileState(e.toString()));
     }
@@ -41,7 +41,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       await userRepository.addPoints(points: event.points);
       final user = await userRepository.getUser();
-      emitter(ResultProfileState(user!));
+      emitter(ResultProfileState(user));
     } catch (e) {
       emitter(ErrorProfileState(e.toString()));
     }
