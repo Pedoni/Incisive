@@ -1,29 +1,33 @@
-import 'package:incisive/log/main_logger.dart';
 import 'package:incisive/models/user_model.dart';
+import 'package:incisive/repositories/base_repository.dart';
 import 'package:incisive/source/remote/user_service.dart';
 
-class UserRepository {
+class UserRepository extends BaseRepository {
   final UserService userService;
 
   UserRepository({required this.userService});
 
-  Future<UserModel?> getUser() async {
-    try {
-      MainLogger.logInfo("Try to get user");
-      return await userService.getUser();
-    } catch (e, stackTrace) {
-      MainLogger.logError(e, stackTrace);
-      rethrow;
-    }
+  /// =========================
+  /// GET USER
+  /// =========================
+
+  Future<UserModel> getUser() {
+    return guard(
+      'Get user profile',
+      () => userService.getUser(),
+    );
   }
 
-  Future<void> addPoints({required int points}) async {
-    try {
-      MainLogger.logInfo("Try to add points");
-      await userService.addPoints(points: points);
-    } catch (e, stackTrace) {
-      MainLogger.logError(e, stackTrace);
-      rethrow;
-    }
+  /// =========================
+  /// ADD POINTS
+  /// =========================
+
+  Future<void> addPoints({
+    required int points,
+  }) {
+    return guard(
+      'Add user points',
+      () => userService.addPoints(points: points),
+    );
   }
 }
