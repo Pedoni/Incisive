@@ -7,8 +7,10 @@ import 'package:incisive/state_management/blocs/social_comment/social_comment_bl
 import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
+import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:incisive/utils/enums.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
@@ -82,6 +84,11 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
               showDialog(
                 context: context,
                 builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? "Errore sconosciuto"),
+              );
+            } else if (state is ResultCommentPostState) {
+              showDialog(
+                context: context,
+                builder: (context) => InsertConfirmDialog(type: PostType.comment),
               );
             }
           },
