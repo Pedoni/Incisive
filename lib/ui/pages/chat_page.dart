@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:chat_bubbles/bubbles/bubble_normal.dart';
 import 'package:incisive/models/chat_session.dart';
+import 'package:incisive/utils/exceptions.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class ChatPage extends StatefulWidget {
@@ -74,7 +75,7 @@ essere la prima volta che l'utente interagisce con te, quindi non lo dare per sc
       );
 
       if (response.data['error'] != null) {
-        throw Exception(response.data['error']);
+        throw IncisiveException(response.data['error']);
       }
 
       final reply = response.data['reply'];
