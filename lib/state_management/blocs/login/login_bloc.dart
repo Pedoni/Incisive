@@ -10,7 +10,7 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginRepository loginRepository;
 
-  LoginBloc({required this.loginRepository}) : super(const InitLoginState()) {
+  LoginBloc({required this.loginRepository}) : super(InitLoginState()) {
     on<TryLoginEvent>(_login);
   }
 
@@ -20,11 +20,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginEvent event,
     Emitter<LoginState> emitter,
   ) async {
-    emitter(const TryLoginState());
+    emitter(TryLoginState());
     try {
       var e = event as TryLoginEvent;
       await loginRepository.login(e.username, e.password);
-      emitter(const ResultLoginState());
+      emitter(ResultLoginState());
     } catch (e) {
       emitter(ErrorLoginState(e.toString()));
     }

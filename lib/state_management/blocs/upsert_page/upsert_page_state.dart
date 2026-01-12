@@ -7,23 +7,15 @@ sealed class UpsertPageState extends Equatable {
   List<Object> get props => [];
 }
 
-class InitUpsertPageState extends UpsertPageState {
-  const InitUpsertPageState();
-}
+final class InitUpsertPageState extends UpsertPageState {}
 
-class TryUpsertPageState extends UpsertPageState {
-  const TryUpsertPageState();
-}
+final class TryUpsertPageState extends UpsertPageState {}
 
-class ResultUpsertPageState extends UpsertPageState {
-  const ResultUpsertPageState();
-}
+final class ResultUpsertPageState extends UpsertPageState {}
 
-class EmptyUpsertPageState extends UpsertPageState {
-  const EmptyUpsertPageState();
-}
+final class EmptyUpsertPageState extends UpsertPageState {}
 
-class ErrorUpsertPageState extends UpsertPageState {
+final class ErrorUpsertPageState extends UpsertPageState {
   final String? errorString;
   const ErrorUpsertPageState(this.errorString);
 }

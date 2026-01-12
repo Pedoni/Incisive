@@ -10,7 +10,7 @@ part 'create_post_state.dart';
 class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
   final SocialRepository socialRepository;
 
-  CreatePostBloc({required this.socialRepository}) : super(const InitCreatePostState()) {
+  CreatePostBloc({required this.socialRepository}) : super(InitCreatePostState()) {
     on<TryCreatePostEvent>(_createPost);
   }
 
@@ -28,13 +28,13 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
     TryCreatePostEvent event,
     Emitter<CreatePostState> emitter,
   ) async {
-    emitter(const TryCreatePostState());
+    emitter(TryCreatePostState());
     try {
       await socialRepository.createPost(
         title: event.title,
         content: event.content,
       );
-      emitter(const ResultCreatePostState());
+      emitter(ResultCreatePostState());
     } catch (e) {
       emitter(ErrorCreatePostState(e.toString()));
     }

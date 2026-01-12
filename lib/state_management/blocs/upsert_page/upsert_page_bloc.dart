@@ -10,7 +10,7 @@ part 'upsert_page_state.dart';
 class UpsertPageBloc extends Bloc<UpsertPageEvent, UpsertPageState> {
   final DiaryRepository diaryRepository;
 
-  UpsertPageBloc({required this.diaryRepository}) : super(const InitUpsertPageState()) {
+  UpsertPageBloc({required this.diaryRepository}) : super(InitUpsertPageState()) {
     on<TryUpsertPageEvent>(_upsertPage);
   }
 
@@ -28,10 +28,10 @@ class UpsertPageBloc extends Bloc<UpsertPageEvent, UpsertPageState> {
     TryUpsertPageEvent event,
     Emitter<UpsertPageState> emitter,
   ) async {
-    emitter(const TryUpsertPageState());
+    emitter(TryUpsertPageState());
     try {
       await diaryRepository.upsertPage(date: event.dateTime, text: event.text);
-      emitter(const ResultUpsertPageState());
+      emitter(ResultUpsertPageState());
     } catch (e) {
       emitter(ErrorUpsertPageState(e.toString()));
     }

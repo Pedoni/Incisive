@@ -7,23 +7,15 @@ sealed class CommentPostState extends Equatable {
   List<Object> get props => [];
 }
 
-class InitCommentPostState extends CommentPostState {
-  const InitCommentPostState();
-}
+final class InitCommentPostState extends CommentPostState {}
 
-class TryCommentPostState extends CommentPostState {
-  const TryCommentPostState();
-}
+final class TryCommentPostState extends CommentPostState {}
 
-class ResultCommentPostState extends CommentPostState {
-  const ResultCommentPostState();
-}
+final class ResultCommentPostState extends CommentPostState {}
 
-class EmptyCommentPostState extends CommentPostState {
-  const EmptyCommentPostState();
-}
+final class EmptyCommentPostState extends CommentPostState {}
 
-class ErrorCommentPostState extends CommentPostState {
+final class ErrorCommentPostState extends CommentPostState {
   final String? errorString;
   const ErrorCommentPostState(this.errorString);
 }

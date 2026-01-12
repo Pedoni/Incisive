@@ -7,24 +7,18 @@ sealed class DiaryPageState extends Equatable {
   List<Object> get props => [];
 }
 
-class InitDiaryPageState extends DiaryPageState {
-  const InitDiaryPageState();
-}
+final class InitDiaryPageState extends DiaryPageState {}
 
-class TryDiaryPageState extends DiaryPageState {
-  const TryDiaryPageState();
-}
+final class TryDiaryPageState extends DiaryPageState {}
 
-class ResultDiaryPageState extends DiaryPageState {
+final class ResultDiaryPageState extends DiaryPageState {
   final DiaryEntry entry;
   const ResultDiaryPageState({required this.entry});
 }
 
-class EmptyDiaryPageState extends DiaryPageState {
-  const EmptyDiaryPageState();
-}
+final class EmptyDiaryPageState extends DiaryPageState {}
 
-class ErrorDiaryPageState extends DiaryPageState {
+final class ErrorDiaryPageState extends DiaryPageState {
   final String? errorString;
   const ErrorDiaryPageState(this.errorString);
 }

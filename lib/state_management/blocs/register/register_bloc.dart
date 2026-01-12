@@ -10,7 +10,7 @@ part 'register_state.dart';
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final LoginRepository loginRepository;
 
-  RegisterBloc({required this.loginRepository}) : super(const InitRegisterState()) {
+  RegisterBloc({required this.loginRepository}) : super(InitRegisterState()) {
     on<TryRegisterEvent>(_register);
   }
 
@@ -32,7 +32,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     RegisterEvent event,
     Emitter<RegisterState> emitter,
   ) async {
-    emitter(const TryRegisterState());
+    emitter(TryRegisterState());
     try {
       var e = event as TryRegisterEvent;
       await loginRepository.register(
@@ -41,7 +41,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         e.firstName,
         e.lastName,
       );
-      emitter(const ResultRegisterState());
+      emitter(ResultRegisterState());
     } catch (e) {
       emitter(ErrorRegisterState(e.toString()));
     }

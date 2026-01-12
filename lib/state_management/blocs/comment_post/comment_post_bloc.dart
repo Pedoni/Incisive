@@ -10,7 +10,7 @@ part 'comment_post_state.dart';
 class CommentPostBloc extends Bloc<CommentPostEvent, CommentPostState> {
   final SocialRepository socialRepository;
 
-  CommentPostBloc({required this.socialRepository}) : super(const InitCommentPostState()) {
+  CommentPostBloc({required this.socialRepository}) : super(InitCommentPostState()) {
     on<TryCommentPostEvent>(_commentPost);
   }
 
@@ -28,13 +28,13 @@ class CommentPostBloc extends Bloc<CommentPostEvent, CommentPostState> {
     TryCommentPostEvent event,
     Emitter<CommentPostState> emitter,
   ) async {
-    emitter(const TryCommentPostState());
+    emitter(TryCommentPostState());
     try {
       await socialRepository.createComment(
         postId: event.postId,
         content: event.content,
       );
-      emitter(const ResultCommentPostState());
+      emitter(ResultCommentPostState());
     } catch (e) {
       emitter(ErrorCommentPostState(e.toString()));
     }

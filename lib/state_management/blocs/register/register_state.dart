@@ -7,23 +7,15 @@ abstract class RegisterState extends Equatable {
   List<Object> get props => [];
 }
 
-class InitRegisterState extends RegisterState {
-  const InitRegisterState();
-}
+final class InitRegisterState extends RegisterState {}
 
-class TryRegisterState extends RegisterState {
-  const TryRegisterState();
-}
+final class TryRegisterState extends RegisterState {}
 
-class ResultRegisterState extends RegisterState {
-  const ResultRegisterState();
-}
+final class ResultRegisterState extends RegisterState {}
 
-class EmptyRegisterState extends RegisterState {
-  const EmptyRegisterState();
-}
+final class EmptyRegisterState extends RegisterState {}
 
-class ErrorRegisterState extends RegisterState {
+final class ErrorRegisterState extends RegisterState {
   final String? errorString;
   const ErrorRegisterState(this.errorString);
 }

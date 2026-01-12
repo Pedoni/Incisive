@@ -11,7 +11,7 @@ part 'diary_page_state.dart';
 class DiaryPageBloc extends Bloc<DiaryPageEvent, DiaryPageState> {
   final DiaryRepository diaryRepository;
 
-  DiaryPageBloc({required this.diaryRepository}) : super(const InitDiaryPageState()) {
+  DiaryPageBloc({required this.diaryRepository}) : super(InitDiaryPageState()) {
     on<TryDiaryPageEvent>(_getPage);
   }
 
@@ -21,7 +21,7 @@ class DiaryPageBloc extends Bloc<DiaryPageEvent, DiaryPageState> {
     TryDiaryPageEvent event,
     Emitter<DiaryPageState> emitter,
   ) async {
-    emitter(const TryDiaryPageState());
+    emitter(TryDiaryPageState());
     try {
       final entry = await diaryRepository.getPage(event.dateTime);
       emitter(entry != null ? ResultDiaryPageState(entry: entry) : EmptyDiaryPageState());

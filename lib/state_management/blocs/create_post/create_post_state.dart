@@ -7,23 +7,15 @@ sealed class CreatePostState extends Equatable {
   List<Object> get props => [];
 }
 
-class InitCreatePostState extends CreatePostState {
-  const InitCreatePostState();
-}
+final class InitCreatePostState extends CreatePostState {}
 
-class TryCreatePostState extends CreatePostState {
-  const TryCreatePostState();
-}
+final class TryCreatePostState extends CreatePostState {}
 
-class ResultCreatePostState extends CreatePostState {
-  const ResultCreatePostState();
-}
+final class ResultCreatePostState extends CreatePostState {}
 
-class EmptyCreatePostState extends CreatePostState {
-  const EmptyCreatePostState();
-}
+final class EmptyCreatePostState extends CreatePostState {}
 
-class ErrorCreatePostState extends CreatePostState {
+final class ErrorCreatePostState extends CreatePostState {
   final String? errorString;
   const ErrorCreatePostState(this.errorString);
 }
