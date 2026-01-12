@@ -54,7 +54,6 @@ class SocialRepository {
       MainLogger.logInfo("Try to get comments for post $postId");
 
       final response = await socialService.getCommentsForPost(postId: postId);
-
       final viewerUserId = Supabase.instance.client.auth.currentUser!.id;
 
       return response

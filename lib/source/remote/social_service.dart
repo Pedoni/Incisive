@@ -55,15 +55,18 @@ class SocialService {
     final response = await _supabase
         .from('social_comment')
         .select('''
-          id,
-          post_id,
-          author_id,
-          content,
-          created_at,
-          approved,
-          upvotes,
-          downvotes
-        ''')
+        id,
+        post_id,
+        author_id,
+        content,
+        created_at,
+        approved,
+
+        social_comment_vote!left(
+          is_upvote,
+          user_id
+        )
+      ''')
         .eq('post_id', postId)
         .order('created_at', ascending: true);
 
@@ -140,12 +143,16 @@ class SocialService {
     required String commentId,
     required bool isUpvote,
   }) async {
-    await _supabase.rpc(
-      'vote_comment',
-      params: {
-        'p_comment_id': commentId,
-        'p_is_upvote': isUpvote,
-      },
-    );
+    try {
+      await _supabase.rpc(
+        'vote_social_comment',
+        params: {
+          'p_comment_id': commentId,
+          'p_is_upvote': isUpvote,
+        },
+      );
+    } catch (e) {
+      throw Exception('Errore nel voto del commento');
+    }
   }
 }

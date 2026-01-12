@@ -272,7 +272,10 @@ class _CommentItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.thumb_up_alt_outlined, size: 18),
+                  icon: Icon(
+                    comment.myVote == null || comment.myVote == false ? Icons.thumb_up_alt_outlined : Icons.thumb_up_alt,
+                    size: 18,
+                  ),
                   onPressed: () {
                     context.read<SocialCommentBloc>().voteComment(
                       comment.id,
@@ -284,7 +287,10 @@ class _CommentItem extends StatelessWidget {
                 Text(comment.upvotes.toString()),
                 const SizedBox(width: 8),
                 IconButton(
-                  icon: const Icon(Icons.thumb_down_alt_outlined, size: 18),
+                  icon: Icon(
+                    comment.myVote == null || comment.myVote == true ? Icons.thumb_down_alt_outlined : Icons.thumb_down_alt,
+                    size: 18,
+                  ),
                   onPressed: () {
                     context.read<SocialCommentBloc>().voteComment(
                       comment.id,
