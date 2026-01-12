@@ -52,6 +52,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
       backgroundColor: const Color(0xFFFFF8E8),
       appBar: AppBar(
         elevation: 0,
+        scrolledUnderElevation: 0,
         backgroundColor: const Color(0xFFFFF8E8),
         foregroundColor: const Color.fromARGB(255, 141, 90, 35),
         title: const Text(
