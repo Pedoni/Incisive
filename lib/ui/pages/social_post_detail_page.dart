@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/models/social_comment_model.dart';
+import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
@@ -324,7 +325,7 @@ class _CommentInput extends StatelessWidget {
             onPressed: () {
               if (controller.text.trim().isEmpty) return;
 
-              context.read<SocialCommentBloc>().createComment(
+              context.read<CommentPostBloc>().commentPost(
                 post.id,
                 controller.text.trim(),
               );
