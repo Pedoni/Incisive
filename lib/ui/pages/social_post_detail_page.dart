@@ -75,42 +75,44 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
       ),
 
       body: SafeArea(
-        child: BlocConsumer<SocialCommentBloc, SocialCommentState>(
+        child: BlocListener<CommentPostBloc, CommentPostState>(
           listener: (context, state) {
-            if (state is ErrorSocialCommentState) {
+            if (state is ErrorCommentPostState) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
+                SnackBar(content: Text(state.errorString ?? "Errore sconosciuto")),
               );
             }
           },
-          builder: (context, state) {
-            final comments = state is ResultSocialCommentState ? state.comments : <SocialCommentModel>[];
+          child: BlocBuilder<SocialCommentBloc, SocialCommentState>(
+            builder: (context, state) {
+              final comments = state is ResultSocialCommentState ? state.comments : <SocialCommentModel>[];
 
-            return Column(
-              children: [
-                /// POST
-                _PostHeader(post: widget.post),
+              return Column(
+                children: [
+                  /// POST
+                  _PostHeader(post: widget.post),
 
-                const Divider(height: 1),
+                  const Divider(height: 1),
 
-                /// COMMENTI
-                Expanded(
-                  child: _CommentsList(
-                    state: state,
-                    comments: comments.where((c) => c.approved).toList(),
-                    postAuthorId: widget.post.authorId,
-                    postId: widget.post.id,
+                  /// COMMENTI
+                  Expanded(
+                    child: _CommentsList(
+                      state: state,
+                      comments: comments.where((c) => c.approved).toList(),
+                      postAuthorId: widget.post.authorId,
+                      postId: widget.post.id,
+                    ),
                   ),
-                ),
 
-                if (!isAuthor)
-                  _CommentInput(
-                    post: widget.post,
-                    controller: _commentController,
-                  ),
-              ],
-            );
-          },
+                  if (!isAuthor)
+                    _CommentInput(
+                      post: widget.post,
+                      controller: _commentController,
+                    ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
