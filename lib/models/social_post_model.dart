@@ -4,6 +4,7 @@ class SocialPostModel {
   final DateTime datetime;
   final String authorId;
   final String title;
+  final int approvedCommentsCount;
 
   SocialPostModel({
     required this.id,
@@ -11,5 +12,6 @@ class SocialPostModel {
     required this.datetime,
     required this.authorId,
     required this.title,
+    required this.approvedCommentsCount,
   });
 }

@@ -1,4 +1,5 @@
 import 'package:incisive/main.dart';
+import 'package:incisive/utils/exceptions.dart';
 import 'package:supabase/supabase.dart';
 
 class LoginService {
@@ -36,7 +37,7 @@ class LoginService {
 
     final user = response.user;
     if (user == null) {
-      throw Exception("Errore nella registrazione.");
+      throw IncisiveException("Errore nella registrazione.");
     }
 
     final insertRes = await supabase.from('user').insert({
@@ -47,7 +48,7 @@ class LoginService {
     });
 
     if (insertRes != null) {
-      throw Exception("Errore creazione profilo utente");
+      throw IncisiveException("Errore creazione profilo utente");
     }
   }
 

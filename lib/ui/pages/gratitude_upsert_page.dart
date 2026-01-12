@@ -6,6 +6,7 @@ import 'package:incisive/state_management/blocs/gratitude_upsert/gratitude_upser
 import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
+import 'package:incisive/utils/enums.dart';
 
 class GratitudeUpsertPage extends StatefulWidget {
   static const routeName = '/upsertGratitudePage';
@@ -114,7 +115,7 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
             showDialog(
               context: context,
               barrierDismissible: false,
-              builder: (context) => InsertConfirmDialog(isEdit: isEditing),
+              builder: (context) => InsertConfirmDialog(type: isEditing ? PostType.gdEdit : PostType.gdInsert),
             );
           } else if (state is ErrorUpsertPageState) {
             showDialog(

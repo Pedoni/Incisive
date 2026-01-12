@@ -13,6 +13,7 @@ import 'package:incisive/source/remote/login_service.dart';
 import 'package:incisive/source/remote/social_service.dart';
 import 'package:incisive/source/remote/user_service.dart';
 import 'package:incisive/state_management/blocs/breathing/breathing_bloc.dart';
+import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
 import 'package:incisive/state_management/blocs/create_post/create_post_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
@@ -22,6 +23,7 @@ import 'package:incisive/state_management/blocs/mood_tracker_bloc/mood_tracker_b
 import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
 import 'package:incisive/state_management/blocs/register_bloc/register_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
+import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/state_management/blocs/upsert_page_bloc/upsert_page_bloc.dart';
 import 'package:pine/di/dependency_injector_helper.dart';
 import 'package:provider/provider.dart';

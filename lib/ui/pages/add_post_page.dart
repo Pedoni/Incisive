@@ -5,10 +5,11 @@ import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/ui/widgets/speech_dialog.dart';
+import 'package:incisive/utils/enums.dart';
 import 'package:incisive/utils/functions.dart';
 
 class AddPostPage extends StatefulWidget {
-  static const routeName = '/upsertDiaryPage';
+  static const routeName = '/addPostPage';
 
   const AddPostPage({
     super.key,
@@ -62,7 +63,7 @@ class _AddPostPageState extends State<AddPostPage> {
             showDialog(
               context: context,
               barrierDismissible: false,
-              builder: (context) => InsertConfirmDialog(isEdit: false),
+              builder: (context) => InsertConfirmDialog(type: PostType.gdInsert),
             );
           } else if (state is ErrorCreatePostState) {
             showDialog(

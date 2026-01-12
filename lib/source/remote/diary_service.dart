@@ -1,3 +1,4 @@
+import 'package:incisive/utils/exceptions.dart';
 import 'package:incisive/utils/functions.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
@@ -59,14 +60,14 @@ class DiaryService {
     );
 
     if (res.data['error'] != null) {
-      throw Exception(res.data['reason']);
+      throw IncisiveException(res.data['reason']);
     }
 
     final data = res.data as Map<String, dynamic>;
 
     if (data['ok'] != true) {
       // errori "business" dal server
-      throw Exception(data['reason'] ?? data['error'] ?? 'Analisi fallita');
+      throw IncisiveException(data['reason'] ?? data['error'] ?? 'Analisi fallita');
     }
   }
 

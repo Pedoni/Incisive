@@ -7,6 +7,7 @@ import 'package:incisive/state_management/blocs/upsert_page_bloc/upsert_page_blo
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/ui/widgets/speech_dialog.dart';
+import 'package:incisive/utils/enums.dart';
 
 class UpsertDiaryPage extends StatefulWidget {
   static const routeName = '/upsertDiaryPage';
@@ -71,7 +72,7 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
               barrierDismissible: false,
               builder:
                   (context) => InsertConfirmDialog(
-                    isEdit: isEditing,
+                    type: isEditing ? PostType.gdEdit : PostType.gdInsert,
                     points: isEditing ? null : 10,
                   ),
             );
