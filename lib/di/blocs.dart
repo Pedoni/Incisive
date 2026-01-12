@@ -37,4 +37,7 @@ final List<BlocProvider> _blocs = [
   BlocProvider<SocialCommentBloc>(
     create: (context) => SocialCommentBloc(socialRepository: context.read()),
   ),
+  BlocProvider<CommentPostBloc>(
+    create: (context) => CommentPostBloc(socialRepository: context.read()),
+  ),
 ];
