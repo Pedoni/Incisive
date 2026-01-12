@@ -10,5 +10,3 @@ void main() async {
   );
   runApp(const App());
 }
-
-final supabase = Supabase.instance.client;
