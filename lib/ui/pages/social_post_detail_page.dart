@@ -6,6 +6,7 @@ import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.d
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
+import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -78,8 +79,9 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
         child: BlocListener<CommentPostBloc, CommentPostState>(
           listener: (context, state) {
             if (state is ErrorCommentPostState) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.errorString ?? "Errore sconosciuto")),
+              showDialog(
+                context: context,
+                builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? "Errore sconosciuto"),
               );
             }
           },
