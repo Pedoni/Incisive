@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/state_management/blocs/mood_tracker_bloc/mood_tracker_bloc.dart';
+import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 

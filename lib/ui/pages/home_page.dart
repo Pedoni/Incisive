@@ -1,7 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
-import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
+import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/components/bedroom_game.dart';
 import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';

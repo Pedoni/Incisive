@@ -1,8 +1,8 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
-import 'package:incisive/state_management/blocs/mood_tracker_bloc/mood_tracker_bloc.dart';
+import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
+import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.dart';
 import 'package:incisive/ui/components/lined_paper.dart';
 import 'package:incisive/ui/pages/diary_upsert_page.dart';
 import 'package:incisive/ui/pages/mood_calendar_page.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/state_management/blocs/login_bloc/login_bloc.dart';
-import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
+import 'package:incisive/state_management/blocs/login/login_bloc.dart';
+import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/pages/login_page.dart';
 import 'package:incisive/ui/widgets/logout_dialog.dart';
 import 'package:incisive/utils/constants.dart';

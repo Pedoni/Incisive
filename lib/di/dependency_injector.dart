@@ -15,16 +15,16 @@ import 'package:incisive/source/remote/user_service.dart';
 import 'package:incisive/state_management/blocs/breathing/breathing_bloc.dart';
 import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
 import 'package:incisive/state_management/blocs/create_post/create_post_bloc.dart';
-import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
+import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_upsert/gratitude_upsert_bloc.dart';
-import 'package:incisive/state_management/blocs/login_bloc/login_bloc.dart';
-import 'package:incisive/state_management/blocs/mood_tracker_bloc/mood_tracker_bloc.dart';
-import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
-import 'package:incisive/state_management/blocs/register_bloc/register_bloc.dart';
+import 'package:incisive/state_management/blocs/login/login_bloc.dart';
+import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.dart';
+import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
+import 'package:incisive/state_management/blocs/register/register_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
-import 'package:incisive/state_management/blocs/upsert_page_bloc/upsert_page_bloc.dart';
+import 'package:incisive/state_management/blocs/upsert_page/upsert_page_bloc.dart';
 import 'package:pine/di/dependency_injector_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +41,11 @@ class DependencyInjector extends StatelessWidget {
   const DependencyInjector({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) =>
-      DependencyInjectorHelper(blocs: _blocs, providers: _providers, mappers: _mappers, repositories: _repositories, child: child);
+  Widget build(BuildContext context) => DependencyInjectorHelper(
+    blocs: _blocs,
+    providers: _providers,
+    mappers: _mappers,
+    repositories: _repositories,
+    child: child,
+  );
 }
