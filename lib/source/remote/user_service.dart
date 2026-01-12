@@ -1,33 +1,41 @@
 import 'package:incisive/models/user_model.dart';
-import 'package:supabase_auth_ui/supabase_auth_ui.dart';
+import 'package:incisive/source/remote/base_service.dart';
 
-class UserService {
-  final _supabase = Supabase.instance.client;
+class UserService extends BaseService {
+  /// =========================
+  /// GET USER PROFILE
+  /// =========================
 
   Future<UserModel> getUser() async {
-    final authUser = _supabase.auth.currentUser;
-    final userId = authUser!.id;
-    final user = await _supabase.from('user').select().eq('id', userId).maybeSingle();
+    final authUser = supabase.auth.currentUser;
+    if (authUser == null) {
+      throw Exception('Utente non autenticato');
+    }
+
+    final user = await supabase.from('user').select().eq('id', authUser.id).single();
+
     return UserModel(
-      id: userId,
-      firstName: user!['firstName'],
+      id: authUser.id,
+      firstName: user['firstName'],
       lastName: user['lastName'],
       email: authUser.email!,
       points: user['points'],
     );
   }
 
-  Future<void> addPoints({required int points}) async {
-    try {
-      await _supabase.rpc(
-        'add_points',
-        params: {
-          'p_user_id': _supabase.auth.currentUser!.id,
-          'p_points': points,
-        },
-      );
-    } on PostgrestException catch (_) {
-      rethrow;
-    }
+  /// =========================
+  /// ADD POINTS
+  /// =========================
+
+  Future<void> addPoints({
+    required int points,
+  }) async {
+    await supabase.rpc(
+      'add_points',
+      params: {
+        'p_user_id': currentUserId,
+        'p_points': points,
+      },
+    );
   }
 }

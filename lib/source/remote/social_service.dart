@@ -1,9 +1,11 @@
 import 'package:incisive/utils/exceptions.dart';
 import 'package:incisive/utils/functions.dart';
-import 'package:supabase_auth_ui/supabase_auth_ui.dart';
+import 'package:incisive/source/remote/base_service.dart';
 
-class SocialService {
-  final _supabase = Supabase.instance.client;
+class SocialService extends BaseService {
+  /// =========================
+  /// POSTS
+  /// =========================
 
   Future<List<Map<String, dynamic>>> getDailyPosts({
     required DateTime date,
@@ -11,16 +13,16 @@ class SocialService {
     final from = startOfDay(date).toUtc();
     final to = startOfNextDay(date).toUtc();
 
-    final response = await _supabase
+    final response = await supabase
         .from('social_post')
         .select('''
-        id,
-        datetime,
-        authorId,
-        content,
-        title,
-        social_comment!left(count)
-      ''')
+          id,
+          datetime,
+          authorId,
+          content,
+          title,
+          social_comment!left(count)
+        ''')
         .eq('social_comment.approved', true)
         .gte('datetime', from.toIso8601String())
         .lt('datetime', to.toIso8601String())
@@ -34,7 +36,7 @@ class SocialService {
     required String content,
   }) async {
     try {
-      await _supabase.rpc(
+      await supabase.rpc(
         'create_social_post',
         params: {
           'p_title': title,
@@ -42,31 +44,38 @@ class SocialService {
         },
       );
     } catch (e) {
-      if (e.toString().contains('POST_ALREADY_CREATED_TODAY')) {
+      final msg = e.toString();
+
+      if (msg.contains('POST_ALREADY_CREATED_TODAY')) {
         throw IncisiveException('Hai già pubblicato un post oggi!');
       }
+
       rethrow;
     }
   }
 
+  /// =========================
+  /// COMMENTS
+  /// =========================
+
   Future<List<Map<String, dynamic>>> getCommentsForPost({
     required String postId,
   }) async {
-    final response = await _supabase
+    final response = await supabase
         .from('social_comment')
         .select('''
-        id,
-        post_id,
-        author_id,
-        content,
-        created_at,
-        approved,
+          id,
+          post_id,
+          author_id,
+          content,
+          created_at,
+          approved,
 
-        social_comment_vote!left(
-          is_upvote,
-          user_id
-        )
-      ''')
+          social_comment_vote!left(
+            is_upvote,
+            user_id
+          )
+        ''')
         .eq('post_id', postId)
         .order('created_at', ascending: true);
 
@@ -78,7 +87,7 @@ class SocialService {
     required String content,
   }) async {
     try {
-      await _supabase.rpc(
+      await supabase.rpc(
         'create_social_comment',
         params: {
           'p_post_id': postId,
@@ -104,7 +113,7 @@ class SocialService {
     required String commentId,
   }) async {
     try {
-      await _supabase.rpc(
+      await supabase.rpc(
         'approve_social_comment',
         params: {
           'p_comment_id': commentId,
@@ -112,7 +121,9 @@ class SocialService {
       );
     } catch (e) {
       if (e.toString().contains('NOT_AUTHORIZED')) {
-        throw IncisiveException('Non sei autorizzato ad approvare questo commento!');
+        throw IncisiveException(
+          'Non sei autorizzato ad approvare questo commento!',
+        );
       }
       rethrow;
     }
@@ -122,37 +133,47 @@ class SocialService {
     required String commentId,
   }) async {
     try {
-      await _supabase.rpc(
+      await supabase.rpc(
         'reject_social_comment',
         params: {
           'p_comment_id': commentId,
         },
       );
     } catch (e) {
-      if (e.toString().contains('NOT_AUTHORIZED')) {
-        throw IncisiveException('Non sei autorizzato a rifiutare questo commento!');
+      final msg = e.toString();
+
+      if (msg.contains('NOT_AUTHORIZED')) {
+        throw IncisiveException(
+          'Non sei autorizzato a rifiutare questo commento!',
+        );
       }
-      if (e.toString().contains('COMMENT_NOT_FOUND')) {
+
+      if (msg.contains('COMMENT_NOT_FOUND')) {
         throw IncisiveException('Commento non trovato');
       }
+
       rethrow;
     }
   }
+
+  /// =========================
+  /// VOTES
+  /// =========================
 
   Future<void> voteComment({
     required String commentId,
     required bool isUpvote,
   }) async {
     try {
-      await _supabase.rpc(
+      await supabase.rpc(
         'vote_social_comment',
         params: {
           'p_comment_id': commentId,
           'p_is_upvote': isUpvote,
         },
       );
-    } catch (e) {
-      throw Exception('Errore nel voto del commento');
+    } catch (_) {
+      throw IncisiveException('Errore nel voto del commento');
     }
   }
 }

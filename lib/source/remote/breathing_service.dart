@@ -1,10 +1,12 @@
-import 'package:supabase_auth_ui/supabase_auth_ui.dart';
+import 'package:incisive/source/remote/base_service.dart';
 
-class BreathingService {
-  final _supabase = Supabase.instance.client;
-
+class BreathingService extends BaseService {
   Future<int> completeBreathing() async {
-    final result = await _supabase.rpc('complete_breathing');
-    return result as int;
+    try {
+      final result = await supabase.rpc('complete_breathing');
+      return result as int;
+    } catch (e) {
+      throw Exception('Errore nel completare la sessione di respirazione');
+    }
   }
 }

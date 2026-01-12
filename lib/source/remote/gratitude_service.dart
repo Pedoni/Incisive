@@ -1,23 +1,27 @@
+import 'package:incisive/source/remote/base_service.dart';
 import 'package:incisive/utils/functions.dart';
-import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
-class GratitudeService {
-  final _supabase = Supabase.instance.client;
+class GratitudeService extends BaseService {
+  /// =========================
+  /// GET / CREATE PAGE
+  /// =========================
 
-  Future<Map<String, dynamic>> getPage({required DateTime date}) async {
-    final userId = _supabase.auth.currentUser!.id;
+  Future<Map<String, dynamic>> getPage({
+    required DateTime date,
+  }) async {
     final dateSql = toSqlDate(date);
 
-    final page = await _supabase.from('gratitude_page').select().eq('user_id', userId).eq('date', dateSql).maybeSingle();
+    final page = await supabase.from('gratitude_page').select().eq('user_id', currentUserId).eq('date', dateSql).maybeSingle();
+
     if (page != null) {
       return page;
     }
 
     final inserted =
-        await _supabase
+        await supabase
             .from('gratitude_page')
             .insert({
-              'user_id': userId,
+              'user_id': currentUserId,
               'date': dateSql,
             })
             .select()
@@ -26,27 +30,42 @@ class GratitudeService {
     return inserted;
   }
 
-  Future<List<Map<String, dynamic>>?> getNotes({required String pageId}) async {
-    final notes = await _supabase.from('gratitude_note').select().eq('page_id', pageId).order('order');
-    return notes.isEmpty ? null : List<Map<String, dynamic>>.from(notes);
+  /// =========================
+  /// GET NOTES
+  /// =========================
+
+  Future<List<Map<String, dynamic>>?> getNotes({
+    required String pageId,
+  }) async {
+    final notes = await supabase.from('gratitude_note').select().eq('page_id', pageId).order('order');
+
+    if (notes.isEmpty) return null;
+
+    return List<Map<String, dynamic>>.from(notes);
   }
+
+  /// =========================
+  /// UPSERT NOTES
+  /// =========================
 
   Future<void> upsertNotes({
     required String pageId,
     required List<String> texts,
   }) async {
-    await _supabase.from('gratitude_note').delete().eq('page_id', pageId);
+    // remove existing notes
+    await supabase.from('gratitude_note').delete().eq('page_id', pageId);
 
     if (texts.isEmpty) return;
 
-    final payload = List.generate(texts.length, (i) {
-      return {
+    final payload = List.generate(
+      texts.length,
+      (i) => {
         'page_id': pageId,
         'order': i,
         'text': texts[i],
-      };
-    });
+      },
+    );
 
-    await _supabase.from('gratitude_note').insert(payload);
+    await supabase.from('gratitude_note').insert(payload);
   }
 }
