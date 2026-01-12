@@ -322,17 +322,34 @@ class _CommentInput extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: () {
-              if (controller.text.trim().isEmpty) return;
+          BlocBuilder<CommentPostBloc, CommentPostState>(
+            builder: (context, state) {
+              return state is TryCommentPostState
+                  ? SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: IconButton(
+                      icon: CircularProgressIndicator(),
+                      onPressed: null,
+                    ),
+                  )
+                  : SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () {
+                        if (controller.text.trim().isEmpty) return;
 
-              context.read<CommentPostBloc>().commentPost(
-                post.id,
-                controller.text.trim(),
-              );
+                        context.read<CommentPostBloc>().commentPost(
+                          post.id,
+                          controller.text.trim(),
+                        );
 
-              controller.clear();
+                        controller.clear();
+                      },
+                    ),
+                  );
             },
           ),
         ],
