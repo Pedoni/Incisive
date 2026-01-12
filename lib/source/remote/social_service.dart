@@ -43,7 +43,7 @@ class SocialService {
       );
     } catch (e) {
       if (e.toString().contains('POST_ALREADY_CREATED_TODAY')) {
-        throw IncisiveException('Hai già pubblicato un post oggi 🌱');
+        throw IncisiveException('Hai già pubblicato un post oggi!');
       }
       rethrow;
     }
@@ -86,11 +86,11 @@ class SocialService {
       final msg = e.toString();
 
       if (msg.contains('AUTHOR_CANNOT_COMMENT')) {
-        throw IncisiveException('Non puoi commentare il tuo stesso post');
+        throw IncisiveException('Non puoi commentare il tuo stesso post!');
       }
 
       if (msg.contains('COMMENT_ALREADY_EXISTS')) {
-        throw IncisiveException('Hai già commentato questo post');
+        throw IncisiveException('Hai già commentato questo post!');
       }
 
       rethrow;
@@ -109,7 +109,7 @@ class SocialService {
       );
     } catch (e) {
       if (e.toString().contains('NOT_AUTHORIZED')) {
-        throw IncisiveException('Non sei autorizzato ad approvare questo commento');
+        throw IncisiveException('Non sei autorizzato ad approvare questo commento!');
       }
       rethrow;
     }
@@ -127,7 +127,7 @@ class SocialService {
       );
     } catch (e) {
       if (e.toString().contains('NOT_AUTHORIZED')) {
-        throw IncisiveException('Non sei autorizzato a rifiutare questo commento');
+        throw IncisiveException('Non sei autorizzato a rifiutare questo commento!');
       }
       if (e.toString().contains('COMMENT_NOT_FOUND')) {
         throw IncisiveException('Commento non trovato');
