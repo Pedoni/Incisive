@@ -12,11 +12,11 @@ class LoginService {
       );
 
       if (response.session == null) {
-        throw AuthException("Credenziali errate.");
+        throw IncisiveException("Credenziali errate.");
       }
     } catch (e) {
       if (e is AuthApiException) {
-        throw AuthException("Credenziali errate.");
+        throw IncisiveException("Credenziali errate.");
       } else {
         rethrow;
       }
@@ -54,12 +54,4 @@ class LoginService {
   }
 
   bool isLogged() => _supabase.auth.currentSession != null;
-}
-
-class AuthException implements Exception {
-  final String message;
-  AuthException(this.message);
-
-  @override
-  String toString() => message;
 }
