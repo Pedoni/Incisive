@@ -4,7 +4,6 @@ import 'package:incisive/models/social_comment_model.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
-import 'package:lottie/lottie.dart';
 
 class PendingCommentsPage extends StatelessWidget {
   static const routeName = '/pendingComments';
