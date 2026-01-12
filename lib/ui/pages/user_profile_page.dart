@@ -212,12 +212,14 @@ class _LogoutAlignedBottom extends StatelessWidget {
               context: context,
               builder: (ctx) => LogoutDialog(),
             );
-            if (res) {
+            if (res && context.mounted) {
               await context.read<LoginBloc>().logout();
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                LoginPage.routeName,
-                (Route<dynamic> route) => false,
-              );
+              if (context.mounted) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  LoginPage.routeName,
+                  (Route<dynamic> route) => false,
+                );
+              }
             }
           },
           icon: const Icon(Icons.logout),
