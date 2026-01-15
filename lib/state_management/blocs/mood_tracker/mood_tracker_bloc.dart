@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/repositories/diary_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'mood_tracker_event.dart';
-part 'mood_tracker_state.dart';
 
-class MoodTrackerBloc extends Bloc<MoodTrackerEvent, MoodTrackerState> {
+class MoodTrackerBloc extends BaseBloc {
   final DiaryRepository diaryRepository;
 
-  MoodTrackerBloc({required this.diaryRepository}) : super(InitMoodTrackerState()) {
+  MoodTrackerBloc({required this.diaryRepository}) : super(Initial()) {
     on<GetMoodEvent>(_getMood);
   }
 
@@ -18,14 +17,14 @@ class MoodTrackerBloc extends Bloc<MoodTrackerEvent, MoodTrackerState> {
 
   FutureOr<void> _getMood(
     GetMoodEvent event,
-    Emitter<MoodTrackerState> emitter,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(TryMoodTrackerState());
+    emitter(Loading());
     try {
       final data = await diaryRepository.getMood();
-      emitter(ResultMoodTrackerState(map: data));
+      emitter(Success(data));
     } catch (e) {
-      emitter(ErrorMoodTrackerState(e.toString()));
+      emitter(Error(e.toString()));
     }
   }
 }
