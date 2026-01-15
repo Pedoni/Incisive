@@ -11,7 +11,13 @@ final class Initial extends BaseState {}
 
 final class Loading extends BaseState {}
 
-final class Empty extends BaseState {}
+final class Empty<T> extends BaseState {
+  final T? data;
+  const Empty({this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
 
 final class Success<T> extends BaseState {
   final T data;

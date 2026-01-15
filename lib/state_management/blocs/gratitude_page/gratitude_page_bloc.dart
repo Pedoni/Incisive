@@ -1,17 +1,15 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/models/gratitude_page_model.dart';
 import 'package:incisive/repositories/gratitude_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'gratitude_page_event.dart';
-part 'gratitude_page_state.dart';
 
-class GratitudePageBloc extends Bloc<GratitudePageEvent, GratitudePageState> {
+class GratitudePageBloc extends BaseBloc {
   final GratitudeRepository gratitudeRepository;
 
-  GratitudePageBloc({required this.gratitudeRepository}) : super(InitialGratitudeState()) {
+  GratitudePageBloc({required this.gratitudeRepository}) : super(Initial()) {
     on<GetGratitudePageEvent>(_getGratitudePage);
   }
 
@@ -19,14 +17,14 @@ class GratitudePageBloc extends Bloc<GratitudePageEvent, GratitudePageState> {
 
   FutureOr<void> _getGratitudePage(
     GetGratitudePageEvent event,
-    Emitter<GratitudePageState> emitter,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(LoadingGratitudeState());
+    emitter(Loading());
     try {
       final entry = await gratitudeRepository.getPage(event.dateTime);
-      emitter(entry.list!.isNotEmpty ? ResultGratitudeState(entry: entry) : EmptyGratitudeState(entry: entry));
+      emitter(entry.list!.isNotEmpty ? Success(entry) : Empty(data: entry));
     } catch (e) {
-      emitter(ErrorGratitudeState(e.toString()));
+      emitter(Error(e.toString()));
     }
   }
 }

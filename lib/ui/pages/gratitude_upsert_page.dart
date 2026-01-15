@@ -115,7 +115,11 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
             showDialog(
               context: context,
               barrierDismissible: false,
-              builder: (context) => InsertConfirmDialog(type: isEditing ? PostType.gdEdit : PostType.gdInsert),
+              builder:
+                  (context) => InsertConfirmDialog(
+                    type: isEditing ? PostType.gdEdit : PostType.gdInsert,
+                    points: isEditing ? null : 10,
+                  ),
             );
           } else if (state is ErrorUpsertPageState) {
             showDialog(
