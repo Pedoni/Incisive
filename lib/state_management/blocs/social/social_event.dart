@@ -1,13 +1,6 @@
 part of 'social_bloc.dart';
 
-sealed class SocialEvent extends Equatable {
-  const SocialEvent();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class GetDailySocialPostsEvent extends SocialEvent {
+class GetDailySocialPostsEvent extends BaseEvent {
   final DateTime date;
 
   const GetDailySocialPostsEvent(this.date);
