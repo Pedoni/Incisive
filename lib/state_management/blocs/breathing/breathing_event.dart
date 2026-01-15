@@ -1,13 +1,6 @@
 part of 'breathing_bloc.dart';
 
-sealed class BreathingEvent extends Equatable {
-  const BreathingEvent();
-
-  @override
-  List<Object> get props => [];
-}
-
-class TryCompleteBreathingEvent extends BreathingEvent {
+class TryCompleteBreathingEvent extends BaseEvent {
   const TryCompleteBreathingEvent();
 
   @override

@@ -1,14 +1,13 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:incisive/repositories/breathing_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'breathing_event.dart';
-part 'breathing_state.dart';
 
-class BreathingBloc extends Bloc<BreathingEvent, BreathingState> {
+class BreathingBloc extends BaseBloc {
   final BreathingRepository breathingRepository;
 
-  BreathingBloc({required this.breathingRepository}) : super(InitialBreathingState()) {
+  BreathingBloc({required this.breathingRepository}) : super(Initial()) {
     on<TryCompleteBreathingEvent>(_completeBreathing);
   }
 
@@ -16,14 +15,11 @@ class BreathingBloc extends Bloc<BreathingEvent, BreathingState> {
 
   Future<void> _completeBreathing(
     TryCompleteBreathingEvent event,
-    Emitter<BreathingState> emitter,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(LoadingBreathingState());
-    try {
-      final points = await breathingRepository.completeBreathing();
-      emitter(ResultBreathingState(points: points));
-    } catch (e) {
-      emitter(ErrorBreathingState(message: e.toString()));
-    }
+    await runWithLoading<int>(
+      emit: emitter,
+      action: () async => await breathingRepository.completeBreathing(),
+    );
   }
 }
