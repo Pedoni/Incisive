@@ -1,16 +1,15 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:incisive/repositories/social_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'comment_post_event.dart';
-part 'comment_post_state.dart';
 
-class CommentPostBloc extends Bloc<CommentPostEvent, CommentPostState> {
+class CommentPostBloc extends BaseBloc {
   final SocialRepository socialRepository;
 
-  CommentPostBloc({required this.socialRepository}) : super(InitCommentPostState()) {
+  CommentPostBloc({required this.socialRepository}) : super(Initial()) {
     on<TryCommentPostEvent>(_commentPost);
   }
 
@@ -26,17 +25,15 @@ class CommentPostBloc extends Bloc<CommentPostEvent, CommentPostState> {
 
   FutureOr<void> _commentPost(
     TryCommentPostEvent event,
-    Emitter<CommentPostState> emitter,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(TryCommentPostState());
-    try {
-      await socialRepository.createComment(
-        postId: event.postId,
-        content: event.content,
-      );
-      emitter(ResultCommentPostState());
-    } catch (e) {
-      emitter(ErrorCommentPostState(e.toString()));
-    }
+    await runWithLoading<void>(
+      emit: emitter,
+      action:
+          () async => await socialRepository.createComment(
+            postId: event.postId,
+            content: event.content,
+          ),
+    );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/models/social_comment_model.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/pages/pending_comments_page.dart';
@@ -79,14 +80,14 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
       ),
 
       body: SafeArea(
-        child: BlocListener<CommentPostBloc, CommentPostState>(
+        child: BlocListener<CommentPostBloc, BaseState>(
           listener: (context, state) {
-            if (state is ErrorCommentPostState) {
+            if (state is Error) {
               showDialog(
                 context: context,
                 builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? "Errore sconosciuto"),
               );
-            } else if (state is ResultCommentPostState) {
+            } else if (state is Success) {
               showDialog(
                 context: context,
                 builder: (context) => InsertConfirmDialog(type: PostType.comment),
@@ -338,9 +339,9 @@ class _CommentInput extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          BlocBuilder<CommentPostBloc, CommentPostState>(
+          BlocBuilder<CommentPostBloc, BaseState>(
             builder: (context, state) {
-              return state is TryCommentPostState
+              return state is Loading
                   ? SizedBox(
                     height: 40,
                     width: 40,

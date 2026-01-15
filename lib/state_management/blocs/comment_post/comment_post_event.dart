@@ -1,13 +1,6 @@
 part of 'comment_post_bloc.dart';
 
-sealed class CommentPostEvent extends Equatable {
-  const CommentPostEvent();
-
-  @override
-  List<Object> get props => [];
-}
-
-class TryCommentPostEvent extends CommentPostEvent {
+class TryCommentPostEvent extends BaseEvent {
   final String postId;
   final String content;
 
