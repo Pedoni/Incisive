@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/repositories/login_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'register_event.dart';
-part 'register_state.dart';
 
-class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
+class RegisterBloc extends BaseBloc {
   final LoginRepository loginRepository;
 
-  RegisterBloc({required this.loginRepository}) : super(InitRegisterState()) {
+  RegisterBloc({required this.loginRepository}) : super(Initial()) {
     on<TryRegisterEvent>(_register);
   }
 
@@ -29,21 +28,20 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   );
 
   FutureOr<void> _register(
-    RegisterEvent event,
-    Emitter<RegisterState> emitter,
+    TryRegisterEvent event,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(TryRegisterState());
+    emitter(Loading());
     try {
-      var e = event as TryRegisterEvent;
       await loginRepository.register(
-        e.email,
-        e.password,
-        e.firstName,
-        e.lastName,
+        event.email,
+        event.password,
+        event.firstName,
+        event.lastName,
       );
-      emitter(ResultRegisterState());
+      emitter(Success(null));
     } catch (e) {
-      emitter(ErrorRegisterState(e.toString()));
+      emitter(Error(e.toString()));
     }
   }
 }

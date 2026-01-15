@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/register/register_bloc.dart';
 import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
@@ -110,11 +111,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               const SizedBox(height: 10),
                               LoginTextField(isTextVisible: false, title: "Confirm password", controller: _confirmPasswordController),
                               const SizedBox(height: 15),
-                              BlocConsumer<RegisterBloc, RegisterState>(
+                              BlocConsumer<RegisterBloc, BaseState>(
                                 listener: (context, state) {
-                                  if (state is ResultRegisterState) {
+                                  if (state is Success) {
                                     Navigator.pushReplacementNamed(context, HomePage.routeName);
-                                  } else if (state is ErrorRegisterState) {
+                                  } else if (state is Error) {
                                     showDialog(
                                       context: context,
                                       builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto'),
@@ -125,7 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   return LoginButton(
                                     usernameController: _emailController,
                                     passwordController: _passwordController,
-                                    isLoading: state is TryRegisterState,
+                                    isLoading: state is Loading,
                                     login: _register,
                                     color: Color.fromARGB(255, 141, 90, 35),
                                     title: 'Create account',
