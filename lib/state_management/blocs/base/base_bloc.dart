@@ -14,9 +14,12 @@ abstract class BaseBloc extends Bloc<BaseEvent, BaseState> {
     emit(Loading());
     try {
       final result = await action();
-      emit(Success<T>(result));
-    } catch (e, st) {
-      addError(e, st);
+      if ((result is List && result.isEmpty) || result == null) {
+        emit(Empty());
+      } else {
+        emit(Success<T>(result));
+      }
+    } catch (e, _) {
       emit(Error(e.toString()));
     }
   }

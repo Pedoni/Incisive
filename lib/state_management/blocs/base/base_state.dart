@@ -11,6 +11,8 @@ final class Initial extends BaseState {}
 
 final class Loading extends BaseState {}
 
+final class Empty extends BaseState {}
+
 final class Success<T> extends BaseState {
   final T data;
   const Success(this.data);
