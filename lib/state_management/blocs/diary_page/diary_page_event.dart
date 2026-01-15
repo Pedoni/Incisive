@@ -1,13 +1,6 @@
 part of 'diary_page_bloc.dart';
 
-sealed class DiaryPageEvent extends Equatable {
-  const DiaryPageEvent();
-
-  @override
-  List<Object> get props => [];
-}
-
-class TryDiaryPageEvent extends DiaryPageEvent {
+class TryDiaryPageEvent extends BaseEvent {
   final DateTime dateTime;
 
   const TryDiaryPageEvent({required this.dateTime});

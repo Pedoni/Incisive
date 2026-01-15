@@ -1,17 +1,15 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/repositories/diary_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'diary_page_event.dart';
-part 'diary_page_state.dart';
 
-class DiaryPageBloc extends Bloc<DiaryPageEvent, DiaryPageState> {
+class DiaryPageBloc extends BaseBloc {
   final DiaryRepository diaryRepository;
 
-  DiaryPageBloc({required this.diaryRepository}) : super(InitDiaryPageState()) {
+  DiaryPageBloc({required this.diaryRepository}) : super(Initial()) {
     on<TryDiaryPageEvent>(_getPage);
   }
 
@@ -19,14 +17,11 @@ class DiaryPageBloc extends Bloc<DiaryPageEvent, DiaryPageState> {
 
   FutureOr<void> _getPage(
     TryDiaryPageEvent event,
-    Emitter<DiaryPageState> emitter,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(TryDiaryPageState());
-    try {
-      final entry = await diaryRepository.getPage(event.dateTime);
-      emitter(entry != null ? ResultDiaryPageState(entry: entry) : EmptyDiaryPageState());
-    } catch (e) {
-      emitter(ErrorDiaryPageState(e.toString()));
-    }
+    await runWithLoading(
+      emit: emitter,
+      action: () async => await diaryRepository.getPage(event.dateTime),
+    );
   }
 }
