@@ -1,17 +1,15 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/models/user_model.dart';
 import 'package:incisive/repositories/user_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'profile_event.dart';
-part 'profile_state.dart';
 
-class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+class ProfileBloc extends BaseBloc {
   final UserRepository userRepository;
 
-  ProfileBloc({required this.userRepository}) : super(InitialProfileState()) {
+  ProfileBloc({required this.userRepository}) : super(Initial()) {
     on<GetProfileEvent>(_getProfile);
     on<AddPointsEvent>(_addPoints);
   }
@@ -22,28 +20,28 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   FutureOr<void> _getProfile(
     GetProfileEvent event,
-    Emitter<ProfileState> emitter,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(LoadingProfileState());
+    emitter(Loading());
     try {
       final user = await userRepository.getUser();
-      emitter(ResultProfileState(user));
+      emitter(Success(user));
     } catch (e) {
-      emitter(ErrorProfileState(e.toString()));
+      emitter(Error(e.toString()));
     }
   }
 
   FutureOr<void> _addPoints(
     AddPointsEvent event,
-    Emitter<ProfileState> emitter,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(LoadingProfileState());
+    emitter(Loading());
     try {
       await userRepository.addPoints(points: event.points);
       final user = await userRepository.getUser();
-      emitter(ResultProfileState(user));
+      emitter(Success(user));
     } catch (e) {
-      emitter(ErrorProfileState(e.toString()));
+      emitter(Error(e.toString()));
     }
   }
 }
