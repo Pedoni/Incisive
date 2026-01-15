@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_upsert/gratitude_upsert_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
@@ -104,9 +105,9 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
         elevation: 0,
       ),
       backgroundColor: const Color(0xFFFFF8E8),
-      body: BlocListener<GratitudeUpsertBloc, GratitudeUpsertState>(
+      body: BlocListener<GratitudeUpsertBloc, BaseState>(
         listener: (context, state) {
-          if (state is ResultUpsertPageState) {
+          if (state is Success) {
             context.read<GratitudePageBloc>().getGratitudePage(widget.date);
             if (!isEditing) {
               context.read<ProfileBloc>().addPoints(10);
@@ -121,7 +122,7 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
                     points: isEditing ? null : 10,
                   ),
             );
-          } else if (state is ErrorUpsertPageState) {
+          } else if (state is Error) {
             showDialog(
               context: context,
               builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto.'),
@@ -153,7 +154,7 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
               // BOTTONE CONFERMA
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-                child: BlocBuilder<GratitudeUpsertBloc, GratitudeUpsertState>(
+                child: BlocBuilder<GratitudeUpsertBloc, BaseState>(
                   builder: (context, state) {
                     final screenWidth = MediaQuery.sizeOf(context).width;
                     return ElevatedButton(
@@ -165,7 +166,7 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
                         fixedSize: Size.fromWidth(screenWidth * 0.4),
                       ),
                       child:
-                          state is LoadingUpsertPageState
+                          state is Loading
                               ? SizedBox(
                                 height: 25,
                                 width: 25,
