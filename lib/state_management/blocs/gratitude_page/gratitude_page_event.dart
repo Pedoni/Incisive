@@ -1,6 +1,13 @@
 part of 'gratitude_page_bloc.dart';
 
-class GetGratitudePageEvent extends BaseEvent {
+sealed class GratitudePageEvent extends Equatable {
+  const GratitudePageEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetGratitudePageEvent extends GratitudePageEvent {
   final DateTime dateTime;
 
   const GetGratitudePageEvent({required this.dateTime});
