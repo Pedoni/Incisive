@@ -1,32 +1,30 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/repositories/login_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'login_event.dart';
-part 'login_state.dart';
 
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
+class LoginBloc extends Bloc<BaseEvent, BaseState> {
   final LoginRepository loginRepository;
 
-  LoginBloc({required this.loginRepository}) : super(InitLoginState()) {
+  LoginBloc({required this.loginRepository}) : super(Initial()) {
     on<TryLoginEvent>(_login);
   }
 
   void login(String username, String password) => add(TryLoginEvent(username: username, password: password));
 
   FutureOr<void> _login(
-    LoginEvent event,
-    Emitter<LoginState> emitter,
+    TryLoginEvent event,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(TryLoginState());
+    emitter(Loading());
     try {
-      var e = event as TryLoginEvent;
-      await loginRepository.login(e.username, e.password);
-      emitter(ResultLoginState());
+      await loginRepository.login(event.username, event.password);
+      emitter(Success(null));
     } catch (e) {
-      emitter(ErrorLoginState(e.toString()));
+      emitter(Error(e.toString()));
     }
   }
 

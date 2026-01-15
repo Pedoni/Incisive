@@ -27,13 +27,15 @@ class CreatePostBloc extends BaseBloc {
     TryCreatePostEvent event,
     Emitter<BaseState> emitter,
   ) async {
-    await runWithLoading(
-      emit: emitter,
-      action:
-          () async => await socialRepository.createPost(
-            title: event.title,
-            content: event.content,
-          ),
-    );
+    emitter(Loading());
+    try {
+      await socialRepository.createPost(
+        title: event.title,
+        content: event.content,
+      );
+      emitter(Success(null));
+    } catch (e) {
+      emitter(Error(e.toString()));
+    }
   }
 }

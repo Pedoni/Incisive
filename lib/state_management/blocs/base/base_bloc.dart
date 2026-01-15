@@ -6,25 +6,4 @@ part 'base_state.dart';
 
 abstract class BaseBloc extends Bloc<BaseEvent, BaseState> {
   BaseBloc(super.initialState);
-
-  Future<void> runWithLoading<T>({
-    required Emitter<BaseState> emit,
-    required Future<T> Function() action,
-  }) async {
-    emit(Loading());
-    try {
-      final result = await action();
-      if ((result is List && result.isEmpty) || result == null) {
-        emit(Empty());
-      } else {
-        emit(Success<T>(result));
-      }
-    } catch (e, _) {
-      emit(Error(e.toString()));
-    }
-  }
-}
-
-extension SuccessX on BaseState {
-  T? data<T>() => this is Success<T> ? (this as Success<T>).data : null;
 }

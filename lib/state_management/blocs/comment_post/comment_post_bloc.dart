@@ -27,13 +27,15 @@ class CommentPostBloc extends BaseBloc {
     TryCommentPostEvent event,
     Emitter<BaseState> emitter,
   ) async {
-    await runWithLoading<void>(
-      emit: emitter,
-      action:
-          () async => await socialRepository.createComment(
-            postId: event.postId,
-            content: event.content,
-          ),
-    );
+    emitter(Loading());
+    try {
+      await socialRepository.createComment(
+        postId: event.postId,
+        content: event.content,
+      );
+      emitter(Success(null));
+    } catch (e) {
+      emitter(Error(e.toString()));
+    }
   }
 }

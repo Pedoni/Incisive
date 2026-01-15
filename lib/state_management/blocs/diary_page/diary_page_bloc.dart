@@ -19,9 +19,12 @@ class DiaryPageBloc extends BaseBloc {
     TryDiaryPageEvent event,
     Emitter<BaseState> emitter,
   ) async {
-    await runWithLoading(
-      emit: emitter,
-      action: () async => await diaryRepository.getPage(event.dateTime),
-    );
+    emitter(Loading());
+    try {
+      final entry = await diaryRepository.getPage(event.dateTime);
+      emitter(entry != null ? Success(entry) : Empty());
+    } catch (e) {
+      emitter(Error(e.toString()));
+    }
   }
 }

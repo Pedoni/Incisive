@@ -17,9 +17,12 @@ class BreathingBloc extends BaseBloc {
     TryCompleteBreathingEvent event,
     Emitter<BaseState> emitter,
   ) async {
-    await runWithLoading<int>(
-      emit: emitter,
-      action: () async => await breathingRepository.completeBreathing(),
-    );
+    emitter(Loading());
+    try {
+      final points = await breathingRepository.completeBreathing();
+      emitter(Success(points));
+    } catch (e) {
+      emitter(Error(e.toString()));
+    }
   }
 }
