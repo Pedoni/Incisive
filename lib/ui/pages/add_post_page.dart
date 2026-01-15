@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/create_post/create_post_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
@@ -11,9 +12,7 @@ import 'package:incisive/utils/functions.dart';
 class AddPostPage extends StatefulWidget {
   static const routeName = '/addPostPage';
 
-  const AddPostPage({
-    super.key,
-  });
+  const AddPostPage({super.key});
 
   @override
   State<AddPostPage> createState() => _AddPostPageState();
@@ -54,18 +53,17 @@ class _AddPostPageState extends State<AddPostPage> {
         elevation: 0,
       ),
       backgroundColor: const Color(0xFFFFF8E8),
-      body: BlocListener<CreatePostBloc, CreatePostState>(
+      body: BlocListener<CreatePostBloc, BaseState>(
         listener: (context, state) {
-          if (state is ResultCreatePostState) {
+          if (state is Success) {
             context.read<SocialBloc>().getDailyPosts(DateTime.now());
             Navigator.pop(context);
-
             showDialog(
               context: context,
               barrierDismissible: false,
               builder: (context) => InsertConfirmDialog(type: PostType.gdInsert),
             );
-          } else if (state is ErrorCreatePostState) {
+          } else if (state is Error) {
             showDialog(
               context: context,
               builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto.'),
@@ -159,7 +157,7 @@ class _AddPostPageState extends State<AddPostPage> {
               ),
               SizedBox(height: 20),
               Center(
-                child: BlocBuilder<CreatePostBloc, CreatePostState>(
+                child: BlocBuilder<CreatePostBloc, BaseState>(
                   builder: (context, state) {
                     final screenWidth = MediaQuery.sizeOf(context).width;
                     return ElevatedButton(
@@ -172,12 +170,9 @@ class _AddPostPageState extends State<AddPostPage> {
                                 : Color.fromARGB(255, 141, 90, 35),
                         fixedSize: Size.fromWidth(screenWidth * 0.4),
                       ),
-                      onPressed:
-                          _titleController.text.length < 5 || _contentController.text.length < 20 || state is TryCreatePostState
-                              ? null
-                              : _save,
+                      onPressed: _titleController.text.length < 5 || _contentController.text.length < 20 || state is Loading ? null : _save,
                       child:
-                          state is TryCreatePostState
+                          state is Loading
                               ? SizedBox(
                                 height: 25,
                                 width: 25,

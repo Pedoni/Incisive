@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/repositories/social_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'create_post_event.dart';
-part 'create_post_state.dart';
 
-class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
+class CreatePostBloc extends BaseBloc {
   final SocialRepository socialRepository;
 
-  CreatePostBloc({required this.socialRepository}) : super(InitCreatePostState()) {
+  CreatePostBloc({required this.socialRepository}) : super(Initial()) {
     on<TryCreatePostEvent>(_createPost);
   }
 
@@ -26,17 +25,15 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
 
   FutureOr<void> _createPost(
     TryCreatePostEvent event,
-    Emitter<CreatePostState> emitter,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(TryCreatePostState());
-    try {
-      await socialRepository.createPost(
-        title: event.title,
-        content: event.content,
-      );
-      emitter(ResultCreatePostState());
-    } catch (e) {
-      emitter(ErrorCreatePostState(e.toString()));
-    }
+    await runWithLoading(
+      emit: emitter,
+      action:
+          () async => await socialRepository.createPost(
+            title: event.title,
+            content: event.content,
+          ),
+    );
   }
 }
