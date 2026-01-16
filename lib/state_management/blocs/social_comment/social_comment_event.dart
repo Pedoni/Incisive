@@ -1,13 +1,6 @@
 part of 'social_comment_bloc.dart';
 
-sealed class SocialCommentEvent extends Equatable {
-  const SocialCommentEvent();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class GetCommentsForPostEvent extends SocialCommentEvent {
+class GetCommentsForPostEvent extends BaseEvent {
   final String postId;
 
   const GetCommentsForPostEvent(this.postId);
@@ -16,7 +9,7 @@ class GetCommentsForPostEvent extends SocialCommentEvent {
   List<Object?> get props => [postId];
 }
 
-class CreateCommentEvent extends SocialCommentEvent {
+class CreateCommentEvent extends BaseEvent {
   final String postId;
   final String content;
 
@@ -26,7 +19,7 @@ class CreateCommentEvent extends SocialCommentEvent {
   List<Object?> get props => [postId, content];
 }
 
-class ApproveCommentEvent extends SocialCommentEvent {
+class ApproveCommentEvent extends BaseEvent {
   final String commentId;
   final String postId;
 
@@ -36,7 +29,7 @@ class ApproveCommentEvent extends SocialCommentEvent {
   List<Object?> get props => [commentId, postId];
 }
 
-class VoteCommentEvent extends SocialCommentEvent {
+class VoteCommentEvent extends BaseEvent {
   final String commentId;
   final String postId;
   final bool isUpvote;
@@ -51,7 +44,7 @@ class VoteCommentEvent extends SocialCommentEvent {
   List<Object?> get props => [commentId, postId, isUpvote];
 }
 
-class RejectCommentEvent extends SocialCommentEvent {
+class RejectCommentEvent extends BaseEvent {
   final String commentId;
   final String postId;
 

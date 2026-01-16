@@ -94,9 +94,9 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
               );
             }
           },
-          child: BlocBuilder<SocialCommentBloc, SocialCommentState>(
+          child: BlocBuilder<SocialCommentBloc, BaseState>(
             builder: (context, state) {
-              final comments = state is ResultSocialCommentState ? state.comments : <SocialCommentModel>[];
+              final comments = state is Success<List<SocialCommentModel>> ? state.data : <SocialCommentModel>[];
 
               return Column(
                 children: [
@@ -166,7 +166,7 @@ class _PostHeader extends StatelessWidget {
 }
 
 class _CommentsList extends StatelessWidget {
-  final SocialCommentState state;
+  final BaseState state;
   final List<SocialCommentModel> comments;
   final String postAuthorId;
   final String postId;
@@ -180,7 +180,7 @@ class _CommentsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (state is LoadingSocialCommentState || state is InitSocialCommentState) {
+    if (state is Loading || state is Initial) {
       final list = List.generate(10, (index) => Constants.mockedPostItem);
       return Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -195,7 +195,7 @@ class _CommentsList extends StatelessWidget {
       );
     }
 
-    if (state is EmptySocialCommentState || (state is ResultSocialCommentState && comments.where((c) => c.approved).isEmpty)) {
+    if (state is Empty || (state is Success && comments.where((c) => c.approved).isEmpty)) {
       return EmptyWidget(text: "Ancora nessun commento");
     }
 

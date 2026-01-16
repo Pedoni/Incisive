@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/models/social_comment_model.dart';
 import 'package:incisive/models/social_post_model.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
 
@@ -31,18 +32,18 @@ class PendingCommentsPage extends StatelessWidget {
         foregroundColor: const Color.fromARGB(255, 141, 90, 35),
         elevation: 0,
       ),
-      body: BlocBuilder<SocialCommentBloc, SocialCommentState>(
+      body: BlocBuilder<SocialCommentBloc, BaseState>(
         builder: (context, state) {
-          if (state is LoadingSocialCommentState) {
+          if (state is Loading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state is EmptySocialCommentState) {
+          if (state is Empty) {
             return EmptyWidget(text: "Nessun commento in attesa");
           }
 
-          if (state is ResultSocialCommentState) {
-            final pendingComments = state.comments.where((c) => !c.approved).toList();
+          if (state is Success<List<SocialCommentModel>>) {
+            final pendingComments = state.data.where((c) => !c.approved).toList();
 
             if (pendingComments.isEmpty) {
               return EmptyWidget(text: "Nessun commento in attesa");

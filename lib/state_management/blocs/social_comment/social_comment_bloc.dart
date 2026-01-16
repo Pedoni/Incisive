@@ -1,16 +1,14 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:incisive/log/main_logger.dart';
-import 'package:incisive/models/social_comment_model.dart';
 import 'package:incisive/repositories/social_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'social_comment_event.dart';
-part 'social_comment_state.dart';
 
-class SocialCommentBloc extends Bloc<SocialCommentEvent, SocialCommentState> {
+class SocialCommentBloc extends BaseBloc {
   final SocialRepository socialRepository;
 
-  SocialCommentBloc({required this.socialRepository}) : super(InitSocialCommentState()) {
+  SocialCommentBloc({required this.socialRepository}) : super(Initial()) {
     on<GetCommentsForPostEvent>(_onGetCommentsForPost);
     on<CreateCommentEvent>(_onCreateComment);
     on<ApproveCommentEvent>(_onApproveComment);
@@ -30,30 +28,30 @@ class SocialCommentBloc extends Bloc<SocialCommentEvent, SocialCommentState> {
 
   Future<void> _onGetCommentsForPost(
     GetCommentsForPostEvent event,
-    Emitter<SocialCommentState> emit,
+    Emitter<BaseState> emit,
   ) async {
     try {
-      emit(LoadingSocialCommentState());
+      emit(Loading());
 
       final comments = await socialRepository.getCommentsForPost(
         postId: event.postId,
       );
 
       emit(
-        comments.isEmpty ? EmptySocialCommentState() : ResultSocialCommentState(comments),
+        comments.isEmpty ? Empty() : Success(comments),
       );
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
-      emit(ErrorSocialCommentState(e.toString()));
+      emit(Error(e.toString()));
     }
   }
 
   Future<void> _onCreateComment(
     CreateCommentEvent event,
-    Emitter<SocialCommentState> emit,
+    Emitter<BaseState> emit,
   ) async {
     try {
-      emit(LoadingSocialCommentState());
+      emit(Loading());
 
       await socialRepository.createComment(
         postId: event.postId,
@@ -65,20 +63,20 @@ class SocialCommentBloc extends Bloc<SocialCommentEvent, SocialCommentState> {
       );
 
       emit(
-        comments.isEmpty ? EmptySocialCommentState() : ResultSocialCommentState(comments),
+        comments.isEmpty ? Empty() : Success(comments),
       );
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
-      emit(ErrorSocialCommentState(e.toString()));
+      emit(Error(e.toString()));
     }
   }
 
   Future<void> _onApproveComment(
     ApproveCommentEvent event,
-    Emitter<SocialCommentState> emit,
+    Emitter<BaseState> emit,
   ) async {
     try {
-      emit(LoadingSocialCommentState());
+      emit(Loading());
 
       await socialRepository.approveComment(
         commentId: event.commentId,
@@ -89,41 +87,37 @@ class SocialCommentBloc extends Bloc<SocialCommentEvent, SocialCommentState> {
       );
 
       emit(
-        comments.isEmpty ? EmptySocialCommentState() : ResultSocialCommentState(comments),
+        comments.isEmpty ? Empty() : Success(comments),
       );
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
-      emit(ErrorSocialCommentState(e.toString()));
+      emit(Error(e.toString()));
     }
   }
 
   Future<void> _onRejectComment(
     RejectCommentEvent event,
-    Emitter<SocialCommentState> emit,
+    Emitter<BaseState> emit,
   ) async {
     try {
-      emit(LoadingSocialCommentState());
+      emit(Loading());
 
-      await socialRepository.rejectComment(
-        commentId: event.commentId,
-      );
+      await socialRepository.rejectComment(commentId: event.commentId);
 
-      final comments = await socialRepository.getCommentsForPost(
-        postId: event.postId,
-      );
+      final comments = await socialRepository.getCommentsForPost(postId: event.postId);
 
       emit(
-        comments.isEmpty ? EmptySocialCommentState() : ResultSocialCommentState(comments),
+        comments.isEmpty ? Empty() : Success(comments),
       );
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
-      emit(ErrorSocialCommentState(e.toString()));
+      emit(Error(e.toString()));
     }
   }
 
   Future<void> _onVoteComment(
     VoteCommentEvent event,
-    Emitter<SocialCommentState> emit,
+    Emitter<BaseState> emit,
   ) async {
     try {
       // niente loading full-screen per il voto
@@ -136,10 +130,10 @@ class SocialCommentBloc extends Bloc<SocialCommentEvent, SocialCommentState> {
         postId: event.postId,
       );
 
-      emit(ResultSocialCommentState(comments));
+      emit(Success(comments));
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
-      emit(ErrorSocialCommentState(e.toString()));
+      emit(Error(e.toString()));
     }
   }
 }
