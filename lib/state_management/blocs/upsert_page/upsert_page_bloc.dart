@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/repositories/diary_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'upsert_page_event.dart';
-part 'upsert_page_state.dart';
 
-class UpsertPageBloc extends Bloc<UpsertPageEvent, UpsertPageState> {
+class UpsertPageBloc extends BaseBloc {
   final DiaryRepository diaryRepository;
 
-  UpsertPageBloc({required this.diaryRepository}) : super(InitUpsertPageState()) {
+  UpsertPageBloc({required this.diaryRepository}) : super(Initial()) {
     on<TryUpsertPageEvent>(_upsertPage);
   }
 
@@ -26,14 +25,14 @@ class UpsertPageBloc extends Bloc<UpsertPageEvent, UpsertPageState> {
 
   FutureOr<void> _upsertPage(
     TryUpsertPageEvent event,
-    Emitter<UpsertPageState> emitter,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(TryUpsertPageState());
+    emitter(Loading());
     try {
       await diaryRepository.upsertPage(date: event.dateTime, text: event.text);
-      emitter(ResultUpsertPageState());
+      emitter(Success(null));
     } catch (e) {
-      emitter(ErrorUpsertPageState(e.toString()));
+      emitter(Error(e.toString()));
     }
   }
 }

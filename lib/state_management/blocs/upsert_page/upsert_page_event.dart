@@ -1,12 +1,6 @@
 part of 'upsert_page_bloc.dart';
 
-sealed class UpsertPageEvent {
-  const UpsertPageEvent();
-
-  List<Object> get props => [];
-}
-
-class TryUpsertPageEvent extends UpsertPageEvent {
+class TryUpsertPageEvent extends BaseEvent {
   final DateTime dateTime;
   final String text;
 
