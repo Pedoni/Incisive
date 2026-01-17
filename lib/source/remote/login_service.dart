@@ -3,38 +3,33 @@ import 'package:incisive/utils/exceptions.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginService extends BaseService {
-  /// =========================
-  /// LOGIN
-  /// =========================
+  Future<void> login(
+    String email,
+    String password,
+  ) async {
+    return await guard("Login", () async {
+      try {
+        final response = await supabase.auth.signInWithPassword(
+          email: email,
+          password: password,
+        );
 
-  Future<void> login(String email, String password) async {
-    try {
-      final response = await supabase.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
-
-      if (response.session == null) {
+        if (response.session == null) {
+          throw IncisiveException('Credenziali errate.');
+        }
+      } on AuthApiException {
         throw IncisiveException('Credenziali errate.');
+      } catch (_) {
+        throw IncisiveException('Errore durante il login.');
       }
-    } on AuthApiException {
-      throw IncisiveException('Credenziali errate.');
-    } catch (_) {
-      throw IncisiveException('Errore durante il login.');
-    }
+    });
   }
-
-  /// =========================
-  /// LOGOUT
-  /// =========================
 
   Future<void> logout() async {
-    await supabase.auth.signOut();
+    return await guard("Logout", () async {
+      await supabase.auth.signOut();
+    });
   }
-
-  /// =========================
-  /// REGISTER
-  /// =========================
 
   Future<void> register(
     String email,
@@ -42,33 +37,31 @@ class LoginService extends BaseService {
     String firstName,
     String lastName,
   ) async {
-    try {
-      final response = await supabase.auth.signUp(
-        email: email,
-        password: password,
-      );
+    return await guard("Register", () async {
+      try {
+        final response = await supabase.auth.signUp(
+          email: email,
+          password: password,
+        );
 
-      final user = response.user;
-      if (user == null) {
-        throw IncisiveException('Errore nella registrazione.');
+        final user = response.user;
+        if (user == null) {
+          throw IncisiveException('Errore nella registrazione.');
+        }
+
+        await supabase.from('user').insert({
+          'id': user.id,
+          'firstName': firstName,
+          'lastName': lastName,
+          'points': 0,
+        });
+      } on AuthApiException catch (e) {
+        throw IncisiveException(e.message);
+      } catch (_) {
+        throw IncisiveException('Errore creazione profilo utente.');
       }
-
-      await supabase.from('user').insert({
-        'id': user.id,
-        'firstName': firstName,
-        'lastName': lastName,
-        'points': 0,
-      });
-    } on AuthApiException catch (e) {
-      throw IncisiveException(e.message);
-    } catch (_) {
-      throw IncisiveException('Errore creazione profilo utente.');
-    }
+    });
   }
-
-  /// =========================
-  /// SESSION
-  /// =========================
 
   bool isLogged() => supabase.auth.currentSession != null;
 }

@@ -1,3 +1,4 @@
+import 'package:incisive/log/main_logger.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 abstract class BaseService {
@@ -11,7 +12,16 @@ abstract class BaseService {
     return user.id;
   }
 
-  Never handleError(Object e) {
-    throw Exception(e.toString());
+  Future<T> guard<T>(
+    String action,
+    Future<T> Function() body,
+  ) async {
+    try {
+      MainLogger.logInfo(action);
+      return await body();
+    } catch (e, stackTrace) {
+      MainLogger.logError(e, stackTrace);
+      rethrow;
+    }
   }
 }
