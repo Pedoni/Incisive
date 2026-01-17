@@ -39,7 +39,7 @@ class RegisterBloc extends BaseBloc {
         event.firstName,
         event.lastName,
       );
-      emitter(Success(null));
+      emitter(Success<void>(null));
     } catch (e) {
       emitter(Error(e.toString()));
     }

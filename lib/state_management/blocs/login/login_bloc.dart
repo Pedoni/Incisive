@@ -22,7 +22,7 @@ class LoginBloc extends Bloc<BaseEvent, BaseState> {
     emitter(Loading());
     try {
       await loginRepository.login(event.username, event.password);
-      emitter(Success(null));
+      emitter(Success<void>(null));
     } catch (e) {
       emitter(Error(e.toString()));
     }

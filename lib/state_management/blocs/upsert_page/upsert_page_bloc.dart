@@ -30,7 +30,7 @@ class UpsertPageBloc extends BaseBloc {
     emitter(Loading());
     try {
       await diaryRepository.upsertPage(date: event.dateTime, text: event.text);
-      emitter(Success(null));
+      emitter(Success<void>(null));
     } catch (e) {
       emitter(Error(e.toString()));
     }

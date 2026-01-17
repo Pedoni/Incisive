@@ -33,7 +33,7 @@ class CreatePostBloc extends BaseBloc {
         title: event.title,
         content: event.content,
       );
-      emitter(Success(null));
+      emitter(Success<void>(null));
     } catch (e) {
       emitter(Error(e.toString()));
     }

@@ -30,7 +30,7 @@ class GratitudeUpsertBloc extends BaseBloc {
     emitter(Loading());
     try {
       await gratitudeRepository.upsertPage(pageId: event.pageId, texts: event.texts);
-      emitter(Success(null));
+      emitter(Success<void>(null));
     } catch (e) {
       emitter(Error(e.toString()));
     }

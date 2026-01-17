@@ -33,7 +33,7 @@ class CommentPostBloc extends BaseBloc {
         postId: event.postId,
         content: event.content,
       );
-      emitter(Success(null));
+      emitter(Success<void>(null));
     } catch (e) {
       emitter(Error(e.toString()));
     }
