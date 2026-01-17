@@ -5,20 +5,12 @@ import 'package:incisive/source/remote/base_service.dart';
 class SocialService extends BaseService {
   Future<List<Map<String, dynamic>>> getDailyPosts({required DateTime date}) async {
     return await guard("Get daily social posts", () async {
-      final from = startOfDay(date).toUtc();
-      final to = startOfNextDay(date).toUtc();
+      final from = startOfDayUtc(date);
+      final to = startOfNextDayUtc(date);
 
       final response = await supabase
-          .from('social_post')
-          .select('''
-          id,
-          datetime,
-          authorId,
-          content,
-          title,
-          social_comment!left(count)
-        ''')
-          .eq('social_comment.approved', true)
+          .from('social_post_with_approved_comment_count')
+          .select()
           .gte('datetime', from.toIso8601String())
           .lt('datetime', to.toIso8601String())
           .order('datetime', ascending: false);

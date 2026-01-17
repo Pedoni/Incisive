@@ -14,10 +14,8 @@ class SocialRepository extends BaseRepository {
       'Get daily social posts',
       () async {
         final list = await socialService.getDailyPosts(date: date);
-
         return list.map((e) {
-          final comments = e['social_comment'] as List<dynamic>?;
-          final approvedCount = comments != null && comments.isNotEmpty ? comments.first['count'] as int : 0;
+          final approvedCount = e['approved_comment_count'];
 
           return SocialPostModel(
             id: e['id'],
