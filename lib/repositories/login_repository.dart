@@ -6,15 +6,15 @@ class LoginRepository extends BaseRepository {
 
   LoginRepository({required this.loginService});
 
-  Future<void> login(String email, String password) {
-    return guard(
+  Future<void> login(String email, String password) async {
+    return await guard(
       'Login user',
       () => loginService.login(email, password),
     );
   }
 
-  Future<void> logout() {
-    return guard(
+  Future<void> logout() async {
+    return await guard(
       'Logout user',
       () => loginService.logout(),
     );
@@ -25,8 +25,8 @@ class LoginRepository extends BaseRepository {
     String password,
     String firstName,
     String lastName,
-  ) {
-    return guard(
+  ) async {
+    return await guard(
       'Register user',
       () => loginService.register(
         email,

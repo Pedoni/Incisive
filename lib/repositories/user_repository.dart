@@ -7,25 +7,15 @@ class UserRepository extends BaseRepository {
 
   UserRepository({required this.userService});
 
-  /// =========================
-  /// GET USER
-  /// =========================
-
-  Future<UserModel> getUser() {
-    return guard(
+  Future<UserModel> getUser() async {
+    return await guard(
       'Get user profile',
       () => userService.getUser(),
     );
   }
 
-  /// =========================
-  /// ADD POINTS
-  /// =========================
-
-  Future<void> addPoints({
-    required int points,
-  }) {
-    return guard(
+  Future<void> addPoints({required int points}) async {
+    return await guard(
       'Add user points',
       () => userService.addPoints(points: points),
     );

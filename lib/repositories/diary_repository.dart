@@ -7,12 +7,8 @@ class DiaryRepository extends BaseRepository {
 
   DiaryRepository({required this.diaryService});
 
-  /// =========================
-  /// GET PAGE
-  /// =========================
-
-  Future<DiaryEntry?> getPage(DateTime date) {
-    return guard(
+  Future<DiaryEntry?> getPage(DateTime date) async {
+    return await guard(
       'Get diary page',
       () async {
         final res = await diaryService.getPage(date: date);
@@ -30,15 +26,11 @@ class DiaryRepository extends BaseRepository {
     );
   }
 
-  /// =========================
-  /// UPSERT PAGE
-  /// =========================
-
   Future<void> upsertPage({
     required DateTime date,
     required String text,
-  }) {
-    return guard(
+  }) async {
+    return await guard(
       'Upsert diary page',
       () => diaryService.upsertDiaryPage(
         date: date,
@@ -47,12 +39,8 @@ class DiaryRepository extends BaseRepository {
     );
   }
 
-  /// =========================
-  /// MOOD
-  /// =========================
-
-  Future<Map<DateTime, double>> getMood() {
-    return guard(
+  Future<Map<DateTime, double>> getMood() async {
+    return await guard(
       'Get mood',
       () => diaryService.getMood(),
     );

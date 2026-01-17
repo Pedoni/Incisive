@@ -7,12 +7,8 @@ class GratitudeRepository extends BaseRepository {
 
   GratitudeRepository({required this.gratitudeService});
 
-  /// =========================
-  /// GET PAGE
-  /// =========================
-
-  Future<GratitudePageModel> getPage(DateTime date) {
-    return guard(
+  Future<GratitudePageModel> getPage(DateTime date) async {
+    return await guard(
       'Get gratitude page',
       () async {
         final page = await gratitudeService.getPage(date: date);
@@ -27,15 +23,11 @@ class GratitudeRepository extends BaseRepository {
     );
   }
 
-  /// =========================
-  /// UPSERT PAGE
-  /// =========================
-
   Future<void> upsertPage({
     required String pageId,
     required List<String> texts,
-  }) {
-    return guard(
+  }) async {
+    return await guard(
       'Upsert gratitude page',
       () => gratitudeService.upsertNotes(
         pageId: pageId,

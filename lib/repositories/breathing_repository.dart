@@ -6,8 +6,8 @@ class BreathingRepository extends BaseRepository {
 
   BreathingRepository({required this.breathingService});
 
-  Future<int> completeBreathing() {
-    return guard(
+  Future<int> completeBreathing() async {
+    return await guard(
       'Complete breathing session',
       () => breathingService.completeBreathing(),
     );

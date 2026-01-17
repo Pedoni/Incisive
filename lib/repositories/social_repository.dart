@@ -9,12 +9,8 @@ class SocialRepository extends BaseRepository {
 
   SocialRepository({required this.socialService});
 
-  /// =========================
-  /// POSTS
-  /// =========================
-
-  Future<List<SocialPostModel>> getDailyPosts(DateTime date) {
-    return guard(
+  Future<List<SocialPostModel>> getDailyPosts(DateTime date) async {
+    return await guard(
       'Get daily social posts',
       () async {
         final list = await socialService.getDailyPosts(date: date);
@@ -39,8 +35,8 @@ class SocialRepository extends BaseRepository {
   Future<void> createPost({
     required String title,
     required String content,
-  }) {
-    return guard(
+  }) async {
+    return await guard(
       'Create social post',
       () => socialService.createPost(
         title: title,
@@ -49,14 +45,8 @@ class SocialRepository extends BaseRepository {
     );
   }
 
-  /// =========================
-  /// COMMENTS
-  /// =========================
-
-  Future<List<SocialCommentModel>> getCommentsForPost({
-    required String postId,
-  }) {
-    return guard(
+  Future<List<SocialCommentModel>> getCommentsForPost({required String postId}) async {
+    return await guard(
       'Get comments for post $postId',
       () async {
         final response = await socialService.getCommentsForPost(postId: postId);
@@ -78,8 +68,8 @@ class SocialRepository extends BaseRepository {
   Future<void> createComment({
     required String postId,
     required String content,
-  }) {
-    return guard(
+  }) async {
+    return await guard(
       'Create comment on post $postId',
       () => socialService.createComment(
         postId: postId,
@@ -88,10 +78,8 @@ class SocialRepository extends BaseRepository {
     );
   }
 
-  Future<void> approveComment({
-    required String commentId,
-  }) {
-    return guard(
+  Future<void> approveComment({required String commentId}) async {
+    return await guard(
       'Approve comment $commentId',
       () => socialService.approveComment(
         commentId: commentId,
@@ -99,10 +87,8 @@ class SocialRepository extends BaseRepository {
     );
   }
 
-  Future<void> rejectComment({
-    required String commentId,
-  }) {
-    return guard(
+  Future<void> rejectComment({required String commentId}) async {
+    return await guard(
       'Reject comment $commentId',
       () => socialService.rejectComment(
         commentId: commentId,
@@ -113,8 +99,8 @@ class SocialRepository extends BaseRepository {
   Future<void> voteComment({
     required String commentId,
     required bool isUpvote,
-  }) {
-    return guard(
+  }) async {
+    return await guard(
       'Vote comment $commentId (upvote=$isUpvote)',
       () => socialService.voteComment(
         commentId: commentId,
