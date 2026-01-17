@@ -1,7 +1,9 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/navigation/args/upsert_gratitude_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/ui/pages/gratitude_upsert_page.dart';
@@ -55,10 +57,9 @@ class _GratitudePageState extends State<GratitudePage> {
               Initial() || Loading() || Error() => null,
 
               Empty(data: final entry) || Success(data: final entry) => () {
-                Navigator.pushNamed(
-                  context,
+                context.push(
                   GratitudeUpsertPage.routeName,
-                  arguments: [entry, _selectedDate],
+                  extra: UpsertGratitudeArgs(date: _selectedDate, page: entry),
                 );
               },
             },

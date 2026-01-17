@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:speech_to_text/speech_recognition_error.dart' as stte;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -153,8 +154,8 @@ class _SpeechDialogState extends State<SpeechDialog> {
           ),
           onPressed: () async {
             await _stopListening();
-            if (context.mounted) {
-              Navigator.of(context).pop();
+            if (context.mounted && context.canPop()) {
+              context.pop();
             }
           },
         ),
@@ -175,7 +176,9 @@ class _SpeechDialogState extends State<SpeechDialog> {
           onPressed: () async {
             await _stopListening();
             if (context.mounted) {
-              Navigator.of(context).pop(_recognizedText);
+              if (context.canPop()) {
+                context.pop(_recognizedText);
+              }
             }
           },
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/models/social_comment_model.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
@@ -119,8 +120,9 @@ class _PendingCommentItem extends StatelessWidget {
                 ),
                 onPressed: () {
                   context.read<SocialCommentBloc>().approveComment(comment.id, postId);
-
-                  Navigator.pop(context);
+                  if (context.canPop()) {
+                    context.pop();
+                  }
                 },
               ),
             ],

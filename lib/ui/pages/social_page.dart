@@ -1,6 +1,7 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
@@ -36,13 +37,7 @@ class _SocialPageState extends State<SocialPage> {
       backgroundColor: const Color(0xFFFFF8E8),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 141, 90, 35),
-
-        onPressed:
-            () => Navigator.pushNamed(
-              context,
-              AddPostPage.routeName,
-              arguments: [_selectedDate, null],
-            ),
+        onPressed: () => context.push(AddPostPage.routeName),
         child: Icon(Icons.add, color: Colors.white),
       ),
       appBar: AppBar(

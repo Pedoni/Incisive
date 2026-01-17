@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
@@ -112,7 +113,9 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
             if (!isEditing) {
               context.read<ProfileBloc>().addPoints(10);
             }
-            Navigator.of(context).pop();
+            if (context.canPop()) {
+              context.pop();
+            }
             showDialog(
               context: context,
               barrierDismissible: false,

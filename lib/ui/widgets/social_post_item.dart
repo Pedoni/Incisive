@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/models/social_post_model.dart';
+import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/ui/pages/social_post_detail_page.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
@@ -16,7 +18,11 @@ class SocialPostItem extends StatelessWidget {
     final time = TimeOfDay.fromDateTime(post.datetime.toLocal());
 
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, SocialPostDetailPage.routeName, arguments: post),
+      onTap:
+          () => context.push(
+            SocialPostDetailPage.routeName,
+            extra: SocialPostDetailArgs(post: post),
+          ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(18),

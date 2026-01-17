@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/models/user_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
@@ -69,7 +70,7 @@ class HomeToolbar extends StatelessWidget {
                     icon: Icons.person_2,
                     onTap: () {
                       context.read<ProfileBloc>().getProfile();
-                      Navigator.pushNamed(context, UserProfilePage.routeName);
+                      context.push(UserProfilePage.routeName);
                     },
                   ),
                   SizedBox(width: 15),

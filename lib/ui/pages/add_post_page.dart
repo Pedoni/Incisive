@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/create_post/create_post_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
@@ -57,7 +58,9 @@ class _AddPostPageState extends State<AddPostPage> {
         listener: (context, state) {
           if (state is Success) {
             context.read<SocialBloc>().getDailyPosts(DateTime.now());
-            Navigator.pop(context);
+            if (context.canPop()) {
+              context.pop();
+            }
             showDialog(
               context: context,
               barrierDismissible: false,

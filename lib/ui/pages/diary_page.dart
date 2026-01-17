@@ -1,7 +1,9 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/models/diary_model.dart';
+import 'package:incisive/navigation/args/upsert_diary_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
 import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.dart';
@@ -130,10 +132,7 @@ class _DiaryPageState extends State<DiaryPage> {
           IconButton(
             onPressed: () {
               context.read<MoodTrackerBloc>().getMood();
-              Navigator.pushNamed(
-                context,
-                MoodCalendarPage.routeName,
-              );
+              context.push(MoodCalendarPage.routeName);
             },
             icon: Icon(Icons.track_changes),
           ),
@@ -147,17 +146,15 @@ class _DiaryPageState extends State<DiaryPage> {
             onPressed: switch (state) {
               Initial() || Loading() || Error() => null,
               Empty() => () {
-                Navigator.pushNamed(
-                  context,
+                context.push(
                   UpsertDiaryPage.routeName,
-                  arguments: [_selectedDate, null],
+                  extra: UpsertDiaryArgs(_selectedDate, null),
                 );
               },
               Success(data: final entry) => () {
-                Navigator.pushNamed(
-                  context,
+                context.push(
                   UpsertDiaryPage.routeName,
-                  arguments: [_selectedDate, entry],
+                  extra: UpsertDiaryArgs(_selectedDate, entry),
                 );
               },
             },

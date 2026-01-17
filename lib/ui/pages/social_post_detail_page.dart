@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/models/social_comment_model.dart';
+import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
@@ -69,10 +71,9 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
               icon: const Icon(Icons.mark_email_unread_outlined),
               tooltip: "Commenti in attesa",
               onPressed: () {
-                Navigator.pushNamed(
-                  context,
+                context.push(
                   PendingCommentsPage.routeName,
-                  arguments: widget.post,
+                  extra: SocialPostDetailArgs(post: widget.post),
                 );
               },
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ErrorDialog extends StatelessWidget {
   final String title;
@@ -65,7 +66,11 @@ class ErrorDialog extends StatelessWidget {
             'Ok',
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            }
+          },
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/utils/enums.dart';
 
 class InsertConfirmDialog extends StatelessWidget {
@@ -97,7 +98,11 @@ class InsertConfirmDialog extends StatelessWidget {
             'Ok',
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            }
+          },
         ),
       ],
     );
