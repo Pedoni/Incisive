@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/login/login_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
-import 'package:incisive/ui/pages/login_page.dart';
 import 'package:incisive/ui/widgets/logout_dialog.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
