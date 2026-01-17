@@ -1,6 +1,9 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:incisive/models/social_post_model.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/ui/pages/add_post_page.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
@@ -34,13 +37,7 @@ class _SocialPageState extends State<SocialPage> {
       backgroundColor: const Color(0xFFFFF8E8),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 141, 90, 35),
-
-        onPressed:
-            () => Navigator.pushNamed(
-              context,
-              AddPostPage.routeName,
-              arguments: [_selectedDate, null],
-            ),
+        onPressed: () => context.push(AddPostPage.routeName),
         child: Icon(Icons.add, color: Colors.white),
       ),
       appBar: AppBar(
@@ -79,9 +76,9 @@ class _SocialPageState extends State<SocialPage> {
               const SizedBox(height: 20),
 
               Expanded(
-                child: BlocBuilder<SocialBloc, SocialState>(
+                child: BlocBuilder<SocialBloc, BaseState>(
                   builder: (context, state) {
-                    if (state is LoadingSocialState || state is InitSocialState) {
+                    if (state is Loading || state is Initial) {
                       final list = List.generate(10, (index) => Constants.mockedPostItem);
                       return Skeletonizer(
                         child: ListView.builder(
@@ -92,7 +89,7 @@ class _SocialPageState extends State<SocialPage> {
                       );
                     }
 
-                    if (state is ErrorSocialState) {
+                    if (state is Error) {
                       return Center(
                         child: Text(
                           "Errore nel caricamento",
@@ -105,7 +102,7 @@ class _SocialPageState extends State<SocialPage> {
                       );
                     }
 
-                    if (state is EmptySocialState) {
+                    if (state is Empty) {
                       return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -130,12 +127,12 @@ class _SocialPageState extends State<SocialPage> {
                       );
                     }
 
-                    if (state is ResultSocialState) {
+                    if (state is Success<List<SocialPostModel>>) {
                       return ListView.builder(
                         physics: const BouncingScrollPhysics(),
-                        itemCount: state.posts.length,
+                        itemCount: state.data.length,
                         itemBuilder: (context, index) {
-                          return SocialPostItem(post: state.posts[index]);
+                          return SocialPostItem(post: state.data[index]);
                         },
                       );
                     }

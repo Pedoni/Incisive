@@ -1,8 +1,12 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
-import 'package:incisive/state_management/blocs/mood_tracker_bloc/mood_tracker_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:incisive/models/diary_model.dart';
+import 'package:incisive/navigation/args/upsert_diary_args.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
+import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
+import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.dart';
 import 'package:incisive/ui/components/lined_paper.dart';
 import 'package:incisive/ui/pages/diary_upsert_page.dart';
 import 'package:incisive/ui/pages/mood_calendar_page.dart';
@@ -128,41 +132,36 @@ class _DiaryPageState extends State<DiaryPage> {
           IconButton(
             onPressed: () {
               context.read<MoodTrackerBloc>().getMood();
-              Navigator.pushNamed(
-                context,
-                MoodCalendarPage.routeName,
-              );
+              context.push(MoodCalendarPage.routeName);
             },
             icon: Icon(Icons.track_changes),
           ),
         ],
       ),
 
-      floatingActionButton: BlocBuilder<DiaryPageBloc, DiaryPageState>(
+      floatingActionButton: BlocBuilder<DiaryPageBloc, BaseState>(
         builder: (context, state) {
           return FloatingActionButton(
             backgroundColor: Color.fromARGB(255, 141, 90, 35),
             onPressed: switch (state) {
-              InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,
-              EmptyDiaryPageState() => () {
-                Navigator.pushNamed(
-                  context,
+              Initial() || Loading() || Error() => null,
+              Empty() => () {
+                context.push(
                   UpsertDiaryPage.routeName,
-                  arguments: [_selectedDate, null],
+                  extra: UpsertDiaryArgs(_selectedDate, null),
                 );
               },
-              ResultDiaryPageState(entry: final entry) => () {
-                Navigator.pushNamed(
-                  context,
+              Success(data: final entry) => () {
+                context.push(
                   UpsertDiaryPage.routeName,
-                  arguments: [_selectedDate, entry],
+                  extra: UpsertDiaryArgs(_selectedDate, entry),
                 );
               },
             },
             child: switch (state) {
-              InitDiaryPageState() || TryDiaryPageState() || ErrorDiaryPageState() => null,
-              EmptyDiaryPageState() => Icon(Icons.add, color: Colors.white),
-              ResultDiaryPageState(entry: final _) => Icon(Icons.edit, color: Colors.white),
+              Initial() || Loading() || Error() => null,
+              Empty() => Icon(Icons.add, color: Colors.white),
+              Success() => Icon(Icons.edit, color: Colors.white),
             },
           );
         },
@@ -197,9 +196,9 @@ class _DiaryPageState extends State<DiaryPage> {
                 SizedBox(height: 20),
 
                 Expanded(
-                  child: BlocConsumer<DiaryPageBloc, DiaryPageState>(
+                  child: BlocConsumer<DiaryPageBloc, BaseState>(
                     listener: (context, state) {
-                      if (state is ResultDiaryPageState || state is EmptyDiaryPageState) {
+                      if (state is Success || state is Empty) {
                         setState(() {
                           _areasOpen = false;
                           _emotionsOpen = false;
@@ -207,7 +206,7 @@ class _DiaryPageState extends State<DiaryPage> {
                       }
                     },
                     builder: (context, state) {
-                      if (state is EmptyDiaryPageState) {
+                      if (state is Empty) {
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -230,7 +229,7 @@ class _DiaryPageState extends State<DiaryPage> {
                             ],
                           ),
                         );
-                      } else if (state is ErrorDiaryPageState) {
+                      } else if (state is Error) {
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -253,7 +252,7 @@ class _DiaryPageState extends State<DiaryPage> {
                           ),
                         );
                       }
-                      final entry = state is ResultDiaryPageState ? state.entry : Constants.mockedDiaryEntry;
+                      final entry = state is Success ? state.data as DiaryEntry : Constants.mockedDiaryEntry;
                       final emotions = entry.emotions;
                       final gratitudeAreas = entry.gratitudeAreas;
                       final nonGratitudeAreas = entry.nonGratitudeAreas;
@@ -262,14 +261,14 @@ class _DiaryPageState extends State<DiaryPage> {
                       const red = Color(0xFFC62828);
 
                       return SingleChildScrollView(
-                        physics: state is TryDiaryPageState ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
+                        physics: state is Loading ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
                         child: Skeletonizer(
                           effect: const ShimmerEffect(
                             baseColor: Color.fromARGB(255, 238, 229, 207),
                             highlightColor: Color.fromARGB(255, 217, 204, 173),
                             duration: Duration(seconds: 1),
                           ),
-                          enabled: state is TryDiaryPageState || state is InitDiaryPageState,
+                          enabled: state is Initial || state is Loading,
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -403,7 +402,7 @@ class _DiaryPageState extends State<DiaryPage> {
                               ),
                               const SizedBox(height: 20),
                               LinedPaper(
-                                enabled: state is ResultDiaryPageState,
+                                enabled: state is Success,
                                 text: entry.text,
                                 style: const TextStyle(
                                   fontSize: 20,

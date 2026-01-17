@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/models/diary_model.dart';
-import 'package:incisive/state_management/blocs/diary_page_bloc/diary_page_bloc.dart';
-import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
-import 'package:incisive/state_management/blocs/upsert_page_bloc/upsert_page_bloc.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
+import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
+import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
+import 'package:incisive/state_management/blocs/upsert_page/upsert_page_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/ui/widgets/speech_dialog.dart';
@@ -59,11 +61,13 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
         elevation: 0,
       ),
       backgroundColor: const Color(0xFFFFF8E8),
-      body: BlocListener<UpsertPageBloc, UpsertPageState>(
+      body: BlocListener<UpsertPageBloc, BaseState>(
         listener: (context, state) {
-          if (state is ResultUpsertPageState) {
+          if (state is Success) {
             context.read<DiaryPageBloc>().getPage(widget.date);
-            Navigator.pop(context);
+            if (context.canPop()) {
+              context.pop();
+            }
             if (widget.existingEntry == null) {
               context.read<ProfileBloc>().addPoints(10);
             }
@@ -76,7 +80,7 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
                     points: isEditing ? null : 10,
                   ),
             );
-          } else if (state is ErrorUpsertPageState) {
+          } else if (state is Error) {
             showDialog(
               context: context,
               builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto.'),
@@ -147,7 +151,7 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
               ),
               SizedBox(height: 20),
               Center(
-                child: BlocBuilder<UpsertPageBloc, UpsertPageState>(
+                child: BlocBuilder<UpsertPageBloc, BaseState>(
                   builder: (context, state) {
                     final screenWidth = MediaQuery.sizeOf(context).width;
                     return ElevatedButton(
@@ -158,9 +162,9 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
                             _controller.text.length < 10 ? const Color.fromARGB(255, 184, 181, 181) : Color.fromARGB(255, 141, 90, 35),
                         fixedSize: Size.fromWidth(screenWidth * 0.4),
                       ),
-                      onPressed: _controller.text.length < 10 || state is TryUpsertPageState ? null : _save,
+                      onPressed: _controller.text.length < 10 || state is Loading ? null : _save,
                       child:
-                          state is TryUpsertPageState
+                          state is Loading
                               ? SizedBox(
                                 height: 25,
                                 width: 25,

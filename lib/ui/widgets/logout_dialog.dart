@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LogoutDialog extends StatelessWidget {
   const LogoutDialog({super.key});
@@ -38,7 +39,11 @@ class LogoutDialog extends StatelessWidget {
             'Annulla',
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
-          onPressed: () => Navigator.of(context).pop(false),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            }
+          },
         ),
 
         TextButton(
@@ -54,7 +59,11 @@ class LogoutDialog extends StatelessWidget {
             'Ok',
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
-          onPressed: () => Navigator.of(context).pop(true),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            }
+          },
         ),
       ],
     );

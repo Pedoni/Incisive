@@ -1,16 +1,15 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:incisive/repositories/gratitude_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'gratitude_upsert_event.dart';
-part 'gratitude_upsert_state.dart';
 
-class GratitudeUpsertBloc extends Bloc<GratitudeUpsertEvent, GratitudeUpsertState> {
+class GratitudeUpsertBloc extends BaseBloc {
   final GratitudeRepository gratitudeRepository;
 
-  GratitudeUpsertBloc({required this.gratitudeRepository}) : super(InitialGratitudeUpsertState()) {
+  GratitudeUpsertBloc({required this.gratitudeRepository}) : super(Initial()) {
     on<TryUpsertGratitudeEvent>(_upsertGratitude);
   }
 
@@ -26,14 +25,14 @@ class GratitudeUpsertBloc extends Bloc<GratitudeUpsertEvent, GratitudeUpsertStat
 
   FutureOr<void> _upsertGratitude(
     TryUpsertGratitudeEvent event,
-    Emitter<GratitudeUpsertState> emitter,
+    Emitter<BaseState> emitter,
   ) async {
-    emitter(LoadingUpsertPageState());
+    emitter(Loading());
     try {
       await gratitudeRepository.upsertPage(pageId: event.pageId, texts: event.texts);
-      emitter(ResultUpsertPageState());
+      emitter(Success<void>(null));
     } catch (e) {
-      emitter(ErrorUpsertPageState(e.toString()));
+      emitter(Error(e.toString()));
     }
   }
 }

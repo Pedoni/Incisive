@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/models/social_comment_model.dart';
+import 'package:incisive/navigation/args/social_post_detail_args.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/pages/pending_comments_page.dart';
@@ -68,10 +71,9 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
               icon: const Icon(Icons.mark_email_unread_outlined),
               tooltip: "Commenti in attesa",
               onPressed: () {
-                Navigator.pushNamed(
-                  context,
+                context.push(
                   PendingCommentsPage.routeName,
-                  arguments: widget.post,
+                  extra: SocialPostDetailArgs(post: widget.post),
                 );
               },
             ),
@@ -79,23 +81,23 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
       ),
 
       body: SafeArea(
-        child: BlocListener<CommentPostBloc, CommentPostState>(
+        child: BlocListener<CommentPostBloc, BaseState>(
           listener: (context, state) {
-            if (state is ErrorCommentPostState) {
+            if (state is Error) {
               showDialog(
                 context: context,
                 builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? "Errore sconosciuto"),
               );
-            } else if (state is ResultCommentPostState) {
+            } else if (state is Success) {
               showDialog(
                 context: context,
                 builder: (context) => InsertConfirmDialog(type: PostType.comment),
               );
             }
           },
-          child: BlocBuilder<SocialCommentBloc, SocialCommentState>(
+          child: BlocBuilder<SocialCommentBloc, BaseState>(
             builder: (context, state) {
-              final comments = state is ResultSocialCommentState ? state.comments : <SocialCommentModel>[];
+              final comments = state is Success<List<SocialCommentModel>> ? state.data : <SocialCommentModel>[];
 
               return Column(
                 children: [
@@ -165,7 +167,7 @@ class _PostHeader extends StatelessWidget {
 }
 
 class _CommentsList extends StatelessWidget {
-  final SocialCommentState state;
+  final BaseState state;
   final List<SocialCommentModel> comments;
   final String postAuthorId;
   final String postId;
@@ -179,7 +181,7 @@ class _CommentsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (state is LoadingSocialCommentState || state is InitSocialCommentState) {
+    if (state is Loading || state is Initial) {
       final list = List.generate(10, (index) => Constants.mockedPostItem);
       return Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -194,7 +196,7 @@ class _CommentsList extends StatelessWidget {
       );
     }
 
-    if (state is EmptySocialCommentState || (state is ResultSocialCommentState && comments.where((c) => c.approved).isEmpty)) {
+    if (state is Empty || (state is Success && comments.where((c) => c.approved).isEmpty)) {
       return EmptyWidget(text: "Ancora nessun commento");
     }
 
@@ -338,9 +340,9 @@ class _CommentInput extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          BlocBuilder<CommentPostBloc, CommentPostState>(
+          BlocBuilder<CommentPostBloc, BaseState>(
             builder: (context, state) {
-              return state is TryCommentPostState
+              return state is Loading
                   ? SizedBox(
                     height: 40,
                     width: 40,

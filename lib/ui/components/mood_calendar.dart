@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/state_management/blocs/mood_tracker_bloc/mood_tracker_bloc.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
+import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -36,11 +37,11 @@ class _MoodCalendarState extends State<MoodCalendar> {
   Widget build(BuildContext context) {
     final days = _generateDays(_focusedMonth);
 
-    return BlocBuilder<MoodTrackerBloc, MoodTrackerState>(
+    return BlocBuilder<MoodTrackerBloc, BaseState>(
       builder: (context, state) {
-        final Map<DateTime, double> data = state is ResultMoodTrackerState ? state.map : {};
+        final Map<DateTime, double> data = state is Success ? state.data : {};
         return Skeletonizer(
-          enabled: state is! ResultMoodTrackerState,
+          enabled: state is! Success,
           child: Container(
             decoration: BoxDecoration(color: const Color(0xFFFFF8E8)),
             padding: EdgeInsets.all(12.0),

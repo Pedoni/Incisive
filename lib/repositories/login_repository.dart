@@ -1,29 +1,23 @@
-import 'package:incisive/log/main_logger.dart';
+import 'package:incisive/repositories/base_repository.dart';
 import 'package:incisive/source/remote/login_service.dart';
 
-class LoginRepository {
+class LoginRepository extends BaseRepository {
   final LoginService loginService;
 
   LoginRepository({required this.loginService});
 
   Future<void> login(String email, String password) async {
-    try {
-      MainLogger.logInfo("Try to login");
-      await loginService.login(email, password);
-    } catch (e, stackTrace) {
-      MainLogger.logError(e, stackTrace);
-      rethrow;
-    }
+    return await guard(
+      'Login user',
+      () => loginService.login(email, password),
+    );
   }
 
   Future<void> logout() async {
-    try {
-      MainLogger.logInfo("Try to logout");
-      await loginService.logout();
-    } catch (e, stackTrace) {
-      MainLogger.logError(e, stackTrace);
-      rethrow;
-    }
+    return await guard(
+      'Logout user',
+      () => loginService.logout(),
+    );
   }
 
   Future<void> register(
@@ -32,12 +26,14 @@ class LoginRepository {
     String firstName,
     String lastName,
   ) async {
-    try {
-      MainLogger.logInfo("Try to login");
-      await loginService.register(email, password, firstName, lastName);
-    } catch (e, stackTrace) {
-      MainLogger.logError(e, stackTrace);
-      rethrow;
-    }
+    return await guard(
+      'Register user',
+      () => loginService.register(
+        email,
+        password,
+        firstName,
+        lastName,
+      ),
+    );
   }
 }

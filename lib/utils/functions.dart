@@ -5,11 +5,11 @@ String toSqlDate(DateTime d) =>
     "${d.month.toString().padLeft(2, '0')}-"
     "${d.day.toString().padLeft(2, '0')}";
 
-DateTime startOfDay(DateTime date) => DateTime(date.year, date.month, date.day);
-
-DateTime startOfNextDay(DateTime date) => DateTime(date.year, date.month, date.day).add(const Duration(days: 1));
-
 String formatDateItalian(DateTime date) {
   final formatter = DateFormat('d MMMM y', 'it_IT');
   return formatter.format(date);
 }
+
+DateTime startOfDayUtc(DateTime date) => DateTime.utc(date.year, date.month, date.day);
+
+DateTime startOfNextDayUtc(DateTime date) => startOfDayUtc(date).add(const Duration(days: 1));

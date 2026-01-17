@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/state_management/blocs/login_bloc/login_bloc.dart';
-import 'package:incisive/state_management/blocs/profile_bloc/profile_bloc.dart';
-import 'package:incisive/ui/pages/login_page.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
+import 'package:incisive/state_management/blocs/login/login_bloc.dart';
+import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/widgets/logout_dialog.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -40,9 +40,9 @@ class UserProfilePage extends StatelessWidget {
       backgroundColor: const Color(0xFFFFF8E8),
       extendBodyBehindAppBar: true,
       appBar: appbar,
-      body: BlocBuilder<ProfileBloc, ProfileState>(
+      body: BlocBuilder<ProfileBloc, BaseState>(
         builder: (context, state) {
-          final user = state is ResultProfileState ? state.user : Constants.mockedUser;
+          final user = state is Success ? state.data : Constants.mockedUser;
           return Stack(
             children: [
               const _TopHeader(height: headerHeight),
@@ -58,7 +58,7 @@ class UserProfilePage extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.only(top: headerHeight - appbar.preferredSize.height),
                   child: Skeletonizer(
-                    enabled: state is LoadingProfileState || state is InitialProfileState,
+                    enabled: state is Loading || state is Initial,
                     child: Column(
                       children: [
                         _InfoField(
@@ -212,12 +212,8 @@ class _LogoutAlignedBottom extends StatelessWidget {
               context: context,
               builder: (ctx) => LogoutDialog(),
             );
-            if (res) {
+            if (res && context.mounted) {
               await context.read<LoginBloc>().logout();
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                LoginPage.routeName,
-                (Route<dynamic> route) => false,
-              );
             }
           },
           icon: const Icon(Icons.logout),

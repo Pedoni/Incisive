@@ -21,6 +21,7 @@ dependencies:
   equatable: ^2.0.7
   supabase: ^2.10.0
   supabase_auth_ui: ^0.5.5
+  supabase_flutter: ^2.12.0
   path_provider: ^2.1.5
   path: ^1.9.1
   intl: any
@@ -35,6 +36,8 @@ dependencies:
   flame_lottie: ^0.4.2+18
   speech_to_text: ^7.3.0
   chat_bubbles: ^1.7.0
+  go_router: ^17.0.1
+  flutter_dotenv: ^6.0.0
 
   flutter_localizations:
     sdk: flutter
@@ -55,6 +58,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+    - .env
 
   fonts:
     - family: Poppins

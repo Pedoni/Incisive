@@ -1,6 +1,10 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/navigation/args/upsert_gratitude_args.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/ui/pages/gratitude_upsert_page.dart';
 import 'package:incisive/utils/constants.dart';
@@ -45,25 +49,24 @@ class _GratitudePageState extends State<GratitudePage> {
         backgroundColor: const Color(0xFFFFF8E8),
       ),
 
-      floatingActionButton: BlocBuilder<GratitudePageBloc, GratitudePageState>(
+      floatingActionButton: BlocBuilder<GratitudePageBloc, BaseState>(
         builder: (context, state) {
           return FloatingActionButton(
             backgroundColor: Color.fromARGB(255, 141, 90, 35),
             onPressed: switch (state) {
-              InitialGratitudeState() || LoadingGratitudeState() || ErrorGratitudeState() => null,
+              Initial() || Loading() || Error() => null,
 
-              EmptyGratitudeState(entry: final entry) || ResultGratitudeState(entry: final entry) => () {
-                Navigator.pushNamed(
-                  context,
+              Empty(data: final entry) || Success(data: final entry) => () {
+                context.push(
                   GratitudeUpsertPage.routeName,
-                  arguments: [entry, _selectedDate],
+                  extra: UpsertGratitudeArgs(date: _selectedDate, page: entry),
                 );
               },
             },
             child: switch (state) {
-              InitialGratitudeState() || LoadingGratitudeState() || ErrorGratitudeState() => null,
-              EmptyGratitudeState() => Icon(Icons.add, color: Colors.white),
-              ResultGratitudeState(entry: final _) => Icon(Icons.edit, color: Colors.white),
+              Initial() || Loading() || Error() => null,
+              Empty() => Icon(Icons.add, color: Colors.white),
+              Success() => Icon(Icons.edit, color: Colors.white),
             },
           );
         },
@@ -97,9 +100,9 @@ class _GratitudePageState extends State<GratitudePage> {
                 ),
                 SizedBox(height: 30),
                 Expanded(
-                  child: BlocBuilder<GratitudePageBloc, GratitudePageState>(
+                  child: BlocBuilder<GratitudePageBloc, BaseState>(
                     builder: (context, state) {
-                      if (state is EmptyGratitudeState) {
+                      if (state is Empty) {
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +125,7 @@ class _GratitudePageState extends State<GratitudePage> {
                             ],
                           ),
                         );
-                      } else if (state is ErrorGratitudeState) {
+                      } else if (state is Error) {
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -145,22 +148,22 @@ class _GratitudePageState extends State<GratitudePage> {
                           ),
                         );
                       }
-                      final entry = state is ResultGratitudeState ? state.entry : Constants.mockedGratitudeEntry;
+                      final entry = state is Success ? state.data as GratitudePageModel : Constants.mockedGratitudeEntry;
                       return SingleChildScrollView(
-                        physics: state is LoadingGratitudeState ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
+                        physics: state is Loading ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
                         child: Skeletonizer(
                           effect: const ShimmerEffect(
                             baseColor: Color.fromARGB(255, 238, 229, 207),
                             highlightColor: Color.fromARGB(255, 217, 204, 173),
                             duration: Duration(seconds: 1),
                           ),
-                          enabled: state is LoadingGratitudeState || state is InitialGratitudeState,
+                          enabled: state is Loading || state is Initial,
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (state is ResultGratitudeState) ...[
+                              if (state is Success) ...[
                                 Text(
                                   "Sono grato per...",
                                   style: TextStyle(

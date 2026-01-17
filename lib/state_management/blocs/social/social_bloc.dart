@@ -1,16 +1,14 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:incisive/log/main_logger.dart';
-import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/repositories/social_repository.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'social_event.dart';
-part 'social_state.dart';
 
-class SocialBloc extends Bloc<SocialEvent, SocialState> {
+class SocialBloc extends BaseBloc {
   final SocialRepository socialRepository;
 
-  SocialBloc({required this.socialRepository}) : super(InitSocialState()) {
+  SocialBloc({required this.socialRepository}) : super(Initial()) {
     on<GetDailySocialPostsEvent>(_onGetDailyPosts);
   }
 
@@ -18,15 +16,15 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future<void> _onGetDailyPosts(
     GetDailySocialPostsEvent event,
-    Emitter<SocialState> emit,
+    Emitter<BaseState> emit,
   ) async {
     try {
-      emit(LoadingSocialState());
+      emit(Loading());
       final posts = await socialRepository.getDailyPosts(event.date);
-      emit(posts.isEmpty ? EmptySocialState() : ResultSocialState(posts));
+      emit(posts.isEmpty ? Empty() : Success(posts));
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);
-      emit(ErrorSocialState(e.toString()));
+      emit(Error(e.toString()));
     }
   }
 }

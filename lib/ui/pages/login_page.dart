@@ -1,8 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:incisive/state_management/blocs/login_bloc/login_bloc.dart';
-import 'package:incisive/ui/pages/home_page.dart';
+import 'package:go_router/go_router.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
+import 'package:incisive/state_management/blocs/login/login_bloc.dart';
 import 'package:incisive/ui/pages/register_page.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
@@ -38,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    _tapRecognizer = TapGestureRecognizer()..onTap = () => Navigator.pushNamed(context, RegisterPage.routeName);
+    _tapRecognizer = TapGestureRecognizer()..onTap = () => context.push(RegisterPage.routeName);
   }
 
   Widget _buildLoginContent() {
@@ -82,11 +83,9 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(height: 10),
                               LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
                               const SizedBox(height: 15),
-                              BlocConsumer<LoginBloc, LoginState>(
+                              BlocConsumer<LoginBloc, BaseState>(
                                 listener: (context, state) {
-                                  if (state is ResultLoginState) {
-                                    Navigator.pushReplacementNamed(context, HomePage.routeName);
-                                  } else if (state is ErrorLoginState) {
+                                  if (state is Error) {
                                     showDialog(
                                       context: context,
                                       builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto'),
@@ -97,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                                   return LoginButton(
                                     usernameController: _emailController,
                                     passwordController: _passwordController,
-                                    isLoading: state is TryLoginState,
+                                    isLoading: state is Loading,
                                     login: _login,
                                     color: Color.fromARGB(255, 141, 90, 35),
                                     title: 'Enter',

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/breathing/breathing_bloc.dart';
 import 'package:incisive/ui/widgets/breathing_dialog.dart';
 import 'package:incisive/ui/widgets/loading_spinner.dart';
@@ -124,25 +125,25 @@ class _BreathingPageState extends State<BreathingPage> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<BreathingBloc, BreathingState>(
+    return BlocConsumer<BreathingBloc, BaseState>(
       listener: (context, state) {
-        if (state is ErrorBreathingState) {
+        if (state is Error) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Errore nel completare la sessione: ${state.message}'),
+              content: Text('Errore nel completare la sessione: ${state.errorString}'),
             ),
           );
-        } else if (state is ResultBreathingState) {
+        } else if (state is Success<int>) {
           showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (context) => BreathingDialog(points: state.points > 0 ? state.points : null),
+            builder: (context) => BreathingDialog(points: state.data > 0 ? state.data : null),
           );
         }
       },
       builder: (context, state) {
         return LoadingOverlay(
-          isLoading: state is LoadingBreathingState,
+          isLoading: state is Loading,
           spinner: const LoadingSpinner(),
           child: Scaffold(
             backgroundColor: const Color(0xFFB7C7A3),
