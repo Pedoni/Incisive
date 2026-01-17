@@ -41,7 +41,7 @@ class LogoutDialog extends StatelessWidget {
           ),
           onPressed: () {
             if (context.canPop()) {
-              context.pop();
+              context.pop(false);
             }
           },
         ),
@@ -61,7 +61,7 @@ class LogoutDialog extends StatelessWidget {
           ),
           onPressed: () {
             if (context.canPop()) {
-              context.pop();
+              context.pop(true);
             }
           },
         ),
