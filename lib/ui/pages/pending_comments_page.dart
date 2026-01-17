@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:incisive/models/social_comment_model.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
+import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
 
@@ -58,6 +59,7 @@ class PendingCommentsPage extends StatelessWidget {
                 return _PendingCommentItem(
                   comment: comment,
                   postId: post.id,
+                  postDate: post.datetime,
                 );
               },
             );
@@ -71,10 +73,12 @@ class PendingCommentsPage extends StatelessWidget {
 }
 
 class _PendingCommentItem extends StatelessWidget {
+  final DateTime postDate;
   final SocialCommentModel comment;
   final String postId;
 
   const _PendingCommentItem({
+    required this.postDate,
     required this.comment,
     required this.postId,
   });
@@ -120,6 +124,7 @@ class _PendingCommentItem extends StatelessWidget {
                 ),
                 onPressed: () {
                   context.read<SocialCommentBloc>().approveComment(comment.id, postId);
+                  context.read<SocialBloc>().getDailyPosts(postDate);
                   if (context.canPop()) {
                     context.pop();
                   }

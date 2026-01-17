@@ -20,8 +20,8 @@ import 'package:incisive/ui/pages/social_post_detail_page.dart';
 import 'package:incisive/ui/pages/user_profile_page.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
-final GoRouter appRouter = GoRouter(
-  refreshListenable: authNotifier,
+GoRouter createRouter(AuthNotifier notifier) => GoRouter(
+  refreshListenable: notifier,
   initialLocation: LoginPage.routeName,
 
   redirect: (context, state) {

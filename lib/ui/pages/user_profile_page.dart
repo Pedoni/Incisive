@@ -210,6 +210,7 @@ class _LogoutAlignedBottom extends StatelessWidget {
           onPressed: () async {
             final bool res = await showDialog(
               context: context,
+              barrierDismissible: false,
               builder: (ctx) => LogoutDialog(),
             );
             if (res && context.mounted) {
