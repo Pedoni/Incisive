@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/di/dependency_injector.dart';
 import 'package:incisive/navigation/app_router.dart';
+import 'package:incisive/navigation/auth_notifier.dart';
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  late final AuthNotifier _authNotifier;
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    _authNotifier = AuthNotifier();
+    _router = createRouter(_authNotifier);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +30,15 @@ class App extends StatelessWidget {
         title: 'Incisive',
         debugShowCheckedModeBanner: false,
         localeResolutionCallback: (locale, supportedLocales) {
-          return locale;
+          if (locale == null) return supportedLocales.first;
+          for (final l in supportedLocales) {
+            if (l.languageCode == locale.languageCode) {
+              return l;
+            }
+          }
+          return supportedLocales.first;
         },
-        routerConfig: appRouter,
+        routerConfig: _router,
         supportedLocales: const [
           Locale('it'),
           Locale('en'),
@@ -23,7 +46,6 @@ class App extends StatelessWidget {
           Locale('fr'),
           Locale('de'),
         ],
-
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -32,5 +54,11 @@ class App extends StatelessWidget {
         theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 141, 90, 35))),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _authNotifier.dispose();
+    super.dispose();
   }
 }
