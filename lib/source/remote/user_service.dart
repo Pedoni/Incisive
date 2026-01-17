@@ -1,5 +1,6 @@
 import 'package:incisive/models/user_model.dart';
 import 'package:incisive/source/remote/base_service.dart';
+import 'package:incisive/utils/exceptions.dart';
 
 class UserService extends BaseService {
   Future<UserModel> getUser() async {
@@ -8,7 +9,7 @@ class UserService extends BaseService {
       () async {
         final authUser = supabase.auth.currentUser;
         if (authUser == null) {
-          throw Exception('Utente non autenticato');
+          throw IncisiveException('Utente non autenticato');
         }
 
         final user = await supabase.from('user').select().eq('id', authUser.id).single();
