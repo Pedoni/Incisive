@@ -29,6 +29,7 @@ final List<RepositoryProvider> _repositories = [
         ((context) => SocialRepository(
           socialService: context.read(),
           postMapper: context.read(),
+          commentMapper: context.read(),
         )),
   ),
 ];

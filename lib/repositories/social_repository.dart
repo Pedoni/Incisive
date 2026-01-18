@@ -1,21 +1,23 @@
+import 'package:incisive/mappers/dto/comment_dto.dart';
 import 'package:incisive/mappers/dto/post_dto.dart';
-import 'package:incisive/models/social_comment_model.dart';
-import 'package:incisive/models/social_post_model.dart';
+import 'package:incisive/models/comment_model.dart';
+import 'package:incisive/models/post_model.dart';
 import 'package:incisive/repositories/base_repository.dart';
 import 'package:incisive/source/remote/social_service.dart';
 import 'package:pine/pine.dart';
-import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class SocialRepository extends BaseRepository {
   final SocialService socialService;
-  final DTOMapper<PostDTO, SocialPostModel> postMapper;
+  final DTOMapper<PostDTO, PostModel> postMapper;
+  final DTOMapper<CommentDTO, CommentModel> commentMapper;
 
   SocialRepository({
     required this.socialService,
     required this.postMapper,
+    required this.commentMapper,
   });
 
-  Future<List<SocialPostModel>> getDailyPosts(DateTime date) async {
+  Future<List<PostModel>> getDailyPosts(DateTime date) async {
     return await guard(
       'Get daily social posts',
       () async {
@@ -38,15 +40,14 @@ class SocialRepository extends BaseRepository {
     );
   }
 
-  Future<List<SocialCommentModel>> getCommentsForPost({
+  Future<List<CommentModel>> getCommentsForPost({
     required String postId,
   }) async {
     return await guard(
       'Get comments for post $postId',
       () async {
         final response = await socialService.getCommentsForPost(postId: postId);
-
-        return response.map((e) => SocialCommentModel.fromMap(e)).toList();
+        return commentMapper.fromDTOMany(response.map((e) => CommentDTO.fromJson(e))).toList();
       },
     );
   }

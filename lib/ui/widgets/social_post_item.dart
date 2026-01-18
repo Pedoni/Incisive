@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:incisive/models/social_post_model.dart';
+import 'package:incisive/models/post_model.dart';
 import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/ui/pages/social_post_detail_page.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class SocialPostItem extends StatelessWidget {
-  final SocialPostModel post;
+  final PostModel post;
 
   const SocialPostItem({
     super.key,

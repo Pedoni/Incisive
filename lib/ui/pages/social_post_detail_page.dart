@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:incisive/models/social_post_model.dart';
-import 'package:incisive/models/social_comment_model.dart';
+import 'package:incisive/models/post_model.dart';
+import 'package:incisive/models/comment_model.dart';
 import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
@@ -20,7 +20,7 @@ import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 class SocialPostDetailPage extends StatefulWidget {
   static const routeName = '/socialPostDetail';
 
-  final SocialPostModel post;
+  final PostModel post;
 
   const SocialPostDetailPage({
     super.key,
@@ -97,7 +97,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
           },
           child: BlocBuilder<SocialCommentBloc, BaseState>(
             builder: (context, state) {
-              final comments = state is Success<List<SocialCommentModel>> ? state.data : <SocialCommentModel>[];
+              final comments = state is Success<List<CommentModel>> ? state.data : <CommentModel>[];
 
               return Column(
                 children: [
@@ -132,7 +132,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
 }
 
 class _PostHeader extends StatelessWidget {
-  final SocialPostModel post;
+  final PostModel post;
 
   const _PostHeader({required this.post});
 
@@ -169,7 +169,7 @@ class _PostHeader extends StatelessWidget {
 
 class _CommentsList extends StatelessWidget {
   final BaseState state;
-  final List<SocialCommentModel> comments;
+  final List<CommentModel> comments;
   final String postAuthorId;
   final String postId;
 
@@ -218,7 +218,7 @@ class _CommentsList extends StatelessWidget {
 }
 
 class _CommentItem extends StatelessWidget {
-  final SocialCommentModel comment;
+  final CommentModel comment;
   final bool isPostAuthor;
   final String postId;
 
@@ -312,7 +312,7 @@ class _CommentItem extends StatelessWidget {
 }
 
 class _CommentInput extends StatelessWidget {
-  final SocialPostModel post;
+  final PostModel post;
   final TextEditingController controller;
 
   const _CommentInput({

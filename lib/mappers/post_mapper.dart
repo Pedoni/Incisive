@@ -1,11 +1,11 @@
 import 'package:incisive/mappers/dto/post_dto.dart';
-import 'package:incisive/models/social_post_model.dart';
+import 'package:incisive/models/post_model.dart';
 import 'package:pine/utils/dto_mapper.dart';
 
-class PostMapper extends DTOMapper<PostDTO, SocialPostModel> {
+class PostMapper extends DTOMapper<PostDTO, PostModel> {
   @override
-  SocialPostModel fromDTO(PostDTO dto) {
-    return SocialPostModel(
+  PostModel fromDTO(PostDTO dto) {
+    return PostModel(
       id: dto.id,
       content: dto.content,
       authorId: dto.authorId,
@@ -16,7 +16,7 @@ class PostMapper extends DTOMapper<PostDTO, SocialPostModel> {
   }
 
   @override
-  PostDTO toDTO(SocialPostModel model) {
+  PostDTO toDTO(PostModel model) {
     throw UnimplementedError();
   }
 }

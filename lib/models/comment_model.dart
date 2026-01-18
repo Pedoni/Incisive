@@ -1,6 +1,6 @@
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
-class SocialCommentModel {
+class CommentModel {
   final String id;
   final String postId;
   final String authorId;
@@ -12,7 +12,7 @@ class SocialCommentModel {
   final bool? myVote;
   final String viewerUserId;
 
-  SocialCommentModel({
+  CommentModel({
     required this.id,
     required this.postId,
     required this.authorId,
@@ -25,8 +25,8 @@ class SocialCommentModel {
     this.myVote,
   });
 
-  factory SocialCommentModel.fromMap(Map<String, dynamic> map) {
-    return SocialCommentModel(
+  factory CommentModel.fromMap(Map<String, dynamic> map) {
+    return CommentModel(
       id: map['id'],
       postId: map['post_id'],
       authorId: map['author_id'],

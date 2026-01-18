@@ -1,6 +1,6 @@
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/models/gratitude_page_model.dart';
-import 'package:incisive/models/social_post_model.dart';
+import 'package:incisive/models/post_model.dart';
 import 'package:incisive/models/user_model.dart';
 
 class Constants {
@@ -44,7 +44,7 @@ class Constants {
     progress: 20,
   );
 
-  static SocialPostModel mockedPostItem = SocialPostModel(
+  static PostModel mockedPostItem = PostModel(
     id: "",
     authorId: "",
     approvedCommentsCount: 0,
