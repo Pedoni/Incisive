@@ -13,3 +13,7 @@ String formatDateItalian(DateTime date) {
 DateTime startOfDayUtc(DateTime date) => DateTime.utc(date.year, date.month, date.day);
 
 DateTime startOfNextDayUtc(DateTime date) => startOfDayUtc(date).add(const Duration(days: 1));
+
+typedef JsonObject = Map<String, dynamic>;
+
+typedef JsonArray = List<JsonObject>;

@@ -5,6 +5,7 @@ import 'package:incisive/models/user_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/pages/user_profile_page.dart';
+import 'package:incisive/ui/widgets/level_progress_bar.dart';
 
 class HomeToolbar extends StatelessWidget {
   const HomeToolbar({super.key});
@@ -30,41 +31,7 @@ class HomeToolbar extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 141, 90, 35),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      children: [
-                        BlocBuilder<ProfileBloc, BaseState>(
-                          builder: (context, state) {
-                            return state is Success<UserModel>
-                                ? Text(
-                                  state.data.points.toString(),
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                  ),
-                                )
-                                : SizedBox();
-                          },
-                        ),
-                        SizedBox(width: 5),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            "assets/icons/leaf.png",
-                            height: 30,
-                            width: 30,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
+                  const LevelProgressBar(),
                   Expanded(child: SizedBox()),
                   _TopIcon(
                     icon: Icons.person_2,

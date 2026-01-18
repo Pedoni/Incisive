@@ -1,26 +1,31 @@
-import 'package:incisive/models/user_model.dart';
 import 'package:incisive/source/remote/base_service.dart';
 import 'package:incisive/utils/exceptions.dart';
+import 'package:incisive/utils/functions.dart';
 
 class UserService extends BaseService {
-  Future<UserModel> getUser() async {
+  Future<JsonObject> getUserWithProgress() async {
     return await guard(
-      "Get user",
+      "Get user with progress",
       () async {
         final authUser = supabase.auth.currentUser;
         if (authUser == null) {
           throw IncisiveException('Utente non autenticato');
         }
 
-        final user = await supabase.from('user').select().eq('id', authUser.id).single();
+        final userJson = await supabase.from('user').select().eq('id', authUser.id).single();
 
-        return UserModel(
-          id: authUser.id,
-          firstName: user['firstName'],
-          lastName: user['lastName'],
-          email: authUser.email!,
-          points: user['points'],
-        );
+        final progressJson =
+            await supabase.rpc(
+                  'get_user_progress',
+                  params: {'p_user_id': authUser.id},
+                )
+                as JsonObject;
+
+        return {
+          ...userJson,
+          ...progressJson,
+          'email': authUser.email,
+        };
       },
     );
   }

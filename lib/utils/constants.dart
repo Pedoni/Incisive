@@ -39,6 +39,9 @@ class Constants {
     lastName: "Lamagna",
     email: "emanuele.lamagna@studio.unibo.it",
     points: 100,
+    level: 2,
+    nextLevelPoints: 120,
+    progress: 20,
   );
 
   static SocialPostModel mockedPostItem = SocialPostModel(
