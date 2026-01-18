@@ -4,7 +4,7 @@ import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/models/user_model.dart';
 
 class Constants {
-  static DiaryEntry mockedDiaryEntry = DiaryEntry(
+  static DiaryModel mockedDiaryEntry = DiaryModel(
     date: DateTime.now(),
     text:
         "Oggi è stata una giornata strana, piena di piccoli momenti "

@@ -1,27 +1,26 @@
+import 'package:incisive/mappers/dto/diary_dto.dart';
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/repositories/base_repository.dart';
 import 'package:incisive/source/remote/diary_service.dart';
+import 'package:pine/utils/dto_mapper.dart';
 
 class DiaryRepository extends BaseRepository {
   final DiaryService diaryService;
+  final DTOMapper<DiaryDTO, DiaryModel> diaryMapper;
 
-  DiaryRepository({required this.diaryService});
+  DiaryRepository({
+    required this.diaryService,
+    required this.diaryMapper,
+  });
 
-  Future<DiaryEntry?> getPage(DateTime date) async {
+  Future<DiaryModel?> getPage(DateTime date) async {
     return await guard(
       'Get diary page',
       () async {
-        final res = await diaryService.getPage(date: date);
-        if (res == null) return null;
+        final json = await diaryService.getPage(date: date);
+        if (json == null) return null;
 
-        return DiaryEntry(
-          date: date,
-          text: res['text'] as String,
-          score: (res['score'] as num).toDouble(),
-          emotions: List<String>.from(res['emotions'] as List),
-          gratitudeAreas: List<String>.from(res['gratitudeAreas'] as List),
-          nonGratitudeAreas: List<String>.from(res['nonGratitudeAreas'] as List),
-        );
+        return diaryMapper.fromDTO(DiaryDTO.fromJson(json));
       },
     );
   }

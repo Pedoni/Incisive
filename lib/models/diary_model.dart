@@ -1,4 +1,4 @@
-class DiaryEntry {
+class DiaryModel {
   final DateTime date;
   final String text;
   final double score;
@@ -6,7 +6,7 @@ class DiaryEntry {
   final List<String> gratitudeAreas;
   final List<String> nonGratitudeAreas;
 
-  const DiaryEntry({
+  const DiaryModel({
     required this.date,
     required this.text,
     required this.score,
