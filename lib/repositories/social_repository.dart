@@ -38,22 +38,15 @@ class SocialRepository extends BaseRepository {
     );
   }
 
-  Future<List<SocialCommentModel>> getCommentsForPost({required String postId}) async {
+  Future<List<SocialCommentModel>> getCommentsForPost({
+    required String postId,
+  }) async {
     return await guard(
       'Get comments for post $postId',
       () async {
         final response = await socialService.getCommentsForPost(postId: postId);
 
-        final viewerUserId = Supabase.instance.client.auth.currentUser!.id;
-
-        return response
-            .map(
-              (e) => SocialCommentModel.fromMap(
-                e,
-                viewerUserId: viewerUserId,
-              ),
-            )
-            .toList();
+        return response.map((e) => SocialCommentModel.fromMap(e)).toList();
       },
     );
   }

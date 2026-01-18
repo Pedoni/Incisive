@@ -46,27 +46,19 @@ class SocialService extends BaseService {
   }
 
   Future<JsonArray> getCommentsForPost({required String postId}) async {
-    return await guard("Get comments for post", () async {
-      final response = await supabase
-          .from('social_comment')
-          .select('''
-          id,
-          post_id,
-          author_id,
-          content,
-          created_at,
-          approved,
+    return await guard(
+      'Get comments for post (rpc)',
+      () async {
+        final res = await supabase.rpc(
+          'get_post_comments',
+          params: {
+            'p_post_id': postId,
+          },
+        );
 
-          social_comment_vote!left(
-            is_upvote,
-            user_id
-          )
-        ''')
-          .eq('post_id', postId)
-          .order('created_at', ascending: true);
-
-      return JsonArray.from(response);
-    });
+        return JsonArray.from(res ?? []);
+      },
+    );
   }
 
   Future<void> createComment({
