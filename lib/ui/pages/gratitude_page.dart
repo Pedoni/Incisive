@@ -2,7 +2,7 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/models/gratitude_model.dart';
 import 'package:incisive/navigation/args/upsert_gratitude_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
@@ -148,7 +148,7 @@ class _GratitudePageState extends State<GratitudePage> {
                           ),
                         );
                       }
-                      final entry = state is Success ? state.data as GratitudePageModel : Constants.mockedGratitudeEntry;
+                      final entry = state is Success ? state.data as GratitudeModel : Constants.mockedGratitudeEntry;
                       return SingleChildScrollView(
                         physics: state is Loading ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
                         child: Skeletonizer(

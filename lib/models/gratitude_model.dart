@@ -1,9 +1,9 @@
-class GratitudePageModel {
+class GratitudeModel {
   final String id;
   final DateTime date;
   final List<String>? list;
 
-  GratitudePageModel({
+  GratitudeModel({
     required this.id,
     required this.date,
     required this.list,

@@ -10,7 +10,7 @@ import 'package:incisive/mappers/gratitude_mapper.dart';
 import 'package:incisive/mappers/post_mapper.dart';
 import 'package:incisive/models/comment_model.dart';
 import 'package:incisive/models/diary_model.dart';
-import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/models/gratitude_model.dart';
 import 'package:incisive/models/post_model.dart';
 import 'package:incisive/repositories/breathing_repository.dart';
 import 'package:incisive/repositories/diary_repository.dart';

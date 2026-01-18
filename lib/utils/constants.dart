@@ -1,5 +1,5 @@
 import 'package:incisive/models/diary_model.dart';
-import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/models/gratitude_model.dart';
 import 'package:incisive/models/post_model.dart';
 import 'package:incisive/models/user_model.dart';
 
@@ -27,7 +27,7 @@ class Constants {
     nonGratitudeAreas: [],
   );
 
-  static GratitudePageModel mockedGratitudeEntry = GratitudePageModel(
+  static GratitudeModel mockedGratitudeEntry = GratitudeModel(
     id: "mocked_gratitude_id",
     date: DateTime.now(),
     list: List.generate(20, (index) => "Apprezzo il tempo trascorso all'aria aperta."),

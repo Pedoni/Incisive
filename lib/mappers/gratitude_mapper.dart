@@ -1,11 +1,11 @@
 import 'package:incisive/mappers/dto/gratitude_dto.dart';
-import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/models/gratitude_model.dart';
 import 'package:pine/utils/dto_mapper.dart';
 
-class GratitudeMapper extends DTOMapper<GratitudeDTO, GratitudePageModel> {
+class GratitudeMapper extends DTOMapper<GratitudeDTO, GratitudeModel> {
   @override
-  GratitudePageModel fromDTO(GratitudeDTO dto) {
-    return GratitudePageModel(
+  GratitudeModel fromDTO(GratitudeDTO dto) {
+    return GratitudeModel(
       date: DateTime.parse(dto.date),
       id: dto.id,
       list: dto.notes,
@@ -13,7 +13,7 @@ class GratitudeMapper extends DTOMapper<GratitudeDTO, GratitudePageModel> {
   }
 
   @override
-  GratitudeDTO toDTO(GratitudePageModel model) {
+  GratitudeDTO toDTO(GratitudeModel model) {
     throw UnimplementedError();
   }
 }
