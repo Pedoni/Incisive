@@ -1,31 +1,26 @@
+import 'package:incisive/mappers/dto/post_dto.dart';
 import 'package:incisive/models/social_comment_model.dart';
 import 'package:incisive/models/social_post_model.dart';
 import 'package:incisive/repositories/base_repository.dart';
 import 'package:incisive/source/remote/social_service.dart';
+import 'package:pine/pine.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class SocialRepository extends BaseRepository {
   final SocialService socialService;
+  final DTOMapper<PostDTO, SocialPostModel> postMapper;
 
-  SocialRepository({required this.socialService});
+  SocialRepository({
+    required this.socialService,
+    required this.postMapper,
+  });
 
   Future<List<SocialPostModel>> getDailyPosts(DateTime date) async {
     return await guard(
       'Get daily social posts',
       () async {
         final list = await socialService.getDailyPosts(date: date);
-        return list.map((e) {
-          final approvedCount = e['approved_comment_count'];
-
-          return SocialPostModel(
-            id: e['id'],
-            content: e['content'],
-            datetime: DateTime.parse(e['datetime']),
-            authorId: e['authorId'],
-            title: e['title'],
-            approvedCommentsCount: approvedCount,
-          );
-        }).toList();
+        return postMapper.fromDTOMany(list.map((e) => PostDTO.fromJson(e))).toList();
       },
     );
   }

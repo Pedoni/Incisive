@@ -7,4 +7,7 @@ final List<SingleChildWidget> _mappers = [
   Provider<DTOMapper<GratitudeDTO, GratitudePageModel>>(
     create: (_) => GratitudeMapper(),
   ),
+  Provider<DTOMapper<PostDTO, SocialPostModel>>(
+    create: (_) => PostMapper(),
+  ),
 ];

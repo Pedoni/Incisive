@@ -25,6 +25,10 @@ final List<RepositoryProvider> _repositories = [
     create: ((context) => BreathingRepository(breathingService: context.read())),
   ),
   RepositoryProvider<SocialRepository>(
-    create: ((context) => SocialRepository(socialService: context.read())),
+    create:
+        ((context) => SocialRepository(
+          socialService: context.read(),
+          postMapper: context.read(),
+        )),
   ),
 ];
