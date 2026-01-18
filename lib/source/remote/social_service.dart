@@ -4,7 +4,7 @@ import 'package:incisive/source/remote/base_service.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class SocialService extends BaseService {
-  Future<List<Map<String, dynamic>>> getDailyPosts({required DateTime date}) async {
+  Future<JsonArray> getDailyPosts({required DateTime date}) async {
     return await guard("Get daily social posts", () async {
       final from = startOfDayUtc(date);
       final to = startOfNextDayUtc(date);
@@ -16,7 +16,7 @@ class SocialService extends BaseService {
           .lt('datetime', to.toIso8601String())
           .order('datetime', ascending: false);
 
-      return List<Map<String, dynamic>>.from(response);
+      return JsonArray.from(response);
     });
   }
 
@@ -45,7 +45,7 @@ class SocialService extends BaseService {
     });
   }
 
-  Future<List<Map<String, dynamic>>> getCommentsForPost({required String postId}) async {
+  Future<JsonArray> getCommentsForPost({required String postId}) async {
     return await guard("Get comments for post", () async {
       final response = await supabase
           .from('social_comment')
@@ -65,7 +65,7 @@ class SocialService extends BaseService {
           .eq('post_id', postId)
           .order('created_at', ascending: true);
 
-      return List<Map<String, dynamic>>.from(response);
+      return JsonArray.from(response);
     });
   }
 

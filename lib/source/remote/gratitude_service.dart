@@ -2,7 +2,7 @@ import 'package:incisive/source/remote/base_service.dart';
 import 'package:incisive/utils/functions.dart';
 
 class GratitudeService extends BaseService {
-  Future<Map<String, dynamic>> getPage({required DateTime date}) async {
+  Future<JsonObject> getPage({required DateTime date}) async {
     return await guard("Get gratitude page", () async {
       final dateSql = toSqlDate(date);
 
@@ -23,10 +23,10 @@ class GratitudeService extends BaseService {
     });
   }
 
-  Future<List<Map<String, dynamic>>?> getNotes({required String pageId}) async {
+  Future<JsonArray?> getNotes({required String pageId}) async {
     return await guard("Get gratitude notes", () async {
       final notes = await supabase.from('gratitude_note').select().eq('page_id', pageId).order('order');
-      return notes.isEmpty ? null : List<Map<String, dynamic>>.from(notes);
+      return notes.isEmpty ? null : JsonArray.from(notes);
     });
   }
 
