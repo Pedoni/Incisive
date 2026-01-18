@@ -1,6 +1,7 @@
 import 'package:incisive/utils/exceptions.dart';
 import 'package:incisive/utils/functions.dart';
 import 'package:incisive/source/remote/base_service.dart';
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class SocialService extends BaseService {
   Future<List<Map<String, dynamic>>> getDailyPosts({required DateTime date}) async {
@@ -98,16 +99,14 @@ class SocialService extends BaseService {
   }
 
   Future<void> approveComment({required String commentId}) async {
-    return await guard("Approve comment", () async {
+    return guard("Approve comment", () async {
       try {
         await supabase.rpc(
           'approve_social_comment',
-          params: {
-            'p_comment_id': commentId,
-          },
+          params: {'p_comment_id': commentId},
         );
-      } catch (e) {
-        if (e.toString().contains('NOT_AUTHORIZED')) {
+      } on PostgrestException catch (e) {
+        if (e.message.contains('NOT_AUTHORIZED')) {
           throw IncisiveException(
             'Non sei autorizzato ad approvare questo commento!',
           );

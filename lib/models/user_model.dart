@@ -4,6 +4,9 @@ class UserModel {
   final String lastName;
   final String email;
   final int points;
+  final int level;
+  final double progress;
+  final int nextLevelPoints;
 
   UserModel({
     required this.id,
@@ -11,5 +14,8 @@ class UserModel {
     required this.lastName,
     required this.email,
     required this.points,
+    required this.level,
+    required this.progress,
+    required this.nextLevelPoints,
   });
 }
