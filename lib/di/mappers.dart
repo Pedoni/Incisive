@@ -13,4 +13,7 @@ final List<SingleChildWidget> _mappers = [
   Provider<DTOMapper<CommentDTO, CommentModel>>(
     create: (_) => CommentMapper(),
   ),
+  Provider<DTOMapper<UserDTO, UserModel>>(
+    create: (_) => UserMapper(),
+  ),
 ];
