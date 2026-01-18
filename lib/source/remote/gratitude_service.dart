@@ -2,32 +2,20 @@ import 'package:incisive/source/remote/base_service.dart';
 import 'package:incisive/utils/functions.dart';
 
 class GratitudeService extends BaseService {
-  Future<JsonObject> getPage({required DateTime date}) async {
-    return await guard("Get gratitude page", () async {
-      final dateSql = toSqlDate(date);
-
-      final page = await supabase.from('gratitude_page').select().eq('user_id', currentUserId).eq('date', dateSql).maybeSingle();
-
-      if (page != null) {
-        return page;
-      }
-
-      return await supabase
-          .from('gratitude_page')
-          .insert({
-            'user_id': currentUserId,
-            'date': dateSql,
-          })
-          .select()
-          .single();
-    });
-  }
-
-  Future<JsonArray?> getNotes({required String pageId}) async {
-    return await guard("Get gratitude notes", () async {
-      final notes = await supabase.from('gratitude_note').select().eq('page_id', pageId).order('order');
-      return notes.isEmpty ? null : JsonArray.from(notes);
-    });
+  Future<JsonObject?> getGratitudePage(DateTime date) async {
+    return await guard(
+      'Get gratitude page (rpc)',
+      () async {
+        final res = await supabase.rpc(
+          'get_gratitude_page',
+          params: {
+            'p_user_id': currentUserId,
+            'p_date': toSqlDate(date),
+          },
+        );
+        return res as JsonObject?;
+      },
+    );
   }
 
   Future<void> upsertNotes({
