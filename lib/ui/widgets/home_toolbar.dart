@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:incisive/models/user_model.dart';
-import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/pages/user_profile_page.dart';
-import 'package:incisive/ui/widgets/level_progress_bar.dart';
+import 'package:incisive/ui/widgets/level_bar.dart';
 
 class HomeToolbar extends StatelessWidget {
   const HomeToolbar({super.key});
@@ -25,13 +23,17 @@ class HomeToolbar extends StatelessWidget {
         child: SafeArea(
           bottom: false,
           child: SizedBox(
-            height: toolbarHeight,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  const LevelProgressBar(),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LevelBar(),
+                    ],
+                  ),
                   Expanded(child: SizedBox()),
                   _TopIcon(
                     icon: Icons.person_2,
