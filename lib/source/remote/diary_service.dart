@@ -3,7 +3,7 @@ import 'package:incisive/utils/exceptions.dart';
 import 'package:incisive/utils/functions.dart';
 
 class DiaryService extends BaseService {
-  Future<Map<String, dynamic>?> getPage({required DateTime date}) async {
+  Future<JsonObject?> getPage({required DateTime date}) async {
     return await guard("Get diary page", () async {
       final sqlDate = toSqlDate(date);
 
@@ -59,7 +59,7 @@ class DiaryService extends BaseService {
         },
       );
 
-      final data = res.data as Map<String, dynamic>?;
+      final data = res.data as JsonObject?;
 
       if (data == null) {
         throw IncisiveException('Risposta non valida dal server');

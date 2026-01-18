@@ -1,8 +1,8 @@
-import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/models/gratitude_model.dart';
 
 class UpsertGratitudeArgs {
   final DateTime date;
-  final GratitudePageModel? page;
+  final GratitudeModel? page;
 
   const UpsertGratitudeArgs({
     required this.date,

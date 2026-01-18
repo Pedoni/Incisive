@@ -1,10 +1,10 @@
 import 'package:incisive/models/diary_model.dart';
-import 'package:incisive/models/gratitude_page_model.dart';
-import 'package:incisive/models/social_post_model.dart';
+import 'package:incisive/models/gratitude_model.dart';
+import 'package:incisive/models/post_model.dart';
 import 'package:incisive/models/user_model.dart';
 
 class Constants {
-  static DiaryEntry mockedDiaryEntry = DiaryEntry(
+  static DiaryModel mockedDiaryEntry = DiaryModel(
     date: DateTime.now(),
     text:
         "Oggi è stata una giornata strana, piena di piccoli momenti "
@@ -27,7 +27,7 @@ class Constants {
     nonGratitudeAreas: [],
   );
 
-  static GratitudePageModel mockedGratitudeEntry = GratitudePageModel(
+  static GratitudeModel mockedGratitudeEntry = GratitudeModel(
     id: "mocked_gratitude_id",
     date: DateTime.now(),
     list: List.generate(20, (index) => "Apprezzo il tempo trascorso all'aria aperta."),
@@ -44,7 +44,7 @@ class Constants {
     progress: 20,
   );
 
-  static SocialPostModel mockedPostItem = SocialPostModel(
+  static PostModel mockedPostItem = PostModel(
     id: "",
     authorId: "",
     approvedCommentsCount: 0,

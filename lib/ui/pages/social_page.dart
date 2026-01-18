@@ -2,7 +2,7 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:incisive/models/social_post_model.dart';
+import 'package:incisive/models/post_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/ui/pages/add_post_page.dart';
@@ -127,7 +127,7 @@ class _SocialPageState extends State<SocialPage> {
                       );
                     }
 
-                    if (state is Success<List<SocialPostModel>>) {
+                    if (state is Success<List<PostModel>>) {
                       return ListView.builder(
                         physics: const BouncingScrollPhysics(),
                         itemCount: state.data.length,

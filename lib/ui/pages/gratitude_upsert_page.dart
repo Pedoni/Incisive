@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:incisive/models/gratitude_page_model.dart';
+import 'package:incisive/models/gratitude_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_upsert/gratitude_upsert_bloc.dart';
@@ -13,7 +13,7 @@ import 'package:incisive/utils/enums.dart';
 class GratitudeUpsertPage extends StatefulWidget {
   static const routeName = '/upsertGratitudePage';
 
-  final GratitudePageModel existingEntry;
+  final GratitudeModel existingEntry;
   final DateTime date;
 
   const GratitudeUpsertPage({

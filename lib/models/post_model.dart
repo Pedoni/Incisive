@@ -1,4 +1,4 @@
-class SocialPostModel {
+class PostModel {
   final String id;
   final String content;
   final DateTime datetime;
@@ -6,7 +6,7 @@ class SocialPostModel {
   final String title;
   final int approvedCommentsCount;
 
-  SocialPostModel({
+  PostModel({
     required this.id,
     required this.content,
     required this.datetime,

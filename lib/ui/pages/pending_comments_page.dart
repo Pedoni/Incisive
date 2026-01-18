@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:incisive/models/social_comment_model.dart';
-import 'package:incisive/models/social_post_model.dart';
+import 'package:incisive/models/comment_model.dart';
+import 'package:incisive/models/post_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
@@ -11,7 +11,7 @@ import 'package:incisive/ui/widgets/empty_widget.dart';
 class PendingCommentsPage extends StatelessWidget {
   static const routeName = '/pendingComments';
 
-  final SocialPostModel post;
+  final PostModel post;
 
   const PendingCommentsPage({
     super.key,
@@ -44,7 +44,7 @@ class PendingCommentsPage extends StatelessWidget {
             return EmptyWidget(text: "Nessun commento in attesa");
           }
 
-          if (state is Success<List<SocialCommentModel>>) {
+          if (state is Success<List<CommentModel>>) {
             final pendingComments = state.data.where((c) => !c.approved).toList();
 
             if (pendingComments.isEmpty) {
@@ -74,7 +74,7 @@ class PendingCommentsPage extends StatelessWidget {
 
 class _PendingCommentItem extends StatelessWidget {
   final DateTime postDate;
-  final SocialCommentModel comment;
+  final CommentModel comment;
   final String postId;
 
   const _PendingCommentItem({

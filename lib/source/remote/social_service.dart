@@ -4,7 +4,7 @@ import 'package:incisive/source/remote/base_service.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class SocialService extends BaseService {
-  Future<List<Map<String, dynamic>>> getDailyPosts({required DateTime date}) async {
+  Future<JsonArray> getDailyPosts({required DateTime date}) async {
     return await guard("Get daily social posts", () async {
       final from = startOfDayUtc(date);
       final to = startOfNextDayUtc(date);
@@ -16,7 +16,7 @@ class SocialService extends BaseService {
           .lt('datetime', to.toIso8601String())
           .order('datetime', ascending: false);
 
-      return List<Map<String, dynamic>>.from(response);
+      return JsonArray.from(response);
     });
   }
 
@@ -45,28 +45,20 @@ class SocialService extends BaseService {
     });
   }
 
-  Future<List<Map<String, dynamic>>> getCommentsForPost({required String postId}) async {
-    return await guard("Get comments for post", () async {
-      final response = await supabase
-          .from('social_comment')
-          .select('''
-          id,
-          post_id,
-          author_id,
-          content,
-          created_at,
-          approved,
+  Future<JsonArray> getCommentsForPost({required String postId}) async {
+    return await guard(
+      'Get comments for post (rpc)',
+      () async {
+        final res = await supabase.rpc(
+          'get_post_comments',
+          params: {
+            'p_post_id': postId,
+          },
+        );
 
-          social_comment_vote!left(
-            is_upvote,
-            user_id
-          )
-        ''')
-          .eq('post_id', postId)
-          .order('created_at', ascending: true);
-
-      return List<Map<String, dynamic>>.from(response);
-    });
+        return JsonArray.from(res ?? []);
+      },
+    );
   }
 
   Future<void> createComment({

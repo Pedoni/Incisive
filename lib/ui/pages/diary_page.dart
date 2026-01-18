@@ -252,7 +252,7 @@ class _DiaryPageState extends State<DiaryPage> {
                           ),
                         );
                       }
-                      final entry = state is Success ? state.data as DiaryEntry : Constants.mockedDiaryEntry;
+                      final entry = state is Success ? state.data as DiaryModel : Constants.mockedDiaryEntry;
                       final emotions = entry.emotions;
                       final gratitudeAreas = entry.gratitudeAreas;
                       final nonGratitudeAreas = entry.nonGratitudeAreas;

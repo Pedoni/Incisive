@@ -15,7 +15,7 @@ class UpsertDiaryPage extends StatefulWidget {
   static const routeName = '/upsertDiaryPage';
 
   final DateTime date;
-  final DiaryEntry? existingEntry;
+  final DiaryModel? existingEntry;
 
   const UpsertDiaryPage({
     super.key,
