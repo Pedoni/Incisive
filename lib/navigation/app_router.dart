@@ -115,7 +115,7 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
         final args = state.extra! as UpsertGratitudeArgs;
         return GratitudeUpsertPage(
           date: args.date,
-          existingEntry: args.page!,
+          existingEntry: args.page,
         );
       },
     ),

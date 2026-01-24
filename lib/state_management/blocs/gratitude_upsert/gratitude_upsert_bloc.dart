@@ -14,7 +14,7 @@ class GratitudeUpsertBloc extends BaseBloc {
   }
 
   void upsertGratitude(
-    String pageId,
+    String? pageId,
     List<String> texts,
   ) => add(
     TryUpsertGratitudeEvent(

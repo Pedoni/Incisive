@@ -18,19 +18,41 @@ class GratitudeService extends BaseService {
     );
   }
 
+  Future<String> _ensurePageExists() async {
+    final userId = supabase.auth.currentUser!.id;
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+
+    final response =
+        await supabase
+            .from('gratitude_page')
+            .upsert(
+              {
+                'user_id': userId,
+                'date': today,
+              },
+              onConflict: 'user_id,date',
+            )
+            .select('id')
+            .single();
+
+    return response['id'] as String;
+  }
+
   Future<void> upsertNotes({
-    required String pageId,
+    required String? pageId,
     required List<String> texts,
   }) async {
     return await guard("Upsert notes", () async {
-      await supabase.from('gratitude_note').delete().eq('page_id', pageId);
+      String effectivePageId = pageId ?? await _ensurePageExists();
+
+      await supabase.from('gratitude_note').delete().eq('page_id', effectivePageId);
 
       if (texts.isEmpty) return;
 
       final payload = List.generate(
         texts.length,
         (i) => {
-          'page_id': pageId,
+          'page_id': effectivePageId,
           'order': i,
           'text': texts[i],
         },

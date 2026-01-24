@@ -13,7 +13,7 @@ import 'package:incisive/utils/enums.dart';
 class GratitudeUpsertPage extends StatefulWidget {
   static const routeName = '/upsertGratitudePage';
 
-  final GratitudeModel existingEntry;
+  final GratitudeModel? existingEntry;
   final DateTime date;
 
   const GratitudeUpsertPage({
@@ -34,10 +34,10 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
   void initState() {
     super.initState();
 
-    isEditing = widget.existingEntry.list!.isNotEmpty;
+    isEditing = widget.existingEntry?.list?.isNotEmpty ?? false;
 
     if (isEditing) {
-      final existing = widget.existingEntry.list!;
+      final existing = widget.existingEntry!.list!;
 
       for (final text in existing) {
         _controllers.add(TextEditingController(text: text));
@@ -75,7 +75,7 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
   void _onConfirm() {
     final gratitudes = _controllers.map((c) => c.text.trim()).where((text) => text.isNotEmpty).toList();
     context.read<GratitudeUpsertBloc>().upsertGratitude(
-      widget.existingEntry.id,
+      widget.existingEntry?.id,
       gratitudes,
     );
   }

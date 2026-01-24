@@ -25,7 +25,7 @@ class GratitudeRepository extends BaseRepository {
   }
 
   Future<void> upsertPage({
-    required String pageId,
+    required String? pageId,
     required List<String> texts,
   }) async {
     return await guard(

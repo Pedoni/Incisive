@@ -22,7 +22,7 @@ class GratitudePageBloc extends BaseBloc {
     emitter(Loading());
     try {
       final entry = await gratitudeRepository.getPage(event.dateTime);
-      emitter(entry!.list!.isNotEmpty ? Success(entry) : Empty(data: entry));
+      emitter(entry == null ? Empty() : Success(entry));
     } catch (e) {
       emitter(Error(e.toString()));
     }
