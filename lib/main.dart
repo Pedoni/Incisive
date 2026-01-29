@@ -9,15 +9,23 @@ import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+
+  if (!kIsWeb) {
+    await dotenv.load(fileName: ".env");
+  }
 
   MainLogger.init(kIsWeb ? WebLogger() : MobileFileLogger());
 
   FlutterError.onError = MainLogger.logFlutterError;
 
+  final supabaseUrl = kIsWeb ? const String.fromEnvironment('SUPABASE_URL') : dotenv.env['SUPABASE_URL']!;
+
+  final supabaseAnonKey = kIsWeb ? const String.fromEnvironment('SUPABASE_ANON_KEY') : dotenv.env['SUPABASE_ANON_KEY']!;
+
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
   );
+
   runApp(const App());
 }
