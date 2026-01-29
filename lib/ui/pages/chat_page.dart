@@ -148,6 +148,7 @@ essere la prima volta che l'utente interagisce con te, quindi non lo dare per sc
         ),
         foregroundColor: Color.fromARGB(255, 141, 90, 35),
         backgroundColor: const Color(0xFFFFF8E8),
+        actions: [const BotAvatar()],
       ),
       body: SafeArea(
         child: Container(
@@ -187,23 +188,14 @@ essere la prima volta che l'utente interagisce con te, quindi non lo dare per sc
                                   fontSize: 15,
                                 ),
                               )
-                              : Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const BotAvatar(),
-                                  Expanded(
-                                    child: BubbleNormal(
-                                      text: msg.text,
-                                      isSender: false,
-                                      color: Color.fromARGB(255, 241, 218, 192),
-
-                                      textStyle: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              : BubbleNormal(
+                                text: msg.text,
+                                isSender: false,
+                                color: Color.fromARGB(255, 241, 218, 192),
+                                textStyle: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                ),
                               ),
                     );
                   },

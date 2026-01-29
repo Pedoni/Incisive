@@ -12,14 +12,11 @@ class UserProfilePage extends StatelessWidget {
 
   const UserProfilePage({super.key});
 
-  static const double headerHeight = 240;
-  static const double avatarRadius = 54;
-
   @override
   Widget build(BuildContext context) {
-    final appbar = AppBar(
-      backgroundColor: Colors.transparent,
-      foregroundColor: Color(0xFFFFF8E8),
+    final appBar = AppBar(
+      backgroundColor: const Color.fromARGB(255, 141, 90, 35),
+      foregroundColor: const Color(0xFFFFF8E8),
       elevation: 0,
       title: const Text(
         'Profilo',
@@ -36,50 +33,78 @@ class UserProfilePage extends StatelessWidget {
         ),
       ],
     );
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFF8E8),
-      extendBodyBehindAppBar: true,
-      appBar: appbar,
+      appBar: appBar,
       body: BlocBuilder<ProfileBloc, BaseState>(
         builder: (context, state) {
           final user = state is Success ? state.data : Constants.mockedUser;
-          return Stack(
-            children: [
-              const _TopHeader(height: headerHeight),
 
-              Positioned(
-                top: headerHeight - avatarRadius - 30,
-                left: 0,
-                right: 0,
-                child: const _AvatarSection(),
-              ),
-
-              SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.only(top: headerHeight - appbar.preferredSize.height),
-                  child: Skeletonizer(
-                    enabled: state is Loading || state is Initial,
-                    child: Column(
-                      children: [
-                        _InfoField(
-                          icon: Icons.person,
-                          text: '${user.firstName} ${user.lastName}',
-                        ),
-                        SizedBox(height: 12),
-                        _InfoField(
-                          icon: Icons.email,
-                          text: user.email,
-                        ),
-                        Spacer(),
-                      ],
+          return Skeletonizer(
+            enabled: state is Loading || state is Initial,
+            child: Column(
+              children: [
+                // HEADER + AVATAR
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 32),
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 141, 90, 35),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(50),
+                      bottomRight: Radius.circular(50),
                     ),
                   ),
+                  child: const _AvatarSection(),
                 ),
-              ),
 
-              // LOGOUT IN BASSO
-              const _LogoutAlignedBottom(),
-            ],
+                const SizedBox(height: 24),
+
+                // INFO
+                _InfoField(
+                  icon: Icons.person,
+                  text: '${user.firstName} ${user.lastName}',
+                ),
+                const SizedBox(height: 12),
+                _InfoField(
+                  icon: Icons.email,
+                  text: user.email,
+                ),
+
+                const Spacer(),
+
+                // LOGOUT
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 32),
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 141, 90, 35),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 14,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    onPressed: () async {
+                      final bool res = await showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (ctx) => const LogoutDialog(),
+                      );
+                      if (res && context.mounted) {
+                        await context.read<LoginBloc>().logout();
+                      }
+                    },
+                    icon: const Icon(Icons.logout),
+                    label: const Text('Logout'),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -87,53 +112,16 @@ class UserProfilePage extends StatelessWidget {
   }
 }
 
-class _TopHeader extends StatelessWidget {
-  final double height;
-  const _TopHeader({required this.height});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: _HeaderClipper(),
-      child: Container(
-        height: height,
-        color: Color.fromARGB(255, 141, 90, 35),
-      ),
-    );
-  }
-}
-
-class _HeaderClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0, size.height - 60);
-    path.quadraticBezierTo(
-      size.width / 2,
-      size.height,
-      size.width,
-      size.height - 60,
-    );
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-
 class _AvatarSection extends StatelessWidget {
   const _AvatarSection();
 
   @override
   Widget build(BuildContext context) {
-    const double avatarRadius = 54;
     return CircleAvatar(
-      radius: avatarRadius,
+      radius: 54,
       backgroundColor: const Color(0xFFF7D85B),
       child: CircleAvatar(
-        radius: avatarRadius - 8,
+        radius: 46,
         backgroundColor: Colors.white,
         child: Icon(
           Icons.person,
@@ -160,10 +148,13 @@ class _InfoField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Card(
         elevation: 1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 248, 234, 200),
+            color: const Color.fromARGB(255, 248, 234, 200),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
@@ -182,43 +173,6 @@ class _InfoField extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _LogoutAlignedBottom extends StatelessWidget {
-  const _LogoutAlignedBottom();
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: 0,
-      right: 0,
-      bottom: 32,
-      child: Center(
-        child: ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 141, 90, 35),
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-          ),
-          onPressed: () async {
-            final bool res = await showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (ctx) => LogoutDialog(),
-            );
-            if (res && context.mounted) {
-              await context.read<LoginBloc>().logout();
-            }
-          },
-          icon: const Icon(Icons.logout),
-          label: const Text('Logout'),
         ),
       ),
     );
