@@ -26,6 +26,17 @@ class SocialService extends BaseService {
   }) async {
     return await guard("Create post", () async {
       try {
+        final res = await supabase.functions.invoke(
+          'moderate-content',
+          body: {'content': '$title $content'},
+        );
+
+        if (res.data['allowed'] != true) {
+          throw IncisiveException(
+            _mapModerationReasonToMessage(res.data['reason']),
+          );
+        }
+
         await supabase.rpc(
           'create_social_post',
           params: {
@@ -67,6 +78,17 @@ class SocialService extends BaseService {
   }) async {
     return await guard("Create comment", () async {
       try {
+        final res = await supabase.functions.invoke(
+          'moderate-content',
+          body: {'content': content},
+        );
+
+        if (res.data['allowed'] != true) {
+          throw IncisiveException(
+            _mapModerationReasonToMessage(res.data['reason']),
+          );
+        }
+
         await supabase.rpc(
           'create_social_comment',
           params: {
@@ -152,5 +174,55 @@ class SocialService extends BaseService {
         throw IncisiveException('Errore nel voto del commento');
       }
     });
+  }
+
+  String _mapModerationReasonToMessage(String reason) {
+    switch (reason) {
+      case 'INSULT':
+      case 'OFFENSIVE_LANGUAGE':
+      case 'HARASSMENT':
+      case 'BULLYING':
+        return 'Il linguaggio utilizzato è offensivo o aggressivo.';
+
+      case 'HATE_SPEECH':
+      case 'DISCRIMINATION':
+        return 'Il contenuto è discriminatorio o incita all’odio.';
+
+      case 'INCITEMENT_TO_VIOLENCE':
+      case 'THREATS':
+        return 'Il contenuto incita alla violenza o contiene minacce.';
+
+      case 'SELF_HARM':
+        return 'Il contenuto può essere dannoso per la salute mentale.';
+
+      case 'SEXUAL_CONTENT':
+      case 'EXPLICIT_LANGUAGE':
+        return 'Il contenuto è sessualmente esplicito o volgare.';
+
+      case 'ILLEGAL_ACTIVITY':
+      case 'DRUG_RELATED_CONTENT':
+        return 'Il contenuto fa riferimento ad attività illegali.';
+
+      case 'SPAM':
+        return 'Il contenuto è stato identificato come spam.';
+
+      case 'MISINFORMATION':
+        return 'Il contenuto potrebbe diffondere informazioni false.';
+
+      case 'PRIVACY_VIOLATION':
+        return 'Il contenuto viola la privacy di altre persone.';
+
+      case 'UNINTELLIGIBLE_CONTENT':
+        return 'Il contenuto non è sufficientemente chiaro o comprensibile.';
+
+      case 'EMPTY_CONTENT':
+        return 'Il contenuto è vuoto o non valido.';
+
+      case 'OK':
+        return '';
+
+      default:
+        return 'Il contenuto non rispetta le linee guida della community.';
+    }
   }
 }
