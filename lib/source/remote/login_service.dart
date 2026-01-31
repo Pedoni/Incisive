@@ -19,7 +19,7 @@ class LoginService extends BaseService {
         }
       } on AuthApiException {
         throw IncisiveException('Credenziali errate.');
-      } catch (_) {
+      } catch (e) {
         throw IncisiveException('Errore durante il login.');
       }
     });
@@ -57,7 +57,9 @@ class LoginService extends BaseService {
         });
       } on AuthApiException catch (e) {
         throw IncisiveException(e.message);
-      } catch (_) {
+      } on AuthWeakPasswordException catch (e) {
+        throw IncisiveException("La password deve contenere almeno 6 caratteri.");
+      } catch (e) {
         throw IncisiveException('Errore creazione profilo utente.');
       }
     });
