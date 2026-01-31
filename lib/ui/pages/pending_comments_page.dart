@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:incisive/models/comment_model.dart';
 import 'package:incisive/models/post_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
