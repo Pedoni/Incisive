@@ -41,6 +41,7 @@ class PendingCommentsPage extends StatelessWidget {
           }
 
           if (state is Empty) {
+            context.read<SocialBloc>().getDailyPosts(post.datetime);
             return EmptyWidget(text: "Nessun commento in attesa");
           }
 
@@ -48,8 +49,11 @@ class PendingCommentsPage extends StatelessWidget {
             final pendingComments = state.data.where((c) => !c.approved).toList();
 
             if (pendingComments.isEmpty) {
+              context.read<SocialBloc>().getDailyPosts(post.datetime);
               return EmptyWidget(text: "Nessun commento in attesa");
             }
+
+            context.read<SocialBloc>().getDailyPosts(post.datetime);
 
             return ListView.builder(
               padding: const EdgeInsets.all(16),
@@ -124,10 +128,6 @@ class _PendingCommentItem extends StatelessWidget {
                 ),
                 onPressed: () {
                   context.read<SocialCommentBloc>().approveComment(comment.id, postId);
-                  context.read<SocialBloc>().getDailyPosts(postDate);
-                  if (context.canPop()) {
-                    context.pop();
-                  }
                 },
               ),
             ],
