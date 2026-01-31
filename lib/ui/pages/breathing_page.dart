@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/breathing/breathing_bloc.dart';
+import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/widgets/breathing_dialog.dart';
 import 'package:incisive/ui/widgets/loading_spinner.dart';
 
@@ -134,6 +135,7 @@ class _BreathingPageState extends State<BreathingPage> with SingleTickerProvider
             ),
           );
         } else if (state is Success<int>) {
+          context.read<ProfileBloc>().getProfile();
           showDialog(
             context: context,
             barrierDismissible: false,
