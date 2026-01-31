@@ -11,6 +11,7 @@ import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:incisive/utils/functions.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
@@ -106,7 +107,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
                 Expanded(
                   child: _CommentsList(
                     state: state,
-                    comments: comments.where((c) => c.approved).toList(),
+                    comments: comments.where((c) => c.approved).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
                     postAuthorId: widget.post.authorId,
                     postId: widget.post.id,
                   ),
@@ -237,6 +238,15 @@ class _CommentItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            formatDateTime(comment.createdAt),
+            style: const TextStyle(
+              fontFamily: 'Nunito Sans',
+              fontSize: 12,
+              color: Colors.black45,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
             comment.content,
             style: const TextStyle(
               fontFamily: 'Nunito Sans',
@@ -244,20 +254,6 @@ class _CommentItem extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-
-          if (!comment.approved && isPostAuthor)
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  context.read<SocialCommentBloc>().approveComment(
-                    postId,
-                    comment.id,
-                  );
-                },
-                child: const Text("Approva"),
-              ),
-            ),
 
           if (comment.approved)
             Row(
