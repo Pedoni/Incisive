@@ -57,7 +57,7 @@ class LoginService extends BaseService {
         });
       } on AuthApiException catch (e) {
         throw IncisiveException(e.message);
-      } on AuthWeakPasswordException catch (e) {
+      } on AuthWeakPasswordException catch (_) {
         throw IncisiveException("La password deve contenere almeno 6 caratteri.");
       } catch (e) {
         throw IncisiveException('Errore creazione profilo utente.');

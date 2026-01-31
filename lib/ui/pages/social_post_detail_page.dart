@@ -5,7 +5,6 @@ import 'package:incisive/models/post_model.dart';
 import 'package:incisive/models/comment_model.dart';
 import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
-import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/pages/add_comment_page.dart';
 import 'package:incisive/ui/pages/pending_comments_page.dart';
@@ -295,72 +294,6 @@ class _CommentItem extends StatelessWidget {
                 Text(comment.downvotes.toString()),
               ],
             ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CommentInput extends StatelessWidget {
-  final PostModel post;
-  final TextEditingController controller;
-
-  const _CommentInput({
-    required this.post,
-    required this.controller,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller,
-              maxLines: null,
-              decoration: InputDecoration(
-                hintText: "Scrivi un commento...",
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          BlocBuilder<CommentPostBloc, BaseState>(
-            builder: (context, state) {
-              return state is Loading
-                  ? SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: IconButton(
-                      icon: CircularProgressIndicator(),
-                      onPressed: null,
-                    ),
-                  )
-                  : SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed: () {
-                        if (controller.text.trim().isEmpty) return;
-
-                        context.read<CommentPostBloc>().commentPost(
-                          post.id,
-                          controller.text.trim(),
-                        );
-
-                        controller.clear();
-                      },
-                    ),
-                  );
-            },
-          ),
         ],
       ),
     );
