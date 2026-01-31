@@ -118,6 +118,17 @@ class _HomePageState extends State<HomePage> {
   late final GardenGame gardenGame;
   late final SquareGame squareGame;
 
+  Widget Function(dynamic) _getLoadingBuilder() {
+    return (context) {
+      return Container(
+        color: const Color(0xFFFFF8E8),
+        child: const Center(
+          child: CircularProgressIndicator(color: Color.fromARGB(255, 141, 90, 35)),
+        ),
+      );
+    };
+  }
+
   @override
   void initState() {
     super.initState();
@@ -177,10 +188,22 @@ class _HomePageState extends State<HomePage> {
             },
             itemBuilder: (context, index) {
               return switch (index) {
-                0 => GameWidget(game: bedroomGame),
-                1 => GameWidget(game: livingRoomGame),
-                2 => GameWidget(game: gardenGame),
-                3 => GameWidget(game: squareGame),
+                0 => GameWidget(
+                  game: bedroomGame,
+                  loadingBuilder: _getLoadingBuilder(),
+                ),
+                1 => GameWidget(
+                  game: livingRoomGame,
+                  loadingBuilder: _getLoadingBuilder(),
+                ),
+                2 => GameWidget(
+                  game: gardenGame,
+                  loadingBuilder: _getLoadingBuilder(),
+                ),
+                3 => GameWidget(
+                  game: squareGame,
+                  loadingBuilder: _getLoadingBuilder(),
+                ),
                 _ => const SizedBox.shrink(),
               };
             },
