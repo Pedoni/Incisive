@@ -5,15 +5,13 @@ import 'package:incisive/models/post_model.dart';
 import 'package:incisive/models/comment_model.dart';
 import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
-import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
+import 'package:incisive/ui/pages/add_comment_page.dart';
 import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
-import 'package:incisive/ui/widgets/error_dialog.dart';
-import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
 import 'package:incisive/utils/constants.dart';
-import 'package:incisive/utils/enums.dart';
+import 'package:incisive/utils/functions.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
@@ -79,52 +77,44 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
             ),
         ],
       ),
-
+      floatingActionButton:
+          !isAuthor
+              ? FloatingActionButton(
+                backgroundColor: const Color.fromARGB(255, 141, 90, 35),
+                foregroundColor: Colors.white,
+                child: const Icon(Icons.add_comment),
+                onPressed: () {
+                  context.push(
+                    AddCommentPage.routeName,
+                    extra: widget.post,
+                  );
+                },
+              )
+              : null,
       body: SafeArea(
-        child: BlocListener<CommentPostBloc, BaseState>(
-          listener: (context, state) {
-            if (state is Error) {
-              showDialog(
-                context: context,
-                builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? "Errore sconosciuto"),
-              );
-            } else if (state is Success) {
-              showDialog(
-                context: context,
-                builder: (context) => InsertConfirmDialog(type: PostType.comment),
-              );
-            }
-          },
-          child: BlocBuilder<SocialCommentBloc, BaseState>(
-            builder: (context, state) {
-              final comments = state is Success<List<CommentModel>> ? state.data : <CommentModel>[];
+        child: BlocBuilder<SocialCommentBloc, BaseState>(
+          builder: (context, state) {
+            final comments = state is Success<List<CommentModel>> ? state.data : <CommentModel>[];
 
-              return Column(
-                children: [
-                  /// POST
-                  _PostHeader(post: widget.post),
+            return Column(
+              children: [
+                /// POST
+                _PostHeader(post: widget.post),
 
-                  const Divider(height: 1),
+                const Divider(height: 1),
 
-                  /// COMMENTI
-                  Expanded(
-                    child: _CommentsList(
-                      state: state,
-                      comments: comments.where((c) => c.approved).toList(),
-                      postAuthorId: widget.post.authorId,
-                      postId: widget.post.id,
-                    ),
+                /// COMMENTI
+                Expanded(
+                  child: _CommentsList(
+                    state: state,
+                    comments: comments.where((c) => c.approved).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+                    postAuthorId: widget.post.authorId,
+                    postId: widget.post.id,
                   ),
-
-                  if (!isAuthor)
-                    _CommentInput(
-                      post: widget.post,
-                      controller: _commentController,
-                    ),
-                ],
-              );
-            },
-          ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -248,6 +238,15 @@ class _CommentItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            formatDateTime(comment.createdAt),
+            style: const TextStyle(
+              fontFamily: 'Nunito Sans',
+              fontSize: 12,
+              color: Colors.black45,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
             comment.content,
             style: const TextStyle(
               fontFamily: 'Nunito Sans',
@@ -255,20 +254,6 @@ class _CommentItem extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-
-          if (!comment.approved && isPostAuthor)
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  context.read<SocialCommentBloc>().approveComment(
-                    postId,
-                    comment.id,
-                  );
-                },
-                child: const Text("Approva"),
-              ),
-            ),
 
           if (comment.approved)
             Row(
@@ -305,72 +290,6 @@ class _CommentItem extends StatelessWidget {
                 Text(comment.downvotes.toString()),
               ],
             ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CommentInput extends StatelessWidget {
-  final PostModel post;
-  final TextEditingController controller;
-
-  const _CommentInput({
-    required this.post,
-    required this.controller,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller,
-              maxLines: null,
-              decoration: InputDecoration(
-                hintText: "Scrivi un commento...",
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          BlocBuilder<CommentPostBloc, BaseState>(
-            builder: (context, state) {
-              return state is Loading
-                  ? SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: IconButton(
-                      icon: CircularProgressIndicator(),
-                      onPressed: null,
-                    ),
-                  )
-                  : SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed: () {
-                        if (controller.text.trim().isEmpty) return;
-
-                        context.read<CommentPostBloc>().commentPost(
-                          post.id,
-                          controller.text.trim(),
-                        );
-
-                        controller.clear();
-                      },
-                    ),
-                  );
-            },
-          ),
         ],
       ),
     );

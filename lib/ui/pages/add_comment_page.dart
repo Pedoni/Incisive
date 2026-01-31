@@ -1,56 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:incisive/models/diary_model.dart';
+import 'package:incisive/models/post_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
-import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
-import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
-import 'package:incisive/state_management/blocs/upsert_page/upsert_page_bloc.dart';
+import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/ui/widgets/speech_dialog.dart';
 import 'package:incisive/utils/enums.dart';
 
-class UpsertDiaryPage extends StatefulWidget {
-  static const routeName = '/upsertDiaryPage';
+class AddCommentPage extends StatefulWidget {
+  static const routeName = '/addCommentPage';
 
-  final DateTime date;
-  final DiaryModel? existingEntry;
+  final PostModel post;
 
-  const UpsertDiaryPage({
+  const AddCommentPage({
     super.key,
-    required this.date,
-    this.existingEntry,
+    required this.post,
   });
 
   @override
-  State<UpsertDiaryPage> createState() => _UpsertDiaryPageState();
+  State<AddCommentPage> createState() => _AddCommentPageState();
 }
 
-class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
+class _AddCommentPageState extends State<AddCommentPage> {
   late TextEditingController _controller;
-  late UpsertPageBloc _upsertPageBloc;
+  late CommentPostBloc _commentPostBloc;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.existingEntry?.text ?? "");
+    _controller = TextEditingController();
     _controller.addListener(() => setState(() {}));
-    _upsertPageBloc = context.read<UpsertPageBloc>();
+    _commentPostBloc = context.read<CommentPostBloc>();
   }
 
-  void _save() => _upsertPageBloc.upsertPage(widget.date, _controller.text);
+  void _save() => _commentPostBloc.commentPost(
+    widget.post.id,
+    _controller.text.trim(),
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isEditing = widget.existingEntry != null;
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(
-          isEditing ? "Modifica pagina" : "Nuova pagina",
-          style: const TextStyle(
+        title: const Text(
+          "Scrivi commento",
+          style: TextStyle(
             fontSize: 22,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w600,
@@ -62,29 +65,22 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
         elevation: 0,
       ),
       backgroundColor: const Color(0xFFFFF8E8),
-      body: BlocListener<UpsertPageBloc, BaseState>(
+      body: BlocListener<CommentPostBloc, BaseState>(
         listener: (context, state) {
           if (state is Success) {
-            context.read<DiaryPageBloc>().getPage(widget.date);
-            if (context.canPop()) {
-              context.pop();
-            }
-            if (widget.existingEntry == null) {
-              context.read<ProfileBloc>().addPoints(10);
-            }
+            context.pop();
             showDialog(
               context: context,
-              barrierDismissible: false,
-              builder:
-                  (context) => InsertConfirmDialog(
-                    type: isEditing ? PostType.gdEdit : PostType.gdInsert,
-                    points: isEditing ? null : 10,
-                  ),
+              builder: (context) => InsertConfirmDialog(type: PostType.comment),
             );
           } else if (state is Error) {
             showDialog(
               context: context,
-              builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto.'),
+              builder:
+                  (context) => ErrorDialog(
+                    title: "Errore",
+                    text: state.errorString ?? 'Errore sconosciuto.',
+                  ),
             );
           }
         },
@@ -93,11 +89,12 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// HEADER + MIC
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Scrivi qui i tuoi pensieri",
+                  const Text(
+                    "Scrivi il tuo commento",
                     style: TextStyle(
                       color: Color.fromARGB(255, 112, 66, 16),
                       fontFamily: 'Nunito Sans',
@@ -108,7 +105,10 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
                     onTap: () async {
                       final result = await showDialog<String>(
                         context: context,
-                        builder: (_) => SpeechDialog(description: "Racconta della tua giornata..."),
+                        builder:
+                            (_) => const SpeechDialog(
+                              description: "Detta il tuo commento...",
+                            ),
                       );
 
                       if (result != null && result.isNotEmpty) {
@@ -117,26 +117,29 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
                         });
                       }
                     },
-                    child: Icon(
+                    child: const Icon(
                       Icons.mic,
                       color: Color.fromARGB(255, 112, 66, 16),
                     ),
                   ),
                 ],
               ),
+
               const SizedBox(height: 20),
+
+              /// TEXT FIELD
               Expanded(
                 child: TextField(
                   controller: _controller,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
-                  maxLength: 1000,
+                  maxLength: 500,
                   expands: true,
                   textAlignVertical: TextAlignVertical.top,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
-                    hintText: "Inserisci il tuo testo...",
+                    hintText: "Inserisci il tuo commento...",
                     alignLabelWithHint: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -150,35 +153,40 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+
+              const SizedBox(height: 20),
+
+              /// CONFIRM BUTTON
               Center(
-                child: BlocBuilder<UpsertPageBloc, BaseState>(
+                child: BlocBuilder<CommentPostBloc, BaseState>(
                   builder: (context, state) {
                     final screenWidth = MediaQuery.sizeOf(context).width;
+
                     return ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 141, 90, 35),
+                        backgroundColor: const Color.fromARGB(255, 141, 90, 35),
                         foregroundColor: Colors.white,
                         disabledBackgroundColor:
-                            _controller.text.length < 10 ? const Color.fromARGB(255, 184, 181, 181) : Color.fromARGB(255, 141, 90, 35),
+                            _controller.text.length < 5 ? const Color.fromARGB(255, 184, 181, 181) : const Color.fromARGB(255, 141, 90, 35),
                         fixedSize: Size.fromWidth(screenWidth * 0.4),
                       ),
-                      onPressed: _controller.text.length < 10 || state is Loading ? null : _save,
+                      onPressed: _controller.text.length < 5 || state is Loading ? null : _save,
                       child:
                           state is Loading
-                              ? SizedBox(
+                              ? const SizedBox(
                                 height: 25,
                                 width: 25,
                                 child: CircularProgressIndicator(
                                   color: Colors.white,
                                 ),
                               )
-                              : Text("Conferma"),
+                              : const Text("Conferma"),
                     );
                   },
                 ),
               ),
-              SizedBox(height: 20),
+
+              const SizedBox(height: 20),
             ],
           ),
         ),
