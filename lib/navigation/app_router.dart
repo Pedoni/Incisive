@@ -1,8 +1,10 @@
 import 'package:go_router/go_router.dart';
+import 'package:incisive/models/post_model.dart';
 import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/navigation/args/upsert_diary_args.dart';
 import 'package:incisive/navigation/args/upsert_gratitude_args.dart';
 import 'package:incisive/navigation/auth_notifier.dart';
+import 'package:incisive/ui/pages/add_comment_page.dart';
 import 'package:incisive/ui/pages/add_post_page.dart';
 import 'package:incisive/ui/pages/breathing_page.dart';
 import 'package:incisive/ui/pages/chat_page.dart';
@@ -106,6 +108,14 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
           date: args.date,
           existingEntry: args.entry,
         );
+      },
+    ),
+
+    GoRoute(
+      path: AddCommentPage.routeName,
+      builder: (context, state) {
+        final post = state.extra! as PostModel;
+        return AddCommentPage(post: post);
       },
     ),
 
