@@ -17,7 +17,7 @@ class StorePage extends StatelessWidget {
         appBar: AppBar(
           scrolledUnderElevation: 0,
           title: const Text(
-            "Store",
+            "Shop",
             style: TextStyle(
               fontSize: 25,
               fontFamily: 'Poppins',
