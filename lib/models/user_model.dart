@@ -7,6 +7,7 @@ class UserModel {
   final int level;
   final double progress;
   final int nextLevelPoints;
+  final int spentPoints;
 
   UserModel({
     required this.id,
@@ -17,5 +18,6 @@ class UserModel {
     required this.level,
     required this.progress,
     required this.nextLevelPoints,
+    required this.spentPoints,
   });
 }

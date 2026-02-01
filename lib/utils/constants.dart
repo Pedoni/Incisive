@@ -42,6 +42,7 @@ class Constants {
     level: 2,
     nextLevelPoints: 120,
     progress: 20,
+    spentPoints: 55,
   );
 
   static PostModel mockedPostItem = PostModel(
