@@ -34,12 +34,13 @@ class StorePage extends StatelessWidget {
             Material(
               color: Color(0xFFFFF8E8),
               child: TabBar(
+                indicatorSize: TabBarIndicatorSize.tab,
                 indicatorColor: Color.fromARGB(255, 141, 90, 35),
                 labelColor: Color.fromARGB(255, 141, 90, 35),
                 unselectedLabelColor: Colors.grey,
                 tabs: [
-                  Tab(text: "Sfondo"),
                   Tab(text: "Avatar"),
+                  Tab(text: "Sfondo"),
                 ],
               ),
             ),
@@ -47,8 +48,8 @@ class StorePage extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  ColorsProgressTab(),
                   AvatarShopTab(),
+                  ColorsProgressTab(),
                 ],
               ),
             ),
@@ -139,8 +140,6 @@ class ColorsProgressTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int userLevel = 12;
-
     final milestones = [
       (1, const Color.fromARGB(255, 217, 216, 216)),
       (5, Colors.blue),
@@ -151,19 +150,27 @@ class ColorsProgressTab extends StatelessWidget {
       (100, const Color.fromARGB(255, 224, 191, 0)),
     ];
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: milestones.length,
-      itemBuilder: (context, index) {
-        final levelRequired = milestones[index].$1;
-        final color = milestones[index].$2;
+    return BlocBuilder<ProfileBloc, BaseState>(
+      builder: (context, state) {
+        if (state is! Success<UserModel>) {
+          return const SizedBox(height: 100);
+        }
+        final user = state.data;
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: milestones.length,
+          itemBuilder: (context, index) {
+            final levelRequired = milestones[index].$1;
+            final color = milestones[index].$2;
 
-        final reached = userLevel >= levelRequired;
+            final reached = user.level >= levelRequired;
 
-        return ListTile(
-          leading: CircleAvatar(backgroundColor: color),
-          title: Text("Livello $levelRequired"),
-          trailing: reached ? const Icon(Icons.check, color: Colors.green) : const Icon(Icons.lock_outline),
+            return ListTile(
+              leading: CircleAvatar(backgroundColor: color),
+              title: Text("Livello $levelRequired"),
+              trailing: reached ? const Icon(Icons.check, color: Colors.green) : const Icon(Icons.lock_outline),
+            );
+          },
         );
       },
     );
