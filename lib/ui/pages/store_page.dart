@@ -112,7 +112,7 @@ class LevelHeader extends StatelessWidget {
                 backgroundColor: Colors.brown.shade100,
                 color: const Color.fromARGB(255, 141, 90, 35),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 20),
               Row(
                 children: [
                   const Icon(Icons.eco, color: Colors.green),
@@ -120,7 +120,7 @@ class LevelHeader extends StatelessWidget {
                   Text(
                     "${user.points - user.spentPoints} foglie disponibili",
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 18,
                       color: Color.fromARGB(255, 141, 90, 35),
                     ),
                   ),
