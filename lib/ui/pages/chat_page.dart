@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:chat_bubbles/bubbles/bubble_normal.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:incisive/models/chat_session.dart';
 import 'package:incisive/utils/exceptions.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
@@ -50,6 +50,8 @@ leggero e motivante, senza renderlo competitivo.
 
 Il tuo obiettivo è essere una presenza costante, gentile e affidabile,
 che aiuta l’utente a sentirsi ascoltato e orientato all’interno dell’app.
+Quando serve mettere in evidenza concetti o luoghi dell’app, puoi usare
+un Markdown semplice (grassetto o corsivo), senza esagerare.
 ''';
 
   void _addInitialBotMessage() {
@@ -136,6 +138,43 @@ che aiuta l’utente a sentirsi ascoltato e orientato all’interno dell’app.
     ];
   }
 
+  Widget chatBubble({
+    required bool isUser,
+    required String text,
+  }) {
+    return Align(
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        padding: const EdgeInsets.all(12),
+        constraints: const BoxConstraints(maxWidth: 280),
+        decoration: BoxDecoration(
+          color: isUser ? const Color.fromARGB(255, 141, 90, 35) : const Color.fromARGB(255, 241, 218, 192),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: MarkdownBody(
+          data: text,
+          selectable: true,
+          styleSheet: MarkdownStyleSheet(
+            p: TextStyle(
+              fontSize: 15,
+              color: isUser ? Colors.white : Colors.black,
+              height: 1.4,
+            ),
+            strong: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: isUser ? Colors.white : Colors.black,
+            ),
+            em: TextStyle(
+              fontStyle: FontStyle.italic,
+              color: isUser ? Colors.white : Colors.black,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _scrollToTop() {
     _scrollController.animateTo(
       0,
@@ -197,26 +236,10 @@ che aiuta l’utente a sentirsi ascoltato e orientato all’interno dell’app.
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
-                      child:
-                          msg.isUser
-                              ? BubbleNormal(
-                                text: msg.text,
-                                isSender: true,
-                                color: Color.fromARGB(255, 141, 90, 35),
-                                textStyle: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                ),
-                              )
-                              : BubbleNormal(
-                                text: msg.text,
-                                isSender: false,
-                                color: Color.fromARGB(255, 241, 218, 192),
-                                textStyle: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                ),
-                              ),
+                      child: chatBubble(
+                        isUser: msg.isUser,
+                        text: msg.text,
+                      ),
                     );
                   },
                 ),
