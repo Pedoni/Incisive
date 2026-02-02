@@ -38,7 +38,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
   void initState() {
     super.initState();
     context.read<SocialCommentBloc>().getComments(widget.post.id);
-    isAuthor = widget.post.authorId == Supabase.instance.client.auth.currentUser?.id;
+    isAuthor = widget.post.author!.id == Supabase.instance.client.auth.currentUser?.id;
   }
 
   @override
@@ -64,7 +64,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
           ),
         ),
         actions: [
-          if (widget.post.authorId == Supabase.instance.client.auth.currentUser!.id)
+          if (widget.post.author!.id == Supabase.instance.client.auth.currentUser!.id)
             IconButton(
               icon: const Icon(Icons.mark_email_unread_outlined),
               tooltip: "Commenti in attesa",
@@ -108,7 +108,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
                   child: _CommentsList(
                     state: state,
                     comments: comments.where((c) => c.approved).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
-                    postAuthorId: widget.post.authorId,
+                    postAuthorId: widget.post.author!.id,
                     postId: widget.post.id,
                   ),
                 ),
@@ -128,21 +128,52 @@ class _PostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final author = post.author;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            post.title,
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
+          /// ROW: AVATAR + TITOLO
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 22,
+                backgroundColor: getUserBackgroundColor(author!.level),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/${author.avatarAsset}',
+                    width: 44,
+                    height: 44,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) {
+                      return const Icon(Icons.person, size: 22);
+                    },
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 14),
+
+              Expanded(
+                child: Text(
+                  post.title,
+                  style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
+
+          const SizedBox(height: 14),
+
+          /// CONTENUTO
           Text(
             post.content,
             style: const TextStyle(
@@ -220,6 +251,8 @@ class _CommentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final author = comment.author;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
@@ -237,15 +270,41 @@ class _CommentItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            formatDateTime(comment.createdAt),
-            style: const TextStyle(
-              fontFamily: 'Nunito Sans',
-              fontSize: 12,
-              color: Colors.black45,
-            ),
+          /// ROW: ORARIO A SINISTRA, AVATAR A DESTRA
+          Row(
+            children: [
+              Text(
+                formatDateTime(comment.createdAt),
+                style: const TextStyle(
+                  fontFamily: 'Nunito Sans',
+                  fontSize: 12,
+                  color: Colors.black45,
+                ),
+              ),
+
+              const Spacer(),
+
+              CircleAvatar(
+                radius: 16,
+                backgroundColor: getUserBackgroundColor(author.level),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/${author.avatarAsset}',
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) {
+                      return const Icon(Icons.person, size: 16);
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
+
           const SizedBox(height: 8),
+
+          /// CONTENUTO
           Text(
             comment.content,
             style: const TextStyle(
@@ -253,9 +312,11 @@ class _CommentItem extends StatelessWidget {
               fontSize: 15,
             ),
           ),
-          const SizedBox(height: 8),
 
-          if (comment.approved)
+          if (comment.approved) ...[
+            const SizedBox(height: 8),
+
+            /// AZIONI
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -290,6 +351,7 @@ class _CommentItem extends StatelessWidget {
                 Text(comment.downvotes.toString()),
               ],
             ),
+          ],
         ],
       ),
     );

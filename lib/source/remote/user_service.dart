@@ -21,10 +21,14 @@ class UserService extends BaseService {
                 )
                 as JsonObject;
 
+        final avatarJson =
+            await supabase.from('user_avatar').select('avatar(asset)').eq('user_id', authUser.id).eq('equipped', true).maybeSingle();
+
         return {
           ...userJson,
           ...progressJson,
           'email': authUser.email,
+          'avatar_asset': avatarJson?['avatar']?['asset'],
         };
       },
     );
@@ -38,6 +42,56 @@ class UserService extends BaseService {
         params: {
           'p_user_id': currentUserId,
           'p_points': points,
+        },
+      ),
+    );
+  }
+
+  Future<JsonArray> getAvatars() async {
+    return await guard(
+      "Get avatars",
+      () async {
+        final avatars = await supabase.from('avatar').select();
+
+        final userAvatars = await supabase.from('user_avatar').select().eq('user_id', currentUserId);
+
+        final ownedMap = {
+          for (final ua in userAvatars) ua['avatar_id']: ua,
+        };
+
+        return avatars.map((avatar) {
+          final owned = ownedMap[avatar['id']];
+          return {
+            ...avatar,
+            'owned': owned != null,
+            'equipped': owned?['equipped'] ?? false,
+          };
+        }).toList();
+      },
+    );
+  }
+
+  Future<void> purchaseAvatar(String avatarId) async {
+    await guard(
+      "Purchase avatar",
+      () => supabase.rpc(
+        'purchase_avatar',
+        params: {
+          'p_user_id': currentUserId,
+          'p_avatar_id': avatarId,
+        },
+      ),
+    );
+  }
+
+  Future<void> equipAvatar(String avatarId) async {
+    await guard(
+      "Equip avatar",
+      () => supabase.rpc(
+        'equip_avatar',
+        params: {
+          'p_user_id': currentUserId,
+          'p_avatar_id': avatarId,
         },
       ),
     );

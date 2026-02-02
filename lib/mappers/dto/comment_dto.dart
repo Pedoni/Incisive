@@ -14,6 +14,7 @@ final class CommentDTO extends DTO with EquatableMixin {
   final int downvotes;
   final bool? myVote;
   final String viewerUserId;
+  final CommentAuthorDTO author;
 
   CommentDTO.fromJson(JsonObject json)
     : id = json['id'] as String,
@@ -25,7 +26,8 @@ final class CommentDTO extends DTO with EquatableMixin {
       upvotes = json['upvotes'] as int,
       downvotes = json['downvotes'] as int,
       myVote = json['my_vote'] as bool?,
-      viewerUserId = Supabase.instance.client.auth.currentUser!.id;
+      viewerUserId = Supabase.instance.client.auth.currentUser!.id,
+      author = CommentAuthorDTO.fromJson(json['author']);
 
   @override
   List<Object?> get props => [
@@ -40,4 +42,12 @@ final class CommentDTO extends DTO with EquatableMixin {
     myVote,
     viewerUserId,
   ];
+}
+
+class CommentAuthorDTO {
+  final String id;
+  final String avatarAsset;
+  final int level;
+
+  CommentAuthorDTO.fromJson(Map<String, dynamic> json) : id = json['id'], avatarAsset = json['avatar_asset'], level = json['level'];
 }

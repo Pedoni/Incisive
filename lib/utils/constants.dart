@@ -1,5 +1,7 @@
+import 'package:incisive/models/avatar_model.dart';
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/models/gratitude_model.dart';
+import 'package:incisive/models/post_author_model.dart';
 import 'package:incisive/models/post_model.dart';
 import 'package:incisive/models/user_model.dart';
 
@@ -42,11 +44,12 @@ class Constants {
     level: 2,
     nextLevelPoints: 120,
     progress: 20,
+    spentPoints: 55,
+    avatarAsset: "assets/images/cat_thumb.png",
   );
 
   static PostModel mockedPostItem = PostModel(
     id: "",
-    authorId: "",
     approvedCommentsCount: 0,
     content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
@@ -59,5 +62,87 @@ class Constants {
         "placerat mauris, at commodo mauris egestas eu.",
     datetime: DateTime.now(),
     title: "Lorem ipsum dolor sit amet",
+    author: PostAuthorModel(
+      id: "author_1",
+      firstName: "Luca",
+      lastName: "Rossi",
+      avatarAsset: "assets/images/dog_thumb.png",
+      level: 3,
+    ),
   );
+
+  static List<AvatarModel> get mockedAvatars => [
+    AvatarModel(
+      id: "avatar_1",
+      name: "Gatto Curioso",
+      asset: "cat_thumb.png",
+      cost: 50,
+      owned: false,
+      equipped: false,
+    ),
+    AvatarModel(
+      id: "avatar_2",
+      name: "Cane Allegro",
+      asset: "cat_thumb.png",
+      cost: 75,
+      owned: false,
+      equipped: false,
+    ),
+    AvatarModel(
+      id: "avatar_3",
+      name: "Coniglio Vivace",
+      asset: "cat_thumb.png",
+      cost: 100,
+      owned: false,
+      equipped: false,
+    ),
+    AvatarModel(
+      id: "avatar_4",
+      name: "Pappagallo Chiacchierone",
+      asset: "cat_thumb.png",
+      cost: 150,
+      owned: false,
+      equipped: false,
+    ),
+    AvatarModel(
+      id: "avatar_5",
+      name: "Pesce Tranquillo",
+      asset: "cat_thumb.png",
+      cost: 200,
+      owned: false,
+      equipped: false,
+    ),
+    AvatarModel(
+      id: "avatar_6",
+      name: "Tartaruga Saggia",
+      asset: "cat_thumb.png",
+      cost: 250,
+      owned: false,
+      equipped: false,
+    ),
+    AvatarModel(
+      id: "avatar_7",
+      name: "Criceto Energetico",
+      asset: "cat_thumb.png",
+      cost: 300,
+      owned: false,
+      equipped: false,
+    ),
+    AvatarModel(
+      id: "avatar_8",
+      name: "Cavallo Fiero",
+      asset: "cat_thumb.png",
+      cost: 350,
+      owned: false,
+      equipped: false,
+    ),
+    AvatarModel(
+      id: "avatar_9",
+      name: "Gufo Saggio",
+      asset: "cat_thumb.png",
+      cost: 400,
+      owned: false,
+      equipped: false,
+    ),
+  ];
 }

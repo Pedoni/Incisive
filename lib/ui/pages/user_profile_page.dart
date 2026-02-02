@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/models/avatar_model.dart';
+import 'package:incisive/models/user_model.dart';
+import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/login/login_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/widgets/logout_dialog.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:incisive/utils/functions.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class UserProfilePage extends StatelessWidget {
@@ -39,7 +43,7 @@ class UserProfilePage extends StatelessWidget {
       appBar: appBar,
       body: BlocBuilder<ProfileBloc, BaseState>(
         builder: (context, state) {
-          final user = state is Success ? state.data : Constants.mockedUser;
+          final user = state is Success ? state.data as UserModel : Constants.mockedUser;
 
           return Skeletonizer(
             enabled: state is Loading || state is Initial,
@@ -56,7 +60,7 @@ class UserProfilePage extends StatelessWidget {
                       bottomRight: Radius.circular(50),
                     ),
                   ),
-                  child: const _AvatarSection(),
+                  child: _AvatarSection(user: user, loading: state is Loading || state is Initial),
                 ),
 
                 const SizedBox(height: 24),
@@ -113,22 +117,58 @@ class UserProfilePage extends StatelessWidget {
 }
 
 class _AvatarSection extends StatelessWidget {
-  const _AvatarSection();
+  final UserModel user;
+  final bool loading;
+
+  const _AvatarSection({
+    required this.user,
+    required this.loading,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 54,
-      backgroundColor: const Color(0xFFF7D85B),
-      child: CircleAvatar(
-        radius: 46,
-        backgroundColor: Colors.white,
-        child: Icon(
-          Icons.person,
-          size: 48,
-          color: Colors.grey.shade700,
-        ),
-      ),
+    return BlocBuilder<AvatarBloc, BaseState>(
+      builder: (context, state) {
+        String? avatarAsset;
+
+        if (state is Success<List<AvatarModel>>) {
+          final equippedAvatar = state.data.firstWhere(
+            (a) => a.equipped,
+            orElse: () => state.data.first,
+          );
+
+          avatarAsset = equippedAvatar.asset;
+        }
+
+        return GestureDetector(
+          onTap:
+              avatarAsset == null
+                  ? () {}
+                  : () {
+                    showDialog(
+                      context: context,
+                      builder:
+                          (context) => AlertDialog(
+                            content: Image.asset("assets/images/$avatarAsset"),
+                          ),
+                    );
+                  },
+          child: CircleAvatar(
+            radius: 54,
+            backgroundColor: const Color.fromARGB(255, 212, 173, 18),
+            child: CircleAvatar(
+              radius: 46,
+              backgroundColor: getUserBackgroundColor(user.level),
+              child:
+                  loading || avatarAsset == null
+                      ? null
+                      : Image.asset(
+                        "assets/images/$avatarAsset",
+                      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

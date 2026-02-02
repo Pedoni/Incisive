@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
+import 'package:incisive/ui/pages/store_page.dart';
 import 'package:incisive/ui/pages/user_profile_page.dart';
 import 'package:incisive/ui/widgets/level_bar.dart';
 
@@ -39,13 +41,17 @@ class HomeToolbar extends StatelessWidget {
                     icon: Icons.person_2,
                     onTap: () {
                       context.read<ProfileBloc>().getProfile();
+                      context.read<AvatarBloc>().getAvatars();
                       context.push(UserProfilePage.routeName);
                     },
                   ),
                   SizedBox(width: 15),
                   _TopIcon(
-                    icon: Icons.settings,
-                    onTap: () {},
+                    icon: Icons.store,
+                    onTap: () {
+                      context.read<ProfileBloc>().getProfile();
+                      context.push(StorePage.routeName);
+                    },
                   ),
                 ],
               ),

@@ -19,6 +19,7 @@ import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/pages/register_page.dart';
 import 'package:incisive/ui/pages/social_page.dart';
 import 'package:incisive/ui/pages/social_post_detail_page.dart';
+import 'package:incisive/ui/pages/store_page.dart';
 import 'package:incisive/ui/pages/user_profile_page.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
@@ -47,12 +48,12 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
   routes: [
     GoRoute(
       path: LoginPage.routeName,
-      builder: (_, _) => LoginPage(),
+      builder: (_, _) => const LoginPage(),
     ),
 
     GoRoute(
       path: RegisterPage.routeName,
-      builder: (_, _) => RegisterPage(),
+      builder: (_, _) => const RegisterPage(),
     ),
 
     GoRoute(
@@ -67,7 +68,7 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
 
     GoRoute(
       path: MoodCalendarPage.routeName,
-      builder: (_, _) => MoodCalendarPage(),
+      builder: (_, _) => const MoodCalendarPage(),
     ),
 
     GoRoute(
@@ -97,7 +98,12 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
 
     GoRoute(
       path: UserProfilePage.routeName,
-      builder: (_, _) => UserProfilePage(),
+      builder: (_, _) => const UserProfilePage(),
+    ),
+
+    GoRoute(
+      path: StorePage.routeName,
+      builder: (_, _) => const StorePage(),
     ),
 
     GoRoute(
