@@ -166,12 +166,12 @@ class ColorsProgressTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final milestones = [
-      (1, const Color.fromARGB(255, 217, 216, 216)),
+      (1, Colors.white),
       (5, Colors.blue),
       (10, Colors.green),
       (20, Colors.red),
       (50, const Color.fromARGB(255, 184, 115, 51)),
-      (75, const Color.fromARGB(255, 185, 185, 185)),
+      (75, const Color.fromARGB(255, 152, 151, 151)),
       (100, const Color.fromARGB(255, 224, 191, 0)),
     ];
 
@@ -184,10 +184,13 @@ class ColorsProgressTab extends StatelessWidget {
 
         final reached = user.level >= levelRequired;
 
-        return ListTile(
-          leading: CircleAvatar(backgroundColor: color),
-          title: Text("Livello $levelRequired"),
-          trailing: reached ? const Icon(Icons.check, color: Colors.green) : const Icon(Icons.lock_outline),
+        return Card(
+          color: const Color.fromARGB(255, 247, 230, 193),
+          child: ListTile(
+            leading: CircleAvatar(backgroundColor: color),
+            title: Text("Livello $levelRequired"),
+            trailing: reached ? const Icon(Icons.check, color: Colors.green) : const Icon(Icons.lock_outline),
+          ),
         );
       },
     );
@@ -223,6 +226,7 @@ class AvatarShopTab extends StatelessWidget {
               final canBuy = (user.points - user.spentPoints) >= avatar.cost;
 
               return Card(
+                elevation: 2,
                 color: Color.fromARGB(255, 255, 255, 255),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -262,7 +266,10 @@ class AvatarShopTab extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          if (avatar.cost > 0) ...[const Icon(Icons.eco, color: Color.fromARGB(255, 74, 202, 78)), const SizedBox(width: 6)],
+                          if (avatar.cost > 0) ...[
+                            const Icon(Icons.eco, color: Color.fromARGB(255, 74, 202, 78)),
+                            const SizedBox(width: 6),
+                          ],
                           Text(avatar.cost == 0 ? "Gratis" : avatar.cost.toString()),
                         ],
                       ),

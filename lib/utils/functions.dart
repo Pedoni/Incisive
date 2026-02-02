@@ -33,11 +33,11 @@ String formatDateTime(DateTime dateTime) {
 Color getUserBackgroundColor(int userLevel) {
   return switch (userLevel) {
     >= 100 => const Color.fromARGB(255, 224, 191, 0),
-    >= 75 => const Color.fromARGB(255, 185, 185, 185),
+    >= 75 => const Color.fromARGB(255, 152, 151, 151),
     >= 50 => const Color.fromARGB(255, 184, 115, 51),
     >= 20 => Colors.red,
     >= 10 => Colors.green,
     >= 5 => Colors.blue,
-    _ => const Color.fromARGB(255, 217, 216, 216),
+    _ => Colors.white,
   };
 }
