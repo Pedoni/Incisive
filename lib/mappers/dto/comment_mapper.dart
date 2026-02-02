@@ -8,7 +8,6 @@ class CommentMapper extends DTOMapper<CommentDTO, CommentModel> {
     return CommentModel(
       id: dto.id,
       postId: dto.postId,
-      authorId: dto.authorId,
       content: dto.content,
       createdAt: DateTime.parse(dto.createdAt),
       approved: dto.approved,
@@ -16,6 +15,11 @@ class CommentMapper extends DTOMapper<CommentDTO, CommentModel> {
       downvotes: dto.downvotes,
       myVote: dto.myVote,
       viewerUserId: dto.viewerUserId,
+      author: CommentAuthorModel(
+        id: dto.author.id,
+        avatarAsset: dto.author.avatarAsset,
+        level: dto.author.level,
+      ),
     );
   }
 

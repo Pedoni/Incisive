@@ -251,6 +251,8 @@ class _CommentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final author = comment.author;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
@@ -268,15 +270,41 @@ class _CommentItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            formatDateTime(comment.createdAt),
-            style: const TextStyle(
-              fontFamily: 'Nunito Sans',
-              fontSize: 12,
-              color: Colors.black45,
-            ),
+          /// ROW: ORARIO A SINISTRA, AVATAR A DESTRA
+          Row(
+            children: [
+              Text(
+                formatDateTime(comment.createdAt),
+                style: const TextStyle(
+                  fontFamily: 'Nunito Sans',
+                  fontSize: 12,
+                  color: Colors.black45,
+                ),
+              ),
+
+              const Spacer(),
+
+              CircleAvatar(
+                radius: 16,
+                backgroundColor: getUserBackgroundColor(author.level),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/${author.avatarAsset}',
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) {
+                      return const Icon(Icons.person, size: 16);
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
+
           const SizedBox(height: 8),
+
+          /// CONTENUTO
           Text(
             comment.content,
             style: const TextStyle(
@@ -284,9 +312,11 @@ class _CommentItem extends StatelessWidget {
               fontSize: 15,
             ),
           ),
-          const SizedBox(height: 8),
 
-          if (comment.approved)
+          if (comment.approved) ...[
+            const SizedBox(height: 8),
+
+            /// AZIONI
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -321,6 +351,7 @@ class _CommentItem extends StatelessWidget {
                 Text(comment.downvotes.toString()),
               ],
             ),
+          ],
         ],
       ),
     );
