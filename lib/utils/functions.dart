@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 String toSqlDate(DateTime d) =>
@@ -27,4 +28,16 @@ String formatDateTime(DateTime dateTime) {
   final minute = dateTime.minute.toString().padLeft(2, '0');
 
   return "$day/$month/$year, $hour:$minute";
+}
+
+Color getUserBackgroundColor(int userLevel) {
+  return switch (userLevel) {
+    >= 100 => const Color.fromARGB(255, 224, 191, 0),
+    >= 75 => const Color.fromARGB(255, 185, 185, 185),
+    >= 50 => const Color.fromARGB(255, 184, 115, 51),
+    >= 20 => Colors.red,
+    >= 10 => Colors.green,
+    >= 5 => Colors.blue,
+    _ => const Color.fromARGB(255, 217, 216, 216),
+  };
 }
