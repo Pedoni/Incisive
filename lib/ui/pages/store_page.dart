@@ -5,6 +5,7 @@ import 'package:incisive/models/user_model.dart';
 import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
+import 'package:incisive/state_management/blocs/purchase/purchase_bloc.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -32,44 +33,51 @@ class StorePage extends StatelessWidget {
           foregroundColor: const Color.fromARGB(255, 141, 90, 35),
           backgroundColor: const Color(0xFFFFF8E8),
         ),
-        body: BlocConsumer<ProfileBloc, BaseState>(
+        body: BlocListener<PurchaseBloc, BaseState>(
           listener: (context, state) {
-            if (state is Success<UserModel>) {
-              context.read<AvatarBloc>().getAvatars();
+            if (state is Success<String>) {
+              context.read<ProfileBloc>().getProfile();
             }
           },
-          builder: (context, state) {
-            final user = state is Success ? state.data as UserModel : Constants.mockedUser;
-            return Column(
-              children: [
-                _LevelHeader(user: user),
-                Material(
-                  color: Color(0xFFFFF8E8),
-                  child: TabBar(
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    indicatorColor: Color.fromARGB(255, 141, 90, 35),
-                    labelColor: Color.fromARGB(255, 141, 90, 35),
-                    unselectedLabelColor: Colors.grey,
-                    tabs: [
-                      Tab(text: "Avatar"),
-                      Tab(text: "Sfondo"),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Material(
+          child: BlocConsumer<ProfileBloc, BaseState>(
+            listener: (context, state) {
+              if (state is Success<UserModel>) {
+                context.read<AvatarBloc>().getAvatars();
+              }
+            },
+            builder: (context, state) {
+              final user = state is Success ? state.data as UserModel : Constants.mockedUser;
+              return Column(
+                children: [
+                  _LevelHeader(user: user),
+                  Material(
                     color: Color(0xFFFFF8E8),
-                    child: TabBarView(
-                      children: [
-                        _AvatarShopTab(user: user),
-                        _ColorsProgressTab(user: user),
+                    child: TabBar(
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicatorColor: Color.fromARGB(255, 141, 90, 35),
+                      labelColor: Color.fromARGB(255, 141, 90, 35),
+                      unselectedLabelColor: Colors.grey,
+                      tabs: [
+                        Tab(text: "Avatar"),
+                        Tab(text: "Sfondo"),
                       ],
                     ),
                   ),
-                ),
-              ],
-            );
-          },
+                  Expanded(
+                    child: Material(
+                      color: Color(0xFFFFF8E8),
+                      child: TabBarView(
+                        children: [
+                          _AvatarShopTab(user: user),
+                          _ColorsProgressTab(user: user),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -104,55 +112,59 @@ class _LevelHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      color: const Color(0xFFFFF8E8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "Livello ${user.level}",
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 141, 90, 35),
+    final userLoading = user.id == "mocked_user_id";
+    return Skeletonizer(
+      enabled: userLoading,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        color: const Color(0xFFFFF8E8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  "Livello ${user.level}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 141, 90, 35),
+                  ),
                 ),
-              ),
-              Text(
-                "${user.points}/${totalPointsToReachLevel(user.level + 1)}",
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 141, 90, 35),
+                Text(
+                  "${user.points}/${totalPointsToReachLevel(user.level + 1)}",
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 141, 90, 35),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: levelProgress(user.points, user.level),
-            backgroundColor: Colors.brown.shade100,
-            color: const Color.fromARGB(255, 141, 90, 35),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              const Icon(Icons.eco, color: Colors.green),
-              const SizedBox(width: 6),
-              Text(
-                "${user.points - user.spentPoints} foglie disponibili",
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: Color.fromARGB(255, 141, 90, 35),
+              ],
+            ),
+            const SizedBox(height: 8),
+            LinearProgressIndicator(
+              value: levelProgress(user.points, user.level),
+              backgroundColor: Colors.brown.shade100,
+              color: const Color.fromARGB(255, 141, 90, 35),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                const Icon(Icons.eco, color: Colors.green),
+                const SizedBox(width: 6),
+                Text(
+                  "${user.points - user.spentPoints} foglie disponibili",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Color.fromARGB(255, 141, 90, 35),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -218,7 +230,7 @@ class _AvatarShopTab extends StatelessWidget {
         onPressed:
             availableLeaves >= avatar.cost
                 ? () {
-                  context.read<AvatarBloc>().purchase(avatar.id);
+                  context.read<PurchaseBloc>().purchaseAvatar(avatar.id);
                 }
                 : null,
         child: Row(
@@ -251,7 +263,7 @@ class _AvatarShopTab extends StatelessWidget {
         foregroundColor: const Color(0xFF2E7D32),
       ),
       onPressed: () {
-        context.read<AvatarBloc>().equip(avatar.id);
+        context.read<PurchaseBloc>().equipAvatar(avatar.id);
       },
       child: const Text("Usa"),
     );

@@ -43,4 +43,7 @@ final List<BlocProvider> _blocs = [
   BlocProvider<AvatarBloc>(
     create: (context) => AvatarBloc(userRepository: context.read()),
   ),
+  BlocProvider<PurchaseBloc>(
+    create: (context) => PurchaseBloc(userRepository: context.read()),
+  ),
 ];
