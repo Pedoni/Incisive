@@ -206,6 +206,7 @@ class AvatarShopTab extends StatelessWidget {
         final userLoading = user.id == "mocked_user_id";
         final loading = state is Loading || state is Initial;
         final avatars = state is Success ? state.data as List<AvatarModel> : Constants.mockedAvatars;
+        avatars.sort((a, b) => a.name.compareTo(b.name));
         return Skeletonizer(
           enabled: userLoading || loading,
           child: GridView.builder(
@@ -244,7 +245,7 @@ class AvatarShopTab extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(avatar.name),
                     const SizedBox(height: 6),
-                    Text("${avatar.cost} foglie"),
+                    Text(avatar.cost == 0 ? "Gratis" : "${avatar.cost} foglie"),
                     const SizedBox(height: 8),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
