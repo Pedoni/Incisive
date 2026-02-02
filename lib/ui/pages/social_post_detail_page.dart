@@ -9,7 +9,6 @@ import 'package:incisive/state_management/blocs/social_comment/social_comment_bl
 import 'package:incisive/ui/pages/add_comment_page.dart';
 import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
-import 'package:incisive/ui/widgets/social_post_item.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:incisive/utils/functions.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -94,23 +93,76 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
       body: SafeArea(
         child: BlocBuilder<SocialCommentBloc, BaseState>(
           builder: (context, state) {
+            final isLoading = state is Loading || state is Initial;
+
             final comments = state is Success<List<CommentModel>> ? state.data : <CommentModel>[];
 
-            return Column(
-              children: [
-                /// POST
-                _PostHeader(post: widget.post),
+            final approvedComments = comments.where((c) => c.approved).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-                const Divider(height: 1),
-
-                /// COMMENTI
-                Expanded(
-                  child: _CommentsList(
-                    state: state,
-                    comments: comments.where((c) => c.approved).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
-                    postAuthorId: widget.post.author!.id,
-                    postId: widget.post.id,
+            return CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Skeletonizer(
+                    enabled: isLoading,
+                    child: _PostHeader(post: widget.post),
                   ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: Divider(height: 1),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 12),
+                ),
+
+                if (isLoading)
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: Skeletonizer(
+                          child: _CommentItem(
+                            comment: Constants.mockedCommentItem,
+                            isPostAuthor: false,
+                            postId: widget.post.id,
+                          ),
+                        ),
+                      ),
+                      childCount: 6,
+                    ),
+                  )
+                else if (approvedComments.isEmpty)
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.all(24),
+                      child: EmptyWidget(text: "Ancora nessun commento"),
+                    ),
+                  )
+                else
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, i) {
+                        final comment = approvedComments[i];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          child: _CommentItem(
+                            comment: comment,
+                            isPostAuthor: widget.post.author!.id == comment.viewerUserId,
+                            postId: widget.post.id,
+                          ),
+                        );
+                      },
+                      childCount: approvedComments.length,
+                    ),
+                  ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 50),
                 ),
               ],
             );
@@ -140,18 +192,29 @@ class _PostHeader extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
-                radius: 22,
-                backgroundColor: getUserBackgroundColor(author!.level),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/${author.avatarAsset}',
-                    width: 44,
-                    height: 44,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) {
-                      return const Icon(Icons.person, size: 22);
-                    },
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          content: Image.asset("assets/images/${author.avatarAsset}"),
+                        ),
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 22,
+                  backgroundColor: getUserBackgroundColor(author!.level),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/${author.avatarAsset}',
+                      width: 44,
+                      height: 44,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) {
+                        return const Icon(Icons.person, size: 22);
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -184,56 +247,6 @@ class _PostHeader extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _CommentsList extends StatelessWidget {
-  final BaseState state;
-  final List<CommentModel> comments;
-  final String postAuthorId;
-  final String postId;
-
-  const _CommentsList({
-    required this.state,
-    required this.comments,
-    required this.postAuthorId,
-    required this.postId,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (state is Loading || state is Initial) {
-      final list = List.generate(10, (index) => Constants.mockedPostItem);
-      return Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
-        child: Skeletonizer(
-          child: ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 10,
-            itemBuilder: (context, index) => SocialPostItem(post: list[index]),
-          ),
-        ),
-      );
-    }
-
-    if (state is Empty || (state is Success && comments.where((c) => c.approved).isEmpty)) {
-      return EmptyWidget(text: "Ancora nessun commento");
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: comments.length,
-      itemBuilder: (_, i) {
-        final comment = comments[i];
-
-        return _CommentItem(
-          comment: comment,
-          isPostAuthor: postAuthorId == comment.viewerUserId,
-          postId: postId,
-        );
-      },
     );
   }
 }
@@ -284,18 +297,29 @@ class _CommentItem extends StatelessWidget {
 
               const Spacer(),
 
-              CircleAvatar(
-                radius: 16,
-                backgroundColor: getUserBackgroundColor(author.level),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/${author.avatarAsset}',
-                    width: 32,
-                    height: 32,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) {
-                      return const Icon(Icons.person, size: 16);
-                    },
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          content: Image.asset("assets/images/${comment.author.avatarAsset}"),
+                        ),
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 16,
+                  backgroundColor: getUserBackgroundColor(author.level),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/${author.avatarAsset}',
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
+                      errorBuilder: (buildContext, obj, stackTrace) {
+                        return const Icon(Icons.person, size: 16);
+                      },
+                    ),
                   ),
                 ),
               ),
