@@ -15,6 +15,7 @@ class UserMapper extends DTOMapper<UserDTO, UserModel> {
       progress: dto.progress.toDouble(),
       nextLevelPoints: dto.nextLevelPoints,
       spentPoints: dto.spentPoints,
+      avatarAsset: dto.avatarAsset,
     );
   }
 
@@ -30,6 +31,7 @@ class UserMapper extends DTOMapper<UserDTO, UserModel> {
       'progress': model.progress,
       'next_level_points': model.nextLevelPoints,
       'spent_points': model.spentPoints,
+      'avatar_asset': model.avatarAsset,
     });
   }
 }

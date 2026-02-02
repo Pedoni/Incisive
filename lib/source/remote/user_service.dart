@@ -21,10 +21,14 @@ class UserService extends BaseService {
                 )
                 as JsonObject;
 
+        final avatarJson =
+            await supabase.from('user_avatar').select('avatar(asset)').eq('user_id', authUser.id).eq('equipped', true).maybeSingle();
+
         return {
           ...userJson,
           ...progressJson,
           'email': authUser.email,
+          'avatar_asset': avatarJson?['avatar']?['asset'],
         };
       },
     );

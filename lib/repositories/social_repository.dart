@@ -22,6 +22,7 @@ class SocialRepository extends BaseRepository {
       'Get daily social posts',
       () async {
         final list = await socialService.getDailyPosts(date: date);
+        final e = 4;
         return postMapper.fromDTOMany(list.map((e) => PostDTO.fromJson(e))).toList();
       },
     );

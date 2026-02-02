@@ -38,7 +38,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
   void initState() {
     super.initState();
     context.read<SocialCommentBloc>().getComments(widget.post.id);
-    isAuthor = widget.post.authorId == Supabase.instance.client.auth.currentUser?.id;
+    isAuthor = widget.post.author!.id == Supabase.instance.client.auth.currentUser?.id;
   }
 
   @override
@@ -64,7 +64,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
           ),
         ),
         actions: [
-          if (widget.post.authorId == Supabase.instance.client.auth.currentUser!.id)
+          if (widget.post.author!.id == Supabase.instance.client.auth.currentUser!.id)
             IconButton(
               icon: const Icon(Icons.mark_email_unread_outlined),
               tooltip: "Commenti in attesa",
@@ -108,7 +108,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
                   child: _CommentsList(
                     state: state,
                     comments: comments.where((c) => c.approved).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
-                    postAuthorId: widget.post.authorId,
+                    postAuthorId: widget.post.author!.id,
                     postId: widget.post.id,
                   ),
                 ),

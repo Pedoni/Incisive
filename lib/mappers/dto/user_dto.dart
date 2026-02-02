@@ -12,6 +12,7 @@ final class UserDTO extends DTO with EquatableMixin {
   final num progress;
   final int nextLevelPoints;
   final int spentPoints;
+  final String avatarAsset;
 
   UserDTO.fromJson(JsonObject json)
     : id = json['id'] as String,
@@ -22,7 +23,8 @@ final class UserDTO extends DTO with EquatableMixin {
       level = json['level'] as int,
       progress = json['progress'] as num,
       nextLevelPoints = json['next_level_points'] as int,
-      spentPoints = json['spent_points'] as int;
+      spentPoints = json['spent_points'] as int,
+      avatarAsset = json['avatar_asset'] as String;
 
   @override
   List<Object?> get props => [
@@ -35,5 +37,6 @@ final class UserDTO extends DTO with EquatableMixin {
     progress,
     nextLevelPoints,
     spentPoints,
+    avatarAsset,
   ];
 }

@@ -1,6 +1,7 @@
 import 'package:incisive/models/avatar_model.dart';
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/models/gratitude_model.dart';
+import 'package:incisive/models/post_author_model.dart';
 import 'package:incisive/models/post_model.dart';
 import 'package:incisive/models/user_model.dart';
 
@@ -44,11 +45,11 @@ class Constants {
     nextLevelPoints: 120,
     progress: 20,
     spentPoints: 55,
+    avatarAsset: "assets/images/cat_thumb.png",
   );
 
   static PostModel mockedPostItem = PostModel(
     id: "",
-    authorId: "",
     approvedCommentsCount: 0,
     content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
@@ -61,6 +62,13 @@ class Constants {
         "placerat mauris, at commodo mauris egestas eu.",
     datetime: DateTime.now(),
     title: "Lorem ipsum dolor sit amet",
+    author: PostAuthorModel(
+      id: "author_1",
+      firstName: "Luca",
+      lastName: "Rossi",
+      avatarAsset: "assets/images/dog_thumb.png",
+      level: 3,
+    ),
   );
 
   static List<AvatarModel> get mockedAvatars => [
