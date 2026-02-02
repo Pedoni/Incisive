@@ -66,4 +66,30 @@ class UserService extends BaseService {
       },
     );
   }
+
+  Future<void> purchaseAvatar(String avatarId) async {
+    await guard(
+      "Purchase avatar",
+      () => supabase.rpc(
+        'purchase_avatar',
+        params: {
+          'p_user_id': currentUserId,
+          'p_avatar_id': avatarId,
+        },
+      ),
+    );
+  }
+
+  Future<void> equipAvatar(String avatarId) async {
+    await guard(
+      "Equip avatar",
+      () => supabase.rpc(
+        'equip_avatar',
+        params: {
+          'p_user_id': currentUserId,
+          'p_avatar_id': avatarId,
+        },
+      ),
+    );
+  }
 }
