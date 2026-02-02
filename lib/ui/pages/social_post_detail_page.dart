@@ -145,11 +145,11 @@ class _PostHeader extends StatelessWidget {
                 backgroundColor: getUserBackgroundColor(author!.level),
                 child: ClipOval(
                   child: Image.asset(
-                    'assets/images/${author!.avatarAsset}',
+                    'assets/images/${author.avatarAsset}',
                     width: 44,
                     height: 44,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) {
+                    errorBuilder: (_, _, _) {
                       return const Icon(Icons.person, size: 22);
                     },
                   ),

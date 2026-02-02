@@ -74,7 +74,7 @@ class SocialPostItem extends StatelessWidget {
                         width: 32,
                         height: 32,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) {
+                        errorBuilder: (_, _, _) {
                           return const Icon(Icons.person, size: 16);
                         },
                       ),
