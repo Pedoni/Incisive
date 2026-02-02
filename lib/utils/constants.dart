@@ -1,4 +1,5 @@
 import 'package:incisive/models/avatar_model.dart';
+import 'package:incisive/models/comment_model.dart';
 import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/models/gratitude_model.dart';
 import 'package:incisive/models/post_author_model.dart';
@@ -46,6 +47,23 @@ class Constants {
     progress: 20,
     spentPoints: 55,
     avatarAsset: "assets/images/cat_thumb.png",
+  );
+
+  static final mockedCommentItem = CommentModel(
+    id: 'mock',
+    postId: 'mock',
+    author: CommentAuthorModel(
+      id: 'mock',
+      avatarAsset: 'cat_thumb.png',
+      level: 1,
+    ),
+    content: '...',
+    createdAt: DateTime.now(),
+    approved: true,
+    upvotes: 0,
+    downvotes: 0,
+    myVote: null,
+    viewerUserId: 'mock',
   );
 
   static PostModel mockedPostItem = PostModel(
