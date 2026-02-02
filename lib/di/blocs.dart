@@ -40,4 +40,7 @@ final List<BlocProvider> _blocs = [
   BlocProvider<CommentPostBloc>(
     create: (context) => CommentPostBloc(socialRepository: context.read()),
   ),
+  BlocProvider<AvatarBloc>(
+    create: (context) => AvatarBloc(userRepository: context.read()),
+  ),
 ];

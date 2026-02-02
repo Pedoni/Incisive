@@ -42,4 +42,28 @@ class UserService extends BaseService {
       ),
     );
   }
+
+  Future<JsonArray> getAvatars({required String userId}) async {
+    return await guard(
+      "Get avatars",
+      () async {
+        final avatars = await supabase.from('avatar').select();
+
+        final userAvatars = await supabase.from('user_avatar').select().eq('user_id', userId);
+
+        final ownedMap = {
+          for (final ua in userAvatars) ua['avatar_id']: ua,
+        };
+
+        return avatars.map((avatar) {
+          final owned = ownedMap[avatar['id']];
+          return {
+            ...avatar,
+            'owned': owned != null,
+            'equipped': owned?['equipped'] ?? false,
+          };
+        }).toList();
+      },
+    );
+  }
 }

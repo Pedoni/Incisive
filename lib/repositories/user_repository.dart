@@ -1,4 +1,5 @@
 import 'package:incisive/mappers/dto/user_dto.dart';
+import 'package:incisive/models/avatar_model.dart';
 import 'package:incisive/models/user_model.dart';
 import 'package:incisive/repositories/base_repository.dart';
 import 'package:incisive/source/remote/user_service.dart';
@@ -27,6 +28,17 @@ class UserRepository extends BaseRepository {
     return await guard(
       'Add user points',
       () => userService.addPoints(points: points),
+    );
+  }
+
+  Future<List<AvatarModel>> getAvatars(String userId) async {
+    return await guard(
+      'Get user avatars',
+      () async {
+        final json = await userService.getAvatars(userId: userId);
+
+        return json.map((e) => AvatarModel.fromJson(e)).toList();
+      },
     );
   }
 }

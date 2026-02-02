@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/models/avatar_model.dart';
 import 'package:incisive/models/user_model.dart';
+import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class StorePage extends StatelessWidget {
   static const routeName = '/storePage';
@@ -29,7 +32,12 @@ class StorePage extends StatelessWidget {
           foregroundColor: const Color.fromARGB(255, 141, 90, 35),
           backgroundColor: const Color(0xFFFFF8E8),
         ),
-        body: BlocBuilder<ProfileBloc, BaseState>(
+        body: BlocConsumer<ProfileBloc, BaseState>(
+          listener: (context, state) {
+            if (state is Success<UserModel>) {
+              context.read<AvatarBloc>().getAvatars(state.data.id);
+            }
+          },
           builder: (context, state) {
             final user = state is Success ? state.data as UserModel : Constants.mockedUser;
             return Column(
@@ -193,51 +201,66 @@ class AvatarShopTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final avatars = [
-      {"id": 1, "name": "Pixel Foglia", "cost": 500},
-      {"id": 2, "name": "Pixel Stellina", "cost": 600},
-    ];
-
-    return BlocBuilder<ProfileBloc, BaseState>(
+    return BlocBuilder<AvatarBloc, BaseState>(
       builder: (context, state) {
-        final profileLoading = state is Loading || state is Initial;
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-          ),
-          itemCount: profileLoading ? 10 : avatars.length,
-          itemBuilder: (context, index) {
-            final avatar = avatars[index];
-            final canBuy = (user.points - user.spentPoints) >= (avatar["cost"] as int);
+        final userLoading = user.id == "mocked_user_id";
+        final loading = state is Loading || state is Initial;
+        final avatars = state is Success ? state.data as List<AvatarModel> : Constants.mockedAvatars;
+        return Skeletonizer(
+          enabled: userLoading || loading,
+          child: GridView.builder(
+            padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+            ),
+            itemCount: avatars.length,
+            itemBuilder: (context, index) {
+              final avatar = avatars[index];
+              final canBuy = (user.points - user.spentPoints) >= avatar.cost;
 
-            return Card(
-              color: Color.fromARGB(255, 255, 255, 255),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(radius: 30, child: Image.asset("assets/images/cat_thumb.png")),
-                  const SizedBox(height: 8),
-                  Text(avatar["name"] as String),
-                  const SizedBox(height: 6),
-                  Text("${avatar["cost"]} foglie"),
-                  const SizedBox(height: 8),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF2E7D32),
-                      foregroundColor: Colors.white,
-                      disabledBackgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
-                      disabledForegroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+              return Card(
+                color: Color.fromARGB(255, 255, 255, 255),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                                content: Image.asset("assets/images/${avatar.asset}"),
+                              ),
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: const Color.fromARGB(255, 249, 220, 165),
+                        child: userLoading || loading ? const SizedBox.shrink() : Image.asset("assets/images/${avatar.asset}"),
+                      ),
                     ),
-                    onPressed: canBuy ? () {} : null,
-                    child: const Text("Acquista"),
-                  ),
-                ],
-              ),
-            );
-          },
+                    const SizedBox(height: 8),
+                    Text(avatar.name),
+                    const SizedBox(height: 6),
+                    Text("${avatar.cost} foglie"),
+                    const SizedBox(height: 8),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF2E7D32),
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
+                        disabledForegroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+                      ),
+                      onPressed: canBuy ? () {} : null,
+                      child: const Text("Acquista"),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );

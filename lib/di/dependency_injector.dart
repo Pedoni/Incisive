@@ -27,6 +27,7 @@ import 'package:incisive/source/remote/gratitude_service.dart';
 import 'package:incisive/source/remote/login_service.dart';
 import 'package:incisive/source/remote/social_service.dart';
 import 'package:incisive/source/remote/user_service.dart';
+import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/breathing/breathing_bloc.dart';
 import 'package:incisive/state_management/blocs/comment_post/comment_post_bloc.dart';
 import 'package:incisive/state_management/blocs/create_post/create_post_bloc.dart';
