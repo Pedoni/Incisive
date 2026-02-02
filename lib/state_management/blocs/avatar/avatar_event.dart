@@ -8,7 +8,17 @@ sealed class AvatarEvent extends BaseEvent {
 }
 
 class GetAvatarsEvent extends AvatarEvent {
-  final String userId;
+  const GetAvatarsEvent();
+}
 
-  const GetAvatarsEvent({required this.userId});
+class PurchaseAvatarEvent extends AvatarEvent {
+  final String avatarId;
+
+  const PurchaseAvatarEvent({required this.avatarId});
+}
+
+class EquipAvatarEvent extends AvatarEvent {
+  final String avatarId;
+
+  const EquipAvatarEvent({required this.avatarId});
 }

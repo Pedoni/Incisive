@@ -9,9 +9,15 @@ class AvatarBloc extends BaseBloc {
 
   AvatarBloc({required this.userRepository}) : super(Initial()) {
     on<GetAvatarsEvent>(_getAvatarsEvent);
+    on<PurchaseAvatarEvent>(_purchaseAvatarEvent);
+    on<EquipAvatarEvent>(_equipAvatarEvent);
   }
 
-  void getAvatars(String userId) => add(GetAvatarsEvent(userId: userId));
+  void getAvatars() => add(const GetAvatarsEvent());
+
+  void purchase(String id) => add(PurchaseAvatarEvent(avatarId: id));
+
+  void equip(String id) => add(EquipAvatarEvent(avatarId: id));
 
   Future<void> _getAvatarsEvent(
     GetAvatarsEvent event,
@@ -19,7 +25,35 @@ class AvatarBloc extends BaseBloc {
   ) async {
     emitter(Loading());
     try {
-      final avatars = await userRepository.getAvatars(event.userId);
+      final avatars = await userRepository.getAvatars();
+      emitter(Success(avatars));
+    } catch (e) {
+      emitter(Error(e.toString()));
+    }
+  }
+
+  Future<void> _purchaseAvatarEvent(
+    PurchaseAvatarEvent event,
+    Emitter<BaseState> emitter,
+  ) async {
+    emitter(Loading());
+    try {
+      await userRepository.purchaseAvatar(event.avatarId);
+      final avatars = await userRepository.getAvatars();
+      emitter(Success(avatars));
+    } catch (e) {
+      emitter(Error(e.toString()));
+    }
+  }
+
+  Future<void> _equipAvatarEvent(
+    EquipAvatarEvent event,
+    Emitter<BaseState> emitter,
+  ) async {
+    emitter(Loading());
+    try {
+      await userRepository.equipAvatar(event.avatarId);
+      final avatars = await userRepository.getAvatars();
       emitter(Success(avatars));
     } catch (e) {
       emitter(Error(e.toString()));

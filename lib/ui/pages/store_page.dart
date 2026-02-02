@@ -35,14 +35,14 @@ class StorePage extends StatelessWidget {
         body: BlocConsumer<ProfileBloc, BaseState>(
           listener: (context, state) {
             if (state is Success<UserModel>) {
-              context.read<AvatarBloc>().getAvatars(state.data.id);
+              context.read<AvatarBloc>().getAvatars();
             }
           },
           builder: (context, state) {
             final user = state is Success ? state.data as UserModel : Constants.mockedUser;
             return Column(
               children: [
-                LevelHeader(user: user),
+                _LevelHeader(user: user),
                 Material(
                   color: Color(0xFFFFF8E8),
                   child: TabBar(
@@ -61,8 +61,8 @@ class StorePage extends StatelessWidget {
                     color: Color(0xFFFFF8E8),
                     child: TabBarView(
                       children: [
-                        AvatarShopTab(user: user),
-                        ColorsProgressTab(user: user),
+                        _AvatarShopTab(user: user),
+                        _ColorsProgressTab(user: user),
                       ],
                     ),
                   ),
@@ -76,10 +76,10 @@ class StorePage extends StatelessWidget {
   }
 }
 
-class LevelHeader extends StatelessWidget {
+class _LevelHeader extends StatelessWidget {
   final UserModel user;
 
-  const LevelHeader({super.key, required this.user});
+  const _LevelHeader({required this.user});
 
   int pointsRequiredForLevel(int level) {
     return 100 + (level - 1) * 10;
@@ -158,10 +158,10 @@ class LevelHeader extends StatelessWidget {
   }
 }
 
-class ColorsProgressTab extends StatelessWidget {
+class _ColorsProgressTab extends StatelessWidget {
   final UserModel user;
 
-  const ColorsProgressTab({super.key, required this.user});
+  const _ColorsProgressTab({required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -197,10 +197,65 @@ class ColorsProgressTab extends StatelessWidget {
   }
 }
 
-class AvatarShopTab extends StatelessWidget {
+class _AvatarShopTab extends StatelessWidget {
   final UserModel user;
 
-  const AvatarShopTab({super.key, required this.user});
+  const _AvatarShopTab({required this.user});
+
+  Widget _avatarButton(BuildContext context, AvatarModel avatar, UserModel user) {
+    final style = ElevatedButton.styleFrom(
+      backgroundColor: avatar.owned ? Colors.grey.shade400 : const Color(0xFF2E7D32),
+      foregroundColor: Colors.white,
+      disabledBackgroundColor: Colors.grey.shade400,
+      disabledForegroundColor: Colors.white,
+    );
+
+    final availableLeaves = user.points - user.spentPoints;
+
+    if (!avatar.owned) {
+      return ElevatedButton(
+        style: style,
+        onPressed:
+            availableLeaves >= avatar.cost
+                ? () {
+                  context.read<AvatarBloc>().purchase(avatar.id);
+                }
+                : null,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (avatar.cost > 0) ...[
+              const Icon(Icons.eco, color: Color.fromARGB(255, 74, 202, 78)),
+              const SizedBox(width: 6),
+            ],
+            Text(avatar.cost == 0 ? "Gratis" : avatar.cost.toString()),
+          ],
+        ),
+      );
+    }
+
+    if (avatar.equipped) {
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          disabledBackgroundColor: const Color(0xFF2E7D32),
+          disabledForegroundColor: Colors.white,
+        ),
+        onPressed: null,
+        child: const Text("In uso"),
+      );
+    }
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromARGB(255, 235, 250, 221),
+        foregroundColor: const Color(0xFF2E7D32),
+      ),
+      onPressed: () {
+        context.read<AvatarBloc>().equip(avatar.id);
+      },
+      child: const Text("Usa"),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,59 +278,56 @@ class AvatarShopTab extends StatelessWidget {
             itemCount: avatars.length,
             itemBuilder: (context, index) {
               final avatar = avatars[index];
-              final canBuy = (user.points - user.spentPoints) >= avatar.cost;
 
-              return Card(
-                elevation: 2,
-                color: Color.fromARGB(255, 255, 255, 255),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder:
-                              (context) => AlertDialog(
-                                content: Image.asset("assets/images/${avatar.asset}"),
-                              ),
-                        );
-                      },
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: const Color.fromARGB(255, 249, 220, 165),
-                        child:
-                            userLoading || loading
-                                ? const SizedBox.shrink()
-                                : Image.asset(
-                                  "assets/images/${avatar.asset}",
-                                ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(avatar.name),
-                    const SizedBox(height: 6),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF2E7D32),
-                        foregroundColor: Colors.white,
-                        disabledBackgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
-                        disabledForegroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
-                      ),
-                      onPressed: canBuy ? () {} : null,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
+              return Stack(
+                children: [
+                  Positioned.fill(
+                    child: Card(
+                      elevation: 2,
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          if (avatar.cost > 0) ...[
-                            const Icon(Icons.eco, color: Color.fromARGB(255, 74, 202, 78)),
-                            const SizedBox(width: 6),
-                          ],
-                          Text(avatar.cost == 0 ? "Gratis" : avatar.cost.toString()),
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder:
+                                    (context) => AlertDialog(
+                                      content: Image.asset("assets/images/${avatar.asset}"),
+                                    ),
+                              );
+                            },
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: const Color.fromARGB(255, 249, 220, 165),
+                              child:
+                                  userLoading || loading
+                                      ? const SizedBox.shrink()
+                                      : Image.asset(
+                                        "assets/images/${avatar.asset}",
+                                      ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(avatar.name),
+                          const SizedBox(height: 6),
+                          _avatarButton(context, avatar, user),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  if (avatar.owned)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: const Icon(
+                        Icons.check_circle,
+                        color: Color(0xFF2E7D32),
+                        size: 26,
+                      ),
+                    ),
+                ],
               );
             },
           ),

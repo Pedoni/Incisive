@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/models/avatar_model.dart';
 import 'package:incisive/models/user_model.dart';
+import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/login/login_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
@@ -118,18 +120,55 @@ class _AvatarSection extends StatelessWidget {
   final UserModel user;
   final bool loading;
 
-  const _AvatarSection({required this.user, required this.loading});
+  const _AvatarSection({
+    required this.user,
+    required this.loading,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 54,
-      backgroundColor: const Color.fromARGB(255, 212, 173, 18),
-      child: CircleAvatar(
-        radius: 46,
-        backgroundColor: getUserBackgroundColor(user.level),
-        child: loading ? null : Image.asset("assets/images/cat_thumb.png"),
-      ),
+    return BlocBuilder<AvatarBloc, BaseState>(
+      builder: (context, state) {
+        String? avatarAsset;
+
+        if (state is Success<List<AvatarModel>>) {
+          final equippedAvatar = state.data.firstWhere(
+            (a) => a.equipped,
+            orElse: () => state.data.first,
+          );
+
+          avatarAsset = equippedAvatar.asset;
+        }
+
+        return GestureDetector(
+          onTap:
+              avatarAsset == null
+                  ? () {}
+                  : () {
+                    showDialog(
+                      context: context,
+                      builder:
+                          (context) => AlertDialog(
+                            content: Image.asset("assets/images/$avatarAsset"),
+                          ),
+                    );
+                  },
+          child: CircleAvatar(
+            radius: 54,
+            backgroundColor: const Color.fromARGB(255, 212, 173, 18),
+            child: CircleAvatar(
+              radius: 46,
+              backgroundColor: getUserBackgroundColor(user.level),
+              child:
+                  loading || avatarAsset == null
+                      ? null
+                      : Image.asset(
+                        "assets/images/$avatarAsset",
+                      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

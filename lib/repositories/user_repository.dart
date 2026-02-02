@@ -31,13 +31,31 @@ class UserRepository extends BaseRepository {
     );
   }
 
-  Future<List<AvatarModel>> getAvatars(String userId) async {
+  Future<List<AvatarModel>> getAvatars() async {
     return await guard(
       'Get user avatars',
       () async {
-        final json = await userService.getAvatars(userId: userId);
+        final json = await userService.getAvatars();
 
         return json.map((e) => AvatarModel.fromJson(e)).toList();
+      },
+    );
+  }
+
+  Future<void> purchaseAvatar(String avatarId) async {
+    return await guard(
+      'Purchase avatar',
+      () async {
+        await userService.purchaseAvatar(avatarId);
+      },
+    );
+  }
+
+  Future<void> equipAvatar(String avatarId) async {
+    return await guard(
+      'Equip avatar',
+      () async {
+        await userService.equipAvatar(avatarId);
       },
     );
   }

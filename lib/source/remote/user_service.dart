@@ -43,13 +43,13 @@ class UserService extends BaseService {
     );
   }
 
-  Future<JsonArray> getAvatars({required String userId}) async {
+  Future<JsonArray> getAvatars() async {
     return await guard(
       "Get avatars",
       () async {
         final avatars = await supabase.from('avatar').select();
 
-        final userAvatars = await supabase.from('user_avatar').select().eq('user_id', userId);
+        final userAvatars = await supabase.from('user_avatar').select().eq('user_id', currentUserId);
 
         final ownedMap = {
           for (final ua in userAvatars) ua['avatar_id']: ua,
