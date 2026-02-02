@@ -215,6 +215,7 @@ class AvatarShopTab extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
+              childAspectRatio: 0.75,
             ),
             itemCount: avatars.length,
             itemBuilder: (context, index) {
@@ -237,16 +238,19 @@ class AvatarShopTab extends StatelessWidget {
                         );
                       },
                       child: CircleAvatar(
-                        radius: 30,
+                        radius: 50,
                         backgroundColor: const Color.fromARGB(255, 249, 220, 165),
-                        child: userLoading || loading ? const SizedBox.shrink() : Image.asset("assets/images/${avatar.asset}"),
+                        child:
+                            userLoading || loading
+                                ? const SizedBox.shrink()
+                                : Image.asset(
+                                  "assets/images/${avatar.asset}",
+                                ),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(avatar.name),
                     const SizedBox(height: 6),
-                    Text(avatar.cost == 0 ? "Gratis" : "${avatar.cost} foglie"),
-                    const SizedBox(height: 8),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF2E7D32),
@@ -255,7 +259,13 @@ class AvatarShopTab extends StatelessWidget {
                         disabledForegroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
                       ),
                       onPressed: canBuy ? () {} : null,
-                      child: const Text("Acquista"),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (avatar.cost > 0) ...[const Icon(Icons.eco, color: Color.fromARGB(255, 74, 202, 78)), const SizedBox(width: 6)],
+                          Text(avatar.cost == 0 ? "Gratis" : avatar.cost.toString()),
+                        ],
+                      ),
                     ),
                   ],
                 ),
