@@ -192,18 +192,29 @@ class _PostHeader extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
-                radius: 22,
-                backgroundColor: getUserBackgroundColor(author!.level),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/${author.avatarAsset}',
-                    width: 44,
-                    height: 44,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) {
-                      return const Icon(Icons.person, size: 22);
-                    },
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          content: Image.asset("assets/images/${author.avatarAsset}"),
+                        ),
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 22,
+                  backgroundColor: getUserBackgroundColor(author!.level),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/${author.avatarAsset}',
+                      width: 44,
+                      height: 44,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) {
+                        return const Icon(Icons.person, size: 22);
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -286,18 +297,29 @@ class _CommentItem extends StatelessWidget {
 
               const Spacer(),
 
-              CircleAvatar(
-                radius: 16,
-                backgroundColor: getUserBackgroundColor(author.level),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/${author.avatarAsset}',
-                    width: 32,
-                    height: 32,
-                    fit: BoxFit.cover,
-                    errorBuilder: (buildContext, obj, stackTrace) {
-                      return const Icon(Icons.person, size: 16);
-                    },
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          content: Image.asset("assets/images/${comment.author.avatarAsset}"),
+                        ),
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 16,
+                  backgroundColor: getUserBackgroundColor(author.level),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/${author.avatarAsset}',
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
+                      errorBuilder: (buildContext, obj, stackTrace) {
+                        return const Icon(Icons.person, size: 16);
+                      },
+                    ),
                   ),
                 ),
               ),
