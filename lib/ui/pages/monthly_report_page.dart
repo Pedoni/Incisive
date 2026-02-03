@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:incisive/models/reports/user_monthly_stats.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -74,6 +75,8 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
         'get_user_monthly_stats',
         params: map,
       );
+
+      final model = UserMonthlyStats.fromRpc(res);
 
       setState(() {
         report = res;
