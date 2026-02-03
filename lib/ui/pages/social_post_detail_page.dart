@@ -64,13 +64,24 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
         ),
         actions: [
           if (widget.post.author!.id == Supabase.instance.client.auth.currentUser!.id)
-            IconButton(
-              icon: const Icon(Icons.mark_email_unread_outlined),
-              tooltip: "Commenti in attesa",
-              onPressed: () {
-                context.push(
-                  PendingCommentsPage.routeName,
-                  extra: SocialPostDetailArgs(post: widget.post),
+            BlocBuilder<SocialCommentBloc, BaseState>(
+              builder: (context, state) {
+                final isLoading = state is Loading || state is Initial;
+                final comments = state is Success<List<CommentModel>> ? state.data : <CommentModel>[];
+
+                final pendingComments = comments.where((c) => !c.approved).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                return Skeletonizer(
+                  enabled: isLoading,
+                  child: IconButton(
+                    icon: pendingComments.isNotEmpty ? const Icon(Icons.mark_email_unread_outlined) : const Icon(Icons.email_outlined),
+                    tooltip: "Commenti in attesa",
+                    onPressed: () {
+                      context.push(
+                        PendingCommentsPage.routeName,
+                        extra: SocialPostDetailArgs(post: widget.post),
+                      );
+                    },
+                  ),
                 );
               },
             ),
