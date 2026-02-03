@@ -200,7 +200,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
           const SizedBox(height: 20),
           _buildBarChart(
             data: stats.areasPositive,
-            barColor: const Color(0xFF1565C0),
+            barColor: const Color(0xFF2E7D32),
           ),
 
           const SizedBox(height: 50),
