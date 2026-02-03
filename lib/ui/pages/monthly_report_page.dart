@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/models/reports/user_monthly_stats.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/user_monthly_stats/user_monthly_stats_bloc.dart';
+import 'package:incisive/ui/widgets/empty_widget.dart';
 import 'package:intl/intl.dart';
 
 List<DateTime> buildMonths({required DateTime from, required DateTime to}) {
@@ -69,7 +70,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
           );
         } else if (state is Empty) {
           return const Center(
-            child: Text('Nessun dato per questo mese 🍃'),
+            child: EmptyWidget(text: 'Nessun dato per questo mese'),
           );
         } else if (state is Success<UserMonthlyStats>) {
           return _buildReportContent(state.data);
