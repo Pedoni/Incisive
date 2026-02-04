@@ -422,31 +422,6 @@ Widget _buildBarChart({
   );
 }
 
-Widget _buildSummaryCard(UserMonthlyStats stats) {
-  return Container(
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)],
-    ),
-    child: Row(
-      children: [
-        CircularProgressIndicator(
-          value: stats.positiveRatio,
-          color: Colors.green,
-          backgroundColor: Colors.green.withValues(alpha: 0.1),
-        ),
-        const SizedBox(width: 20),
-        Text(
-          "Mood Positivo: ${(stats.positiveRatio * 100).toInt()}%",
-          style: const TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold),
-        ),
-      ],
-    ),
-  );
-}
-
 class MonthPicker extends StatelessWidget {
   final List<DateTime> months;
   final DateTime selected;
