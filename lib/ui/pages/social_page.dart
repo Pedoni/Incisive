@@ -6,6 +6,7 @@ import 'package:incisive/models/post_model.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/ui/pages/add_post_page.dart';
+import 'package:incisive/ui/pages/monthly_report_page.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:lottie/lottie.dart';
@@ -53,6 +54,14 @@ class _SocialPageState extends State<SocialPage> {
         ),
         foregroundColor: const Color.fromARGB(255, 141, 90, 35),
         backgroundColor: const Color(0xFFFFF8E8),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.push(MonthlyReportPage.routeName);
+            },
+            icon: Icon(Icons.track_changes),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(

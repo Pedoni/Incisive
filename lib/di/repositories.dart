@@ -36,4 +36,10 @@ final List<RepositoryProvider> _repositories = [
           commentMapper: context.read(),
         )),
   ),
+  RepositoryProvider<MonthlyStatsRepository>(
+    create:
+        ((context) => MonthlyStatsRepository(
+          monthlyStatsService: context.read(),
+        )),
+  ),
 ];

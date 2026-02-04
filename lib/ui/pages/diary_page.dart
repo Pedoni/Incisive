@@ -6,10 +6,8 @@ import 'package:incisive/models/diary_model.dart';
 import 'package:incisive/navigation/args/upsert_diary_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
-import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.dart';
 import 'package:incisive/ui/components/lined_paper.dart';
 import 'package:incisive/ui/pages/diary_upsert_page.dart';
-import 'package:incisive/ui/pages/mood_calendar_page.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -128,15 +126,6 @@ class _DiaryPageState extends State<DiaryPage> {
         ),
         foregroundColor: Color.fromARGB(255, 141, 90, 35),
         backgroundColor: const Color(0xFFFFF8E8),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.read<MoodTrackerBloc>().getMood();
-              context.push(MoodCalendarPage.routeName);
-            },
-            icon: Icon(Icons.track_changes),
-          ),
-        ],
       ),
 
       floatingActionButton: BlocBuilder<DiaryPageBloc, BaseState>(

@@ -14,7 +14,7 @@ import 'package:incisive/ui/pages/gratitude_page.dart';
 import 'package:incisive/ui/pages/gratitude_upsert_page.dart';
 import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/pages/login_page.dart';
-import 'package:incisive/ui/pages/mood_calendar_page.dart';
+import 'package:incisive/ui/pages/monthly_report_page.dart';
 import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/pages/register_page.dart';
 import 'package:incisive/ui/pages/social_page.dart';
@@ -67,11 +67,6 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
     ),
 
     GoRoute(
-      path: MoodCalendarPage.routeName,
-      builder: (_, _) => const MoodCalendarPage(),
-    ),
-
-    GoRoute(
       path: GratitudePage.routeName,
       builder: (_, _) => const GratitudePage(),
     ),
@@ -104,6 +99,11 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
     GoRoute(
       path: StorePage.routeName,
       builder: (_, _) => const StorePage(),
+    ),
+
+    GoRoute(
+      path: MonthlyReportPage.routeName,
+      builder: (_, _) => const MonthlyReportPage(),
     ),
 
     GoRoute(
