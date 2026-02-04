@@ -6,6 +6,7 @@ class PostModel {
   final DateTime datetime;
   final String title;
   final int approvedCommentsCount;
+  final bool visible;
   final PostAuthorModel? author;
 
   PostModel({
@@ -14,6 +15,7 @@ class PostModel {
     required this.datetime,
     required this.title,
     required this.approvedCommentsCount,
+    required this.visible,
     required this.author,
   });
 }
