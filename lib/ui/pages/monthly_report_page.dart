@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/models/reports/user_monthly_stats.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
+import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.dart';
 import 'package:incisive/state_management/blocs/user_monthly_stats/user_monthly_stats_bloc.dart';
+import 'package:incisive/ui/components/mood_calendar.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
 import 'package:intl/intl.dart';
 
@@ -53,6 +55,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
     });
 
     context.read<UserMonthlyStatsBloc>().getUserMonthlyStats(_selectedMonth);
+    context.read<MoodTrackerBloc>().getMood();
   }
 
   Widget _buildMyDataTab() {
@@ -181,6 +184,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
+          MoodCalendar(year: _selectedMonth.year, month: _selectedMonth.month),
           _sectionTitle('Mood del mese'),
           const SizedBox(height: 20),
           _buildMoodPie(positiveRatio: stats.positiveRatio),

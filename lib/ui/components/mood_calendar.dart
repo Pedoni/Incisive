@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class MoodCalendar extends StatefulWidget {
-  const MoodCalendar({super.key});
+  final int year;
+  final int month;
+
+  const MoodCalendar({
+    required this.year,
+    required this.month,
+    super.key,
+  });
 
   @override
   State<MoodCalendar> createState() => _MoodCalendarState();
@@ -18,19 +24,7 @@ class _MoodCalendarState extends State<MoodCalendar> {
   @override
   void initState() {
     super.initState();
-    _focusedMonth = DateTime.now();
-  }
-
-  void _prevMonth() {
-    setState(() {
-      _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month - 1);
-    });
-  }
-
-  void _nextMonth() {
-    setState(() {
-      _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month + 1);
-    });
+    _focusedMonth = DateTime(widget.year, widget.month);
   }
 
   @override
@@ -48,8 +42,6 @@ class _MoodCalendarState extends State<MoodCalendar> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildHeader(),
-                const SizedBox(height: 12),
                 _buildWeekDaysRow(),
                 const SizedBox(height: 6),
                 _buildCalendarGrid(days, data),
@@ -58,39 +50,6 @@ class _MoodCalendarState extends State<MoodCalendar> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildHeader() {
-    final name = DateFormat.yMMMM().format(_focusedMonth);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          onPressed: _prevMonth,
-          icon: const Icon(
-            Icons.chevron_left,
-            color: Color.fromARGB(255, 141, 90, 35),
-          ),
-        ),
-        Text(
-          name,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Poppins",
-            color: Color.fromARGB(255, 141, 90, 35),
-          ),
-        ),
-        IconButton(
-          onPressed: _nextMonth,
-          icon: const Icon(
-            Icons.chevron_right,
-            color: Color.fromARGB(255, 141, 90, 35),
-          ),
-        ),
-      ],
     );
   }
 
@@ -113,45 +72,47 @@ class _MoodCalendarState extends State<MoodCalendar> {
     );
   }
 
-  Widget _buildCalendarGrid(List<DateTime> days, Map<DateTime, double> moodValues) {
-    return Expanded(
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: days.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
-          crossAxisSpacing: 4,
-          mainAxisSpacing: 4,
-        ),
-        itemBuilder: (_, index) {
-          final day = days[index];
-          final inMonth = day.month == _focusedMonth.month;
-
-          final mood = moodValues[DateTime(day.year, day.month, day.day)];
-
-          final color =
-              !inMonth
-                  ? Colors.grey.withValues(alpha: 0.1)
-                  : mood == null
-                  ? Colors.grey.withValues(alpha: 0.25)
-                  : moodToColor(mood); // colore mood
-
-          return Container(
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              "${day.day}",
-              style: TextStyle(
-                color: inMonth ? Colors.black : Colors.grey,
-                fontSize: 14,
-              ),
-            ),
-          );
-        },
+  Widget _buildCalendarGrid(
+    List<DateTime> days,
+    Map<DateTime, double> moodValues,
+  ) {
+    return GridView.builder(
+      shrinkWrap: true, // ✅ FONDAMENTALE
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: days.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 4,
       ),
+      itemBuilder: (_, index) {
+        final day = days[index];
+        final inMonth = day.month == _focusedMonth.month;
+
+        final mood = moodValues[DateTime(day.year, day.month, day.day)];
+
+        final color =
+            !inMonth
+                ? Colors.grey.withValues(alpha: 0.1)
+                : mood == null
+                ? Colors.grey.withValues(alpha: 0.25)
+                : moodToColor(mood);
+
+        return Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(50),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            "${day.day}",
+            style: TextStyle(
+              color: inMonth ? Colors.black : Colors.grey,
+              fontSize: 14,
+            ),
+          ),
+        );
+      },
     );
   }
 
