@@ -184,13 +184,16 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          MoodCalendar(year: _selectedMonth.year, month: _selectedMonth.month),
           _sectionTitle('Mood del mese'),
           const SizedBox(height: 20),
           _buildMoodPie(positiveRatio: stats.positiveRatio),
           const SizedBox(height: 20),
           _buildMoodSummaryText(stats.positiveRatio),
           const SizedBox(height: 40),
+          _sectionTitle('Dettaglio giornaliero'),
+          const SizedBox(height: 20),
+          MoodCalendar(year: _selectedMonth.year, month: _selectedMonth.month),
+          const SizedBox(height: 20),
           _sectionTitle('Emozioni positive'),
           const SizedBox(height: 20),
           _buildBarChart(
