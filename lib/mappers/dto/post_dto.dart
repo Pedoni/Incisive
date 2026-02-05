@@ -8,6 +8,7 @@ final class PostDTO extends DTO with EquatableMixin {
   final String datetime;
   final String title;
   final int approvedCommentsCount;
+  final bool visible;
   final PostAuthorDTO author;
 
   PostDTO.fromJson(JsonObject json)
@@ -16,6 +17,7 @@ final class PostDTO extends DTO with EquatableMixin {
       datetime = json['datetime'] as String,
       title = json['title'] as String,
       approvedCommentsCount = (json['approved_comments_count'] as int?) ?? 0,
+      visible = json['visible'] as bool,
       author = PostAuthorDTO.fromJson(json['author'] as JsonObject);
 
   @override

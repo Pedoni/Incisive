@@ -80,6 +80,7 @@ class Constants {
         "placerat mauris, at commodo mauris egestas eu.",
     datetime: DateTime.now(),
     title: "Lorem ipsum dolor sit amet",
+    visible: true,
     author: PostAuthorModel(
       id: "author_1",
       firstName: "Luca",

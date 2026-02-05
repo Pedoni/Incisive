@@ -21,6 +21,7 @@ class SocialBloc extends BaseBloc {
     try {
       emit(Loading());
       final posts = await socialRepository.getDailyPosts(event.date);
+      posts.removeWhere((p) => !p.visible);
       emit(posts.isEmpty ? Empty() : Success(posts));
     } catch (e, stackTrace) {
       MainLogger.logError(e, stackTrace);

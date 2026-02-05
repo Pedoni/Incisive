@@ -12,6 +12,7 @@ class PostMapper extends DTOMapper<PostDTO, PostModel> {
       datetime: DateTime.parse(dto.datetime),
       title: dto.title,
       approvedCommentsCount: dto.approvedCommentsCount,
+      visible: dto.visible,
       author: PostAuthorModel(
         id: dto.author.id,
         firstName: dto.author.firstName,
