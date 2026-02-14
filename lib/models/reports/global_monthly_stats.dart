@@ -1,6 +1,6 @@
 import 'package:incisive/models/reports/base_monthly_stats.dart';
 
-class UserMonthlyStats extends BaseMonthlyStats {
+class GlobalMonthlyStats extends BaseMonthlyStats {
   @override
   final int totalEmotions;
 
@@ -13,24 +13,26 @@ class UserMonthlyStats extends BaseMonthlyStats {
   @override
   final List<Map<String, dynamic>> areasPositive;
 
-  UserMonthlyStats({
+  GlobalMonthlyStats({
     required this.totalEmotions,
     required this.positiveRatio,
     required this.emotionsPositive,
     required this.areasPositive,
   });
 
-  factory UserMonthlyStats.fromRpc(Map<String, dynamic> json) {
-    final summary = json['summary'] as Map<String, dynamic>? ?? {};
+  factory GlobalMonthlyStats.fromJson(Map<String, dynamic> json) {
+    final summary = json['summary'];
+    final emotions = json['emotions'];
+    final areas = json['life_areas'];
 
-    return UserMonthlyStats(
+    return GlobalMonthlyStats(
       totalEmotions: summary['total_emotions'] ?? 0,
-      positiveRatio: (summary['positive_ratio'] as num? ?? 0.0).toDouble(),
+      positiveRatio: (summary['positive_ratio'] as num?)?.toDouble() ?? 0.0,
       emotionsPositive: List<Map<String, dynamic>>.from(
-        json['emotions']?['positive'] ?? [],
+        emotions['positive'] ?? [],
       ),
       areasPositive: List<Map<String, dynamic>>.from(
-        json['life_areas']?['positive'] ?? [],
+        areas['positive'] ?? [],
       ),
     );
   }

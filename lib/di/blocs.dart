@@ -49,4 +49,7 @@ final List<BlocProvider> _blocs = [
   BlocProvider<UserMonthlyStatsBloc>(
     create: (context) => UserMonthlyStatsBloc(monthlyStatsRepository: context.read()),
   ),
+  BlocProvider<GlobalMonthlyStatsBloc>(
+    create: (context) => GlobalMonthlyStatsBloc(monthlyStatsRepository: context.read()),
+  ),
 ];
