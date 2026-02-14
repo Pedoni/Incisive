@@ -21,4 +21,18 @@ class MonthlyStatsService extends BaseService {
       },
     );
   }
+
+  Future<JsonObject?> getGlobalMonthlyStats({
+    required int month,
+    required int year,
+  }) async {
+    return await guard(
+      "Get global monthly stats",
+      () async {
+        final response = await supabase.from('global_monthly_stats').select('data').eq('year', year).eq('month', month).maybeSingle();
+
+        return response?['data'] as JsonObject?;
+      },
+    );
+  }
 }

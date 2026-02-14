@@ -1,8 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incisive/models/reports/base_monthly_stats.dart';
+import 'package:incisive/models/reports/global_monthly_stats.dart';
 import 'package:incisive/models/reports/user_monthly_stats.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
+import 'package:incisive/state_management/blocs/global_monthly_stats/global_monthly_stats_bloc.dart';
 import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.dart';
 import 'package:incisive/state_management/blocs/user_monthly_stats/user_monthly_stats_bloc.dart';
 import 'package:incisive/ui/components/mood_calendar.dart';
@@ -55,6 +58,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
     });
 
     context.read<UserMonthlyStatsBloc>().getUserMonthlyStats(_selectedMonth);
+    context.read<GlobalMonthlyStatsBloc>().getGlobalMonthlyStats(_selectedMonth);
     context.read<MoodTrackerBloc>().getMood();
   }
 
@@ -84,16 +88,20 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
   }
 
   Widget _buildGlobalDataTab() {
-    return const Center(
-      child: Text(
-        'Dati globali\n(in arrivo)',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: 'Nunito Sans',
-          fontSize: 16,
-          color: Colors.black45,
-        ),
-      ),
+    return BlocBuilder<GlobalMonthlyStatsBloc, BaseState>(
+      builder: (context, state) {
+        if (state is Loading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is Error) {
+          return Center(child: Text(state.errorString ?? "Errore sconosciuto"));
+        } else if (state is Success<GlobalMonthlyStats>) {
+          return _buildReportContent(state.data, showCalendar: false);
+        } else if (state is Empty) {
+          return const EmptyWidget(text: 'Nessun dato globale');
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 
@@ -113,6 +121,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
             onChanged: (m) {
               setState(() => _selectedMonth = m);
               context.read<UserMonthlyStatsBloc>().getUserMonthlyStats(m);
+              context.read<GlobalMonthlyStatsBloc>().getGlobalMonthlyStats(m);
             },
           ),
 
@@ -177,23 +186,38 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
     );
   }
 
-  Widget _buildReportContent(UserMonthlyStats stats) {
+  Widget _buildReportContent(
+    BaseMonthlyStats stats, {
+    bool showCalendar = true,
+  }) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
+
           _sectionTitle('Mood del mese'),
           const SizedBox(height: 20),
+
           _buildMoodPie(positiveRatio: stats.positiveRatio),
+
           const SizedBox(height: 20),
+
           _buildMoodSummaryText(stats.positiveRatio),
+
+          if (showCalendar) ...[
+            const SizedBox(height: 40),
+            _sectionTitle('Dettaglio giornaliero'),
+            const SizedBox(height: 20),
+            MoodCalendar(
+              year: _selectedMonth.year,
+              month: _selectedMonth.month,
+            ),
+          ],
+
           const SizedBox(height: 40),
-          _sectionTitle('Dettaglio giornaliero'),
-          const SizedBox(height: 20),
-          MoodCalendar(year: _selectedMonth.year, month: _selectedMonth.month),
-          const SizedBox(height: 20),
+
           _sectionTitle('Emozioni positive'),
           const SizedBox(height: 20),
           _buildBarChart(
@@ -215,218 +239,218 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
       ),
     );
   }
-}
 
-Widget _sectionTitle(String text) {
-  return Text(
-    text,
-    style: const TextStyle(
-      fontFamily: 'Poppins',
-      fontSize: 18,
-      fontWeight: FontWeight.w600,
-      color: Color.fromARGB(255, 141, 90, 35),
-    ),
-  );
-}
-
-Widget _buildMoodSummaryText(double positiveRatio) {
-  final positive = (positiveRatio * 100).round();
-  final negative = 100 - positive;
-
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      _legendRow(
-        color: const Color(0xFF2E7D32),
-        label: 'Mood positivo',
-        value: '$positive%',
+  Widget _sectionTitle(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: Color.fromARGB(255, 141, 90, 35),
       ),
-      const SizedBox(height: 8),
-      _legendRow(
-        color: const Color(0xFFC62828),
-        label: 'Mood negativo',
-        value: '$negative%',
-      ),
-    ],
-  );
-}
-
-Widget _legendRow({
-  required Color color,
-  required String label,
-  required String value,
-}) {
-  return Row(
-    children: [
-      Container(
-        width: 14,
-        height: 14,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'Nunito Sans',
-            fontSize: 14,
-          ),
-        ),
-      ),
-      Text(
-        value,
-        style: const TextStyle(
-          fontFamily: 'Nunito Sans',
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ],
-  );
-}
-
-Widget _buildMoodPie({
-  required double positiveRatio,
-}) {
-  final negativeRatio = 1 - positiveRatio;
-
-  return SizedBox(
-    height: 200,
-    child: PieChart(
-      PieChartData(
-        centerSpaceRadius: 45,
-        sectionsSpace: 4,
-        sections: [
-          PieChartSectionData(
-            value: positiveRatio * 100,
-            color: const Color(0xFF2E7D32),
-            title: '',
-            radius: 60,
-            titleStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          PieChartSectionData(
-            value: negativeRatio * 100,
-            color: const Color(0xFFC62828),
-            title: '',
-            radius: 50,
-            titleStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-      duration: const Duration(milliseconds: 600),
-    ),
-  );
-}
-
-Widget _buildBarChart({
-  required List<Map<String, dynamic>> data,
-  required Color barColor,
-}) {
-  if (data.isEmpty) {
-    return const Text(
-      'Nessun dato disponibile',
-      style: TextStyle(color: Colors.black45),
     );
   }
 
-  final maxY = data.map((e) => e['count'] as int).reduce((a, b) => a > b ? a : b).toDouble();
-  final chartWidth = data.length * 60.0; // 1 barra ≈ 60px
-  return SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    physics: const BouncingScrollPhysics(),
-    child: SizedBox(
-      height: 220,
-      width: chartWidth,
-      child: BarChart(
-        BarChartData(
-          alignment: BarChartAlignment.spaceAround,
-          maxY: maxY + 1,
-          gridData: FlGridData(
-            show: true,
-            drawVerticalLine: false,
-            horizontalInterval: 1,
-            getDrawingHorizontalLine:
-                (value) => FlLine(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  strokeWidth: 1,
-                ),
-          ),
-          borderData: FlBorderData(show: false),
-          titlesData: FlTitlesData(
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                interval: 1,
-                reservedSize: 30,
-                getTitlesWidget:
-                    (value, _) => Text(
-                      value.toInt().toString(),
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Colors.black45,
-                      ),
-                    ),
-              ),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, _) {
-                  final index = value.toInt();
-                  if (index < 0 || index >= data.length) {
-                    return const SizedBox.shrink();
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      data[index]['name'],
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontFamily: 'Nunito Sans',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          barGroups: List.generate(data.length, (index) {
-            final value = (data[index]['count'] as int).toDouble();
+  Widget _buildMoodSummaryText(double positiveRatio) {
+    final positive = (positiveRatio * 100).round();
+    final negative = 100 - positive;
 
-            return BarChartGroupData(
-              x: index,
-              barRods: [
-                BarChartRodData(
-                  toY: value,
-                  width: 18,
-                  borderRadius: BorderRadius.circular(6),
-                  color: barColor,
-                  backDrawRodData: BackgroundBarChartRodData(
-                    show: true,
-                    toY: maxY + 1,
-                    color: barColor.withValues(alpha: 0.1),
-                  ),
-                ),
-              ],
-            );
-          }),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _legendRow(
+          color: const Color(0xFF2E7D32),
+          label: 'Mood positivo',
+          value: '$positive%',
+        ),
+        const SizedBox(height: 8),
+        _legendRow(
+          color: const Color(0xFFC62828),
+          label: 'Mood negativo',
+          value: '$negative%',
+        ),
+      ],
+    );
+  }
+
+  Widget _legendRow({
+    required Color color,
+    required String label,
+    required String value,
+  }) {
+    return Row(
+      children: [
+        Container(
+          width: 14,
+          height: 14,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontFamily: 'Nunito Sans',
+              fontSize: 14,
+            ),
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontFamily: 'Nunito Sans',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMoodPie({
+    required double positiveRatio,
+  }) {
+    final negativeRatio = 1 - positiveRatio;
+
+    return SizedBox(
+      height: 200,
+      child: PieChart(
+        PieChartData(
+          centerSpaceRadius: 45,
+          sectionsSpace: 4,
+          sections: [
+            PieChartSectionData(
+              value: positiveRatio * 100,
+              color: const Color(0xFF2E7D32),
+              title: '',
+              radius: 60,
+              titleStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            PieChartSectionData(
+              value: negativeRatio * 100,
+              color: const Color(0xFFC62828),
+              title: '',
+              radius: 50,
+              titleStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
         duration: const Duration(milliseconds: 600),
-        curve: Curves.easeOutCubic,
       ),
-    ),
-  );
+    );
+  }
+
+  Widget _buildBarChart({
+    required List<Map<String, dynamic>> data,
+    required Color barColor,
+  }) {
+    if (data.isEmpty) {
+      return const Text(
+        'Nessun dato disponibile',
+        style: TextStyle(color: Colors.black45),
+      );
+    }
+
+    final maxY = data.map((e) => e['count'] as int).reduce((a, b) => a > b ? a : b).toDouble();
+    final chartWidth = data.length * 60.0; // 1 barra ≈ 60px
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: SizedBox(
+        height: 220,
+        width: chartWidth,
+        child: BarChart(
+          BarChartData(
+            alignment: BarChartAlignment.spaceAround,
+            maxY: maxY + 1,
+            gridData: FlGridData(
+              show: true,
+              drawVerticalLine: false,
+              horizontalInterval: 1,
+              getDrawingHorizontalLine:
+                  (value) => FlLine(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    strokeWidth: 1,
+                  ),
+            ),
+            borderData: FlBorderData(show: false),
+            titlesData: FlTitlesData(
+              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  interval: 1,
+                  reservedSize: 30,
+                  getTitlesWidget:
+                      (value, _) => Text(
+                        value.toInt().toString(),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Colors.black45,
+                        ),
+                      ),
+                ),
+              ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: (value, _) {
+                    final index = value.toInt();
+                    if (index < 0 || index >= data.length) {
+                      return const SizedBox.shrink();
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        data[index]['name'],
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontFamily: 'Nunito Sans',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            barGroups: List.generate(data.length, (index) {
+              final value = (data[index]['count'] as int).toDouble();
+
+              return BarChartGroupData(
+                x: index,
+                barRods: [
+                  BarChartRodData(
+                    toY: value,
+                    width: 18,
+                    borderRadius: BorderRadius.circular(6),
+                    color: barColor,
+                    backDrawRodData: BackgroundBarChartRodData(
+                      show: true,
+                      toY: maxY + 1,
+                      color: barColor.withValues(alpha: 0.1),
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ),
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeOutCubic,
+        ),
+      ),
+    );
+  }
 }
 
 class MonthPicker extends StatelessWidget {

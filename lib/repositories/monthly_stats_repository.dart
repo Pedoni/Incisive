@@ -1,3 +1,4 @@
+import 'package:incisive/models/reports/global_monthly_stats.dart';
 import 'package:incisive/models/reports/user_monthly_stats.dart';
 import 'package:incisive/repositories/base_repository.dart';
 import 'package:incisive/source/remote/monthly_stats_service.dart';
@@ -19,6 +20,27 @@ class MonthlyStatsRepository extends BaseRepository {
           year: year,
         );
         return UserMonthlyStats.fromRpc(map!);
+      },
+    );
+  }
+
+  Future<GlobalMonthlyStats?> getGlobalMonthlyStats({
+    required int month,
+    required int year,
+  }) async {
+    return await guard(
+      'Get global monthly stats',
+      () async {
+        final map = await monthlyStatsService.getGlobalMonthlyStats(
+          month: month,
+          year: year,
+        );
+
+        if (map == null) {
+          return null;
+        }
+
+        return GlobalMonthlyStats.fromJson(map);
       },
     );
   }
