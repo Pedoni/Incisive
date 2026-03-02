@@ -6,8 +6,6 @@ import 'package:incisive/utils/exceptions.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class ChatPage extends StatefulWidget {
-  static const routeName = '/chatPage';
-
   const ChatPage({super.key});
 
   @override

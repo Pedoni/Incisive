@@ -8,8 +8,6 @@ import 'package:incisive/ui/widgets/login_button.dart';
 import 'package:incisive/ui/widgets/login_textfield.dart';
 
 class RegisterPage extends StatefulWidget {
-  static const routeName = '/registerPage';
-
   const RegisterPage({super.key});
 
   @override

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:incisive/models/post_model.dart';
+import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/navigation/args/social_post_detail_args.dart';
-import 'package:incisive/ui/pages/social_post_detail_page.dart';
 import 'package:incisive/utils/functions.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
@@ -21,7 +21,7 @@ class SocialPostItem extends StatelessWidget {
     return GestureDetector(
       onTap:
           () => context.push(
-            SocialPostDetailPage.routeName,
+            AppRoutes.socialPostDetail,
             extra: SocialPostDetailArgs(post: post),
           ),
       child: Container(

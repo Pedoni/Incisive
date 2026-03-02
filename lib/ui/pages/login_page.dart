@@ -2,16 +2,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/login/login_bloc.dart';
-import 'package:incisive/ui/pages/register_page.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
 import 'package:incisive/ui/widgets/login_textfield.dart';
 
 class LoginPage extends StatefulWidget {
-  static const routeName = '/loginPage';
-
   const LoginPage({super.key});
 
   @override
@@ -39,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    _tapRecognizer = TapGestureRecognizer()..onTap = () => context.push(RegisterPage.routeName);
+    _tapRecognizer = TapGestureRecognizer()..onTap = () => context.push(AppRoutes.register);
   }
 
   Widget _buildLoginContent() {

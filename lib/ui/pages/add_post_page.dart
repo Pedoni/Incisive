@@ -11,8 +11,6 @@ import 'package:incisive/utils/enums.dart';
 import 'package:incisive/utils/functions.dart';
 
 class AddPostPage extends StatefulWidget {
-  static const routeName = '/addPostPage';
-
   const AddPostPage({super.key});
 
   @override

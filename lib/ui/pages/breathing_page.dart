@@ -8,8 +8,6 @@ import 'package:incisive/ui/widgets/breathing_dialog.dart';
 import 'package:incisive/ui/widgets/loading_spinner.dart';
 
 class BreathingPage extends StatefulWidget {
-  static const routeName = '/breathingPage';
-
   const BreathingPage({super.key});
 
   @override

@@ -3,11 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:incisive/models/post_model.dart';
 import 'package:incisive/models/comment_model.dart';
+import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
-import 'package:incisive/ui/pages/add_comment_page.dart';
-import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:incisive/utils/functions.dart';
@@ -15,8 +14,6 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class SocialPostDetailPage extends StatefulWidget {
-  static const routeName = '/socialPostDetail';
-
   final PostModel post;
 
   const SocialPostDetailPage({
@@ -77,7 +74,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
                     tooltip: "Commenti in attesa",
                     onPressed: () {
                       context.push(
-                        PendingCommentsPage.routeName,
+                        AppRoutes.pendingComments,
                         extra: SocialPostDetailArgs(post: widget.post),
                       );
                     },
@@ -95,7 +92,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
                 child: const Icon(Icons.add_comment),
                 onPressed: () {
                   context.push(
-                    AddCommentPage.routeName,
+                    AppRoutes.addComment,
                     extra: widget.post,
                   );
                 },

@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
@@ -8,11 +9,6 @@ import 'package:incisive/ui/components/bedroom_game.dart';
 import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';
 import 'package:incisive/ui/components/square_game.dart';
-import 'package:incisive/ui/pages/breathing_page.dart';
-import 'package:incisive/ui/pages/chat_page.dart';
-import 'package:incisive/ui/pages/diary_page.dart';
-import 'package:incisive/ui/pages/gratitude_page.dart';
-import 'package:incisive/ui/pages/social_page.dart';
 import 'package:incisive/ui/widgets/home_toolbar.dart';
 import 'package:provider/provider.dart';
 
@@ -143,21 +139,21 @@ class _HomePageState extends State<HomePage> {
 
     bedroomGame = BedroomGame(
       onDiaryTap: () {
-        context.push(DiaryPage.routeName);
+        context.push(AppRoutes.diary);
       },
-      onPetTap: () => context.push(ChatPage.routeName),
+      onPetTap: () => context.push(AppRoutes.chat),
     );
 
     livingRoomGame = LivingRoomGame(
       onBlackboardTap: () {
         context.read<GratitudePageBloc>().getGratitudePage(DateTime.now());
-        context.push(GratitudePage.routeName);
+        context.push(AppRoutes.gratitude);
       },
     );
 
-    gardenGame = GardenGame(onStatueTap: () => context.push(BreathingPage.routeName));
+    gardenGame = GardenGame(onStatueTap: () => context.push(AppRoutes.breathing));
 
-    squareGame = SquareGame(onBulletinBoardTap: () => context.push(SocialPage.routeName));
+    squareGame = SquareGame(onBulletinBoardTap: () => context.push(AppRoutes.social));
   }
 
   @override
@@ -240,7 +236,7 @@ class StanzaWidget extends StatelessWidget {
                 left: width * 0.1,
                 top: height * 0.503,
                 child: GestureDetector(
-                  onTap: () => context.push(DiaryPage.routeName),
+                  onTap: () => context.push(AppRoutes.diary),
                   child: Hero(
                     tag: "diary",
                     transitionOnUserGestures: true,

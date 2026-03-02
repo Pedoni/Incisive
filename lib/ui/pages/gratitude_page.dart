@@ -3,18 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:incisive/models/gratitude_model.dart';
+import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/navigation/args/upsert_gratitude_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
-import 'package:incisive/ui/pages/gratitude_upsert_page.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:skeletonizer/skeletonizer.dart';
 
 class GratitudePage extends StatefulWidget {
-  static const routeName = '/gratitudePage';
-
   const GratitudePage({super.key});
 
   @override
@@ -58,7 +56,7 @@ class _GratitudePageState extends State<GratitudePage> {
 
               Empty(data: final entry) || Success(data: final entry) => () {
                 context.push(
-                  GratitudeUpsertPage.routeName,
+                  AppRoutes.upsertGratitude,
                   extra: UpsertGratitudeArgs(date: _selectedDate, page: entry),
                 );
               },

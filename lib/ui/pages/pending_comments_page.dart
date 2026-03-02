@@ -8,8 +8,6 @@ import 'package:incisive/state_management/blocs/social_comment/social_comment_bl
 import 'package:incisive/ui/widgets/empty_widget.dart';
 
 class PendingCommentsPage extends StatelessWidget {
-  static const routeName = '/pendingComments';
-
   final PostModel post;
 
   const PendingCommentsPage({

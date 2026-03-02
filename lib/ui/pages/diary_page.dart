@@ -3,18 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:incisive/models/diary_model.dart';
+import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/navigation/args/upsert_diary_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
 import 'package:incisive/ui/components/lined_paper.dart';
-import 'package:incisive/ui/pages/diary_upsert_page.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class DiaryPage extends StatefulWidget {
-  static const routeName = '/diaryPage';
-
   const DiaryPage({super.key});
 
   @override
@@ -136,13 +134,13 @@ class _DiaryPageState extends State<DiaryPage> {
               Initial() || Loading() || Error() => null,
               Empty() => () {
                 context.push(
-                  UpsertDiaryPage.routeName,
+                  AppRoutes.upsertDiary,
                   extra: UpsertDiaryArgs(_selectedDate, null),
                 );
               },
               Success(data: final entry) => () {
                 context.push(
-                  UpsertDiaryPage.routeName,
+                  AppRoutes.upsertDiary,
                   extra: UpsertDiaryArgs(_selectedDate, entry),
                 );
               },

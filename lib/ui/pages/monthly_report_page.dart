@@ -25,8 +25,6 @@ List<DateTime> buildMonths({required DateTime from, required DateTime to}) {
 }
 
 class MonthlyReportPage extends StatefulWidget {
-  static const routeName = '/monthlyReportPage';
-
   const MonthlyReportPage({super.key});
 
   @override
@@ -90,17 +88,13 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
   Widget _buildGlobalDataTab() {
     return BlocBuilder<GlobalMonthlyStatsBloc, BaseState>(
       builder: (context, state) {
-        if (state is Loading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is Error) {
-          return Center(child: Text(state.errorString ?? "Errore sconosciuto"));
-        } else if (state is Success<GlobalMonthlyStats>) {
-          return _buildReportContent(state.data, showCalendar: false);
-        } else if (state is Empty) {
-          return const EmptyWidget(text: 'Nessun dato globale');
-        }
-
-        return const SizedBox.shrink();
+        return switch (state) {
+          Loading() => const Center(child: CircularProgressIndicator()),
+          Error(:final errorString) => Center(child: Text(errorString ?? "Errore sconosciuto")),
+          Success<GlobalMonthlyStats>(:final data) => _buildReportContent(data, showCalendar: false),
+          Empty() => const EmptyWidget(text: 'Nessun dato globale'),
+          _ => const SizedBox.shrink(),
+        };
       },
     );
   }

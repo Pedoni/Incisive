@@ -12,8 +12,6 @@ import 'package:incisive/utils/functions.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class UserProfilePage extends StatelessWidget {
-  static const routeName = '/userProfilePage';
-
   const UserProfilePage({super.key});
 
   @override

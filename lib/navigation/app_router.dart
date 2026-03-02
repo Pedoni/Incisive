@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:incisive/models/post_model.dart';
+import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/navigation/args/upsert_diary_args.dart';
 import 'package:incisive/navigation/args/upsert_gratitude_args.dart';
@@ -19,23 +20,23 @@ import 'package:incisive/ui/pages/pending_comments_page.dart';
 import 'package:incisive/ui/pages/register_page.dart';
 import 'package:incisive/ui/pages/social_page.dart';
 import 'package:incisive/ui/pages/social_post_detail_page.dart';
-import 'package:incisive/ui/pages/store_page.dart';
+import 'package:incisive/ui/pages/shop_page.dart';
 import 'package:incisive/ui/pages/user_profile_page.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 GoRouter createRouter(AuthNotifier notifier) => GoRouter(
   refreshListenable: notifier,
-  initialLocation: LoginPage.routeName,
+  initialLocation: AppRoutes.login,
 
   redirect: (context, state) {
     final session = Supabase.instance.client.auth.currentSession;
     final location = state.uri.path;
 
-    final isLoggingIn = location == LoginPage.routeName;
-    final isRegistering = location == RegisterPage.routeName;
+    final isLoggingIn = location == AppRoutes.login;
+    final isRegistering = location == AppRoutes.register;
 
     if (session == null && !isLoggingIn && !isRegistering) {
-      return LoginPage.routeName;
+      return AppRoutes.login;
     }
 
     if (session != null && isLoggingIn) {
@@ -47,12 +48,12 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
 
   routes: [
     GoRoute(
-      path: LoginPage.routeName,
+      path: AppRoutes.login,
       builder: (_, _) => const LoginPage(),
     ),
 
     GoRoute(
-      path: RegisterPage.routeName,
+      path: AppRoutes.register,
       builder: (_, _) => const RegisterPage(),
     ),
 
@@ -62,52 +63,52 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
     ),
 
     GoRoute(
-      path: DiaryPage.routeName,
+      path: AppRoutes.diary,
       builder: (_, _) => const DiaryPage(),
     ),
 
     GoRoute(
-      path: GratitudePage.routeName,
+      path: AppRoutes.gratitude,
       builder: (_, _) => const GratitudePage(),
     ),
 
     GoRoute(
-      path: ChatPage.routeName,
+      path: AppRoutes.chat,
       builder: (_, _) => const ChatPage(),
     ),
 
     GoRoute(
-      path: BreathingPage.routeName,
+      path: AppRoutes.breathing,
       builder: (_, _) => const BreathingPage(),
     ),
 
     GoRoute(
-      path: SocialPage.routeName,
+      path: AppRoutes.social,
       builder: (_, _) => const SocialPage(),
     ),
 
     GoRoute(
-      path: AddPostPage.routeName,
+      path: AppRoutes.addPost,
       builder: (_, _) => const AddPostPage(),
     ),
 
     GoRoute(
-      path: UserProfilePage.routeName,
+      path: AppRoutes.userProfile,
       builder: (_, _) => const UserProfilePage(),
     ),
 
     GoRoute(
-      path: StorePage.routeName,
-      builder: (_, _) => const StorePage(),
+      path: AppRoutes.shop,
+      builder: (_, _) => const ShopPage(),
     ),
 
     GoRoute(
-      path: MonthlyReportPage.routeName,
+      path: AppRoutes.monthlyReport,
       builder: (_, _) => const MonthlyReportPage(),
     ),
 
     GoRoute(
-      path: UpsertDiaryPage.routeName,
+      path: AppRoutes.upsertDiary,
       builder: (context, state) {
         final args = state.extra! as UpsertDiaryArgs;
         return UpsertDiaryPage(
@@ -118,7 +119,7 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
     ),
 
     GoRoute(
-      path: AddCommentPage.routeName,
+      path: AppRoutes.addComment,
       builder: (context, state) {
         final post = state.extra! as PostModel;
         return AddCommentPage(post: post);
@@ -126,7 +127,7 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
     ),
 
     GoRoute(
-      path: GratitudeUpsertPage.routeName,
+      path: AppRoutes.upsertGratitude,
       builder: (context, state) {
         final args = state.extra! as UpsertGratitudeArgs;
         return GratitudeUpsertPage(
@@ -137,7 +138,7 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
     ),
 
     GoRoute(
-      path: SocialPostDetailPage.routeName,
+      path: AppRoutes.socialPostDetail,
       builder: (context, state) {
         final args = state.extra! as SocialPostDetailArgs;
         return SocialPostDetailPage(post: args.post);
@@ -145,7 +146,7 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
     ),
 
     GoRoute(
-      path: PendingCommentsPage.routeName,
+      path: AppRoutes.pendingComments,
       builder: (context, state) {
         final args = state.extra! as SocialPostDetailArgs;
         return PendingCommentsPage(post: args.post);

@@ -10,8 +10,6 @@ import 'package:incisive/ui/widgets/speech_dialog.dart';
 import 'package:incisive/utils/enums.dart';
 
 class AddCommentPage extends StatefulWidget {
-  static const routeName = '/addCommentPage';
-
   final PostModel post;
 
   const AddCommentPage({

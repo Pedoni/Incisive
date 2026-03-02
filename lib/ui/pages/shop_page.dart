@@ -9,10 +9,8 @@ import 'package:incisive/state_management/blocs/purchase/purchase_bloc.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class StorePage extends StatelessWidget {
-  static const routeName = '/storePage';
-
-  const StorePage({super.key});
+class ShopPage extends StatelessWidget {
+  const ShopPage({super.key});
 
   @override
   Widget build(BuildContext context) {

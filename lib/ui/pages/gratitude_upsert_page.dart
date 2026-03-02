@@ -11,8 +11,6 @@ import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/utils/enums.dart';
 
 class GratitudeUpsertPage extends StatefulWidget {
-  static const routeName = '/upsertGratitudePage';
-
   final GratitudeModel? existingEntry;
   final DateTime date;
 

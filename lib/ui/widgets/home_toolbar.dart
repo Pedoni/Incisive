@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
-import 'package:incisive/ui/pages/store_page.dart';
-import 'package:incisive/ui/pages/user_profile_page.dart';
 import 'package:incisive/ui/widgets/level_bar.dart';
 
 class HomeToolbar extends StatelessWidget {
@@ -42,7 +41,7 @@ class HomeToolbar extends StatelessWidget {
                     onTap: () {
                       context.read<ProfileBloc>().getProfile();
                       context.read<AvatarBloc>().getAvatars();
-                      context.push(UserProfilePage.routeName);
+                      context.push(AppRoutes.userProfile);
                     },
                   ),
                   SizedBox(width: 15),
@@ -50,7 +49,7 @@ class HomeToolbar extends StatelessWidget {
                     icon: Icons.store,
                     onTap: () {
                       context.read<ProfileBloc>().getProfile();
-                      context.push(StorePage.routeName);
+                      context.push(AppRoutes.shop);
                     },
                   ),
                 ],

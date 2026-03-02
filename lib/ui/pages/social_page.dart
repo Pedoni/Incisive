@@ -3,18 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:incisive/models/post_model.dart';
+import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
-import 'package:incisive/ui/pages/add_post_page.dart';
-import 'package:incisive/ui/pages/monthly_report_page.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class SocialPage extends StatefulWidget {
-  static const routeName = '/socialPage';
-
   const SocialPage({super.key});
 
   @override
@@ -38,7 +35,7 @@ class _SocialPageState extends State<SocialPage> {
       backgroundColor: const Color(0xFFFFF8E8),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 141, 90, 35),
-        onPressed: () => context.push(AddPostPage.routeName),
+        onPressed: () => context.push(AppRoutes.addPost),
         child: Icon(Icons.add, color: Colors.white),
       ),
       appBar: AppBar(
@@ -57,7 +54,7 @@ class _SocialPageState extends State<SocialPage> {
         actions: [
           IconButton(
             onPressed: () {
-              context.push(MonthlyReportPage.routeName);
+              context.push(AppRoutes.monthlyReport);
             },
             icon: Icon(Icons.track_changes),
           ),

@@ -12,8 +12,6 @@ import 'package:incisive/ui/widgets/speech_dialog.dart';
 import 'package:incisive/utils/enums.dart';
 
 class UpsertDiaryPage extends StatefulWidget {
-  static const routeName = '/upsertDiaryPage';
-
   final DateTime date;
   final DiaryModel? existingEntry;
 
