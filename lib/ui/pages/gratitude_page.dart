@@ -8,6 +8,7 @@ import 'package:incisive/navigation/args/upsert_gratitude_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:skeletonizer/skeletonizer.dart';
@@ -40,17 +41,17 @@ class _GratitudePageState extends State<GratitudePage> {
             fontSize: 25,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 141, 90, 35),
+            color: IncisiveColors.primary,
           ),
         ),
-        foregroundColor: Color.fromARGB(255, 141, 90, 35),
+        foregroundColor: IncisiveColors.primary,
         backgroundColor: const Color(0xFFFFF8E8),
       ),
 
       floatingActionButton: BlocBuilder<GratitudePageBloc, BaseState>(
         builder: (context, state) {
           return FloatingActionButton(
-            backgroundColor: Color.fromARGB(255, 141, 90, 35),
+            backgroundColor: IncisiveColors.primary,
             onPressed: switch (state) {
               Initial() || Loading() || Error() => null,
 
@@ -168,7 +169,7 @@ class _GratitudePageState extends State<GratitudePage> {
                                     fontSize: 20,
                                     fontFamily: 'Poppins',
                                     fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 141, 90, 35),
+                                    color: IncisiveColors.primary,
                                   ),
                                 ),
                                 SizedBox(height: 16),

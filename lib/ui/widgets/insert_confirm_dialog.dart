@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:incisive/utils/enums.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class InsertConfirmDialog extends StatelessWidget {
   final PostType type;
@@ -92,7 +93,7 @@ class InsertConfirmDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             foregroundColor: Colors.white,
-            backgroundColor: const Color.fromARGB(255, 141, 90, 35),
+            backgroundColor: IncisiveColors.primary,
           ),
           child: const Text(
             'Ok',

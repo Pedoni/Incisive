@@ -6,6 +6,7 @@ import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class PendingCommentsPage extends StatelessWidget {
   final PostModel post;
@@ -28,7 +29,7 @@ class PendingCommentsPage extends StatelessWidget {
           ),
         ),
         backgroundColor: const Color(0xFFFFF8E8),
-        foregroundColor: const Color.fromARGB(255, 141, 90, 35),
+        foregroundColor: IncisiveColors.primary,
         elevation: 0,
       ),
       body: BlocBuilder<SocialCommentBloc, BaseState>(
@@ -120,7 +121,7 @@ class _PendingCommentItem extends StatelessWidget {
                 icon: const Icon(Icons.check),
                 label: const Text("Approva"),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 141, 90, 35),
+                  backgroundColor: IncisiveColors.primary,
                   foregroundColor: Colors.white,
                 ),
                 onPressed: () {

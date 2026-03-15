@@ -9,6 +9,7 @@ import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/utils/enums.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class GratitudeUpsertPage extends StatefulWidget {
   final GratitudeModel? existingEntry;
@@ -96,11 +97,11 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
             fontSize: 22,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w600,
-            color: Color.fromARGB(255, 141, 90, 35),
+            color: IncisiveColors.primary,
           ),
         ),
         backgroundColor: const Color(0xFFFFF8E8),
-        foregroundColor: Color.fromARGB(255, 141, 90, 35),
+        foregroundColor: IncisiveColors.primary,
         elevation: 0,
       ),
       backgroundColor: const Color(0xFFFFF8E8),
@@ -161,7 +162,7 @@ class _GratitudeUpsertPageState extends State<GratitudeUpsertPage> {
                     return ElevatedButton(
                       onPressed: _filledGratitudes >= 3 ? _onConfirm : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 141, 90, 35),
+                        backgroundColor: IncisiveColors.primary,
                         foregroundColor: Colors.white,
                         disabledBackgroundColor: const Color.fromARGB(255, 184, 181, 181),
                         fixedSize: Size.fromWidth(screenWidth * 0.4),

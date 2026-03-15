@@ -9,6 +9,7 @@ import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/widgets/logout_dialog.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:incisive/utils/functions.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class UserProfilePage extends StatelessWidget {
@@ -17,7 +18,7 @@ class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
-      backgroundColor: const Color.fromARGB(255, 141, 90, 35),
+      backgroundColor: IncisiveColors.primary,
       foregroundColor: const Color(0xFFFFF8E8),
       elevation: 0,
       title: const Text(
@@ -52,7 +53,7 @@ class UserProfilePage extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 32),
                   decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 141, 90, 35),
+                    color: IncisiveColors.primary,
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(50),
                       bottomRight: Radius.circular(50),
@@ -81,7 +82,7 @@ class UserProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 32),
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 141, 90, 35),
+                      backgroundColor: IncisiveColors.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 32,

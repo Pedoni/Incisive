@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:incisive/di/dependency_injector.dart';
 import 'package:incisive/navigation/app_router.dart';
 import 'package:incisive/navigation/auth_notifier.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -51,7 +52,7 @@ class _AppState extends State<App> {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 141, 90, 35))),
+        theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: IncisiveColors.primary)),
       ),
     );
   }

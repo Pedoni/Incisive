@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class LoginTextField extends StatefulWidget {
   final bool isTextVisible;
@@ -29,15 +30,15 @@ class _LoginTextFieldState extends State<LoginTextField> {
         enableSuggestions: true,
         keyboardType: widget.title == "Email" ? TextInputType.emailAddress : TextInputType.text,
         controller: widget.controller,
-        cursorColor: Color.fromARGB(255, 141, 90, 35),
+        cursorColor: IncisiveColors.primary,
         obscureText: !widget.isTextVisible && !show,
         decoration: InputDecoration(
           hintText: widget.title,
           hintStyle: const TextStyle(color: Color.fromARGB(138, 94, 59, 21)),
           enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(50.0)),
           focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(50.0)),
-          prefixIconColor: Color.fromARGB(255, 141, 90, 35),
-          suffixIconColor: Color.fromARGB(255, 141, 90, 35),
+          prefixIconColor: IncisiveColors.primary,
+          suffixIconColor: IncisiveColors.primary,
           filled: true,
           fillColor: const Color.fromARGB(101, 255, 255, 255),
           suffixIcon:
@@ -50,7 +51,7 @@ class _LoginTextFieldState extends State<LoginTextField> {
           decoration: TextDecoration.none,
           decorationThickness: 0,
           fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 141, 90, 35),
+          color: IncisiveColors.primary,
         ),
       ),
     );

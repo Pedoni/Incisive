@@ -4,6 +4,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:incisive/models/chat_session.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/chat/chat_bloc.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -101,7 +102,7 @@ un Markdown semplice (grassetto o corsivo), senza esagerare.
         padding: const EdgeInsets.all(12),
         constraints: const BoxConstraints(maxWidth: 280),
         decoration: BoxDecoration(
-          color: isUser ? const Color.fromARGB(255, 141, 90, 35) : const Color.fromARGB(255, 241, 218, 192),
+          color: isUser ? IncisiveColors.primary : const Color.fromARGB(255, 241, 218, 192),
           borderRadius: BorderRadius.circular(16),
         ),
         child: MarkdownBody(
@@ -164,10 +165,10 @@ un Markdown semplice (grassetto o corsivo), senza esagerare.
                 fontSize: 25,
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 141, 90, 35),
+                color: IncisiveColors.primary,
               ),
             ),
-            foregroundColor: const Color.fromARGB(255, 141, 90, 35),
+            foregroundColor: IncisiveColors.primary,
             backgroundColor: const Color(0xFFFFF8E8),
             actions: const [BotAvatar()],
           ),
@@ -244,7 +245,7 @@ un Markdown semplice (grassetto o corsivo), senza esagerare.
               height: 44,
               width: 44,
               decoration: BoxDecoration(
-                color: isTyping ? Colors.grey : const Color.fromARGB(255, 141, 90, 35),
+                color: isTyping ? Colors.grey : IncisiveColors.primary,
                 borderRadius: BorderRadius.circular(22),
               ),
               child: const Icon(Icons.send, color: Colors.white),

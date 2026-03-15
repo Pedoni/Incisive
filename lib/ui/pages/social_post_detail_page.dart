@@ -10,6 +10,7 @@ import 'package:incisive/state_management/blocs/social_comment/social_comment_bl
 import 'package:incisive/ui/widgets/empty_widget.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:incisive/utils/functions.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
@@ -51,7 +52,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
         elevation: 0,
         scrolledUnderElevation: 0,
         backgroundColor: const Color(0xFFFFF8E8),
-        foregroundColor: const Color.fromARGB(255, 141, 90, 35),
+        foregroundColor: IncisiveColors.primary,
         title: const Text(
           "Post",
           style: TextStyle(
@@ -87,7 +88,7 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
       floatingActionButton:
           !isAuthor
               ? FloatingActionButton(
-                backgroundColor: const Color.fromARGB(255, 141, 90, 35),
+                backgroundColor: IncisiveColors.primary,
                 foregroundColor: Colors.white,
                 child: const Icon(Icons.add_comment),
                 onPressed: () {

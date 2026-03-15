@@ -8,6 +8,7 @@ import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -34,7 +35,7 @@ class _SocialPageState extends State<SocialPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF8E8),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color.fromARGB(255, 141, 90, 35),
+        backgroundColor: IncisiveColors.primary,
         onPressed: () => context.push(AppRoutes.addPost),
         child: Icon(Icons.add, color: Colors.white),
       ),
@@ -46,10 +47,10 @@ class _SocialPageState extends State<SocialPage> {
             fontSize: 25,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 141, 90, 35),
+            color: IncisiveColors.primary,
           ),
         ),
-        foregroundColor: const Color.fromARGB(255, 141, 90, 35),
+        foregroundColor: IncisiveColors.primary,
         backgroundColor: const Color(0xFFFFF8E8),
         actions: [
           IconButton(

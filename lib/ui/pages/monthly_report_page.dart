@@ -10,6 +10,7 @@ import 'package:incisive/state_management/blocs/mood_tracker/mood_tracker_bloc.d
 import 'package:incisive/state_management/blocs/user_monthly_stats/user_monthly_stats_bloc.dart';
 import 'package:incisive/ui/components/mood_calendar.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 import 'package:intl/intl.dart';
 
 List<DateTime> buildMonths({required DateTime from, required DateTime to}) {
@@ -61,7 +62,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
   }
 
   Widget _buildMyDataTab() {
-    const accentColor = Color.fromARGB(255, 141, 90, 35);
+    const accentColor = IncisiveColors.primary;
 
     return BlocBuilder<UserMonthlyStatsBloc, BaseState>(
       builder: (context, state) {
@@ -100,7 +101,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    const accentColor = Color.fromARGB(255, 141, 90, 35);
+    const accentColor = IncisiveColors.primary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -154,7 +155,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
 
   @override
   Widget build(BuildContext context) {
-    const accentColor = Color.fromARGB(255, 141, 90, 35);
+    const accentColor = IncisiveColors.primary;
     const bgColor = Color(0xFFFFF8E8);
 
     return DefaultTabController(
@@ -241,7 +242,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
         fontFamily: 'Poppins',
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: Color.fromARGB(255, 141, 90, 35),
+        color: IncisiveColors.primary,
       ),
     );
   }
@@ -463,7 +464,7 @@ class MonthPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accentColor = Color.fromARGB(255, 141, 90, 35);
+    const accentColor = IncisiveColors.primary;
 
     return SizedBox(
       height: 100,

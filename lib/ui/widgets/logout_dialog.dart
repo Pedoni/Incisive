@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class LogoutDialog extends StatelessWidget {
   const LogoutDialog({super.key});
@@ -32,7 +33,7 @@ class LogoutDialog extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            foregroundColor: const Color.fromARGB(255, 141, 90, 35),
+            foregroundColor: IncisiveColors.primary,
             backgroundColor: const Color.fromARGB(255, 244, 223, 200),
           ),
           child: const Text(
@@ -53,7 +54,7 @@ class LogoutDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             foregroundColor: Colors.white,
-            backgroundColor: const Color.fromARGB(255, 141, 90, 35),
+            backgroundColor: IncisiveColors.primary,
           ),
           child: const Text(
             'Ok',

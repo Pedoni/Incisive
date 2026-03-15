@@ -10,6 +10,7 @@ import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';
 import 'package:incisive/ui/components/square_game.dart';
 import 'package:incisive/ui/widgets/home_toolbar.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -98,7 +99,7 @@ class _HomePageState extends State<HomePage> {
         duration: Duration(milliseconds: 200),
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected ? Color.fromARGB(255, 141, 90, 35) : Colors.transparent,
+          color: isSelected ? IncisiveColors.primary : Colors.transparent,
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -120,7 +121,7 @@ class _HomePageState extends State<HomePage> {
       return Container(
         color: const Color(0xFFFFF8E8),
         child: const Center(
-          child: CircularProgressIndicator(color: Color.fromARGB(255, 141, 90, 35)),
+          child: CircularProgressIndicator(color: IncisiveColors.primary),
         ),
       );
     };

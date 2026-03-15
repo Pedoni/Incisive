@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 import 'package:lottie/lottie.dart';
 import 'package:speech_to_text/speech_recognition_error.dart' as stte;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -99,7 +100,7 @@ class _SpeechDialogState extends State<SpeechDialog> {
         children: [
           Icon(
             Icons.mic,
-            color: Color.fromARGB(255, 141, 90, 35),
+            color: IncisiveColors.primary,
             size: 28,
           ),
           SizedBox(width: 10),
@@ -145,7 +146,7 @@ class _SpeechDialogState extends State<SpeechDialog> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            foregroundColor: const Color.fromARGB(255, 141, 90, 35),
+            foregroundColor: IncisiveColors.primary,
             backgroundColor: const Color.fromARGB(255, 244, 223, 200),
           ),
           child: const Text(
@@ -167,7 +168,7 @@ class _SpeechDialogState extends State<SpeechDialog> {
               borderRadius: BorderRadius.circular(12),
             ),
             foregroundColor: Colors.white,
-            backgroundColor: const Color.fromARGB(255, 141, 90, 35),
+            backgroundColor: IncisiveColors.primary,
           ),
           child: const Text(
             'Ok',
