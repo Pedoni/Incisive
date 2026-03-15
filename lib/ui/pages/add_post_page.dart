@@ -6,10 +6,9 @@ import 'package:incisive/state_management/blocs/create_post/create_post_bloc.dar
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
-import 'package:incisive/ui/widgets/speech_dialog.dart';
+import 'package:incisive/ui/widgets/text_input_page.dart';
 import 'package:incisive/utils/enums.dart';
 import 'package:incisive/utils/functions.dart';
-import 'package:incisive/utils/incisive_colors.dart';
 
 class AddPostPage extends StatefulWidget {
   const AddPostPage({super.key});
@@ -19,179 +18,85 @@ class AddPostPage extends StatefulWidget {
 }
 
 class _AddPostPageState extends State<AddPostPage> {
-  late TextEditingController _titleController;
-  late TextEditingController _contentController;
-  late CreatePostBloc _createPostBloc;
+  final _titleController = TextEditingController();
+  final _contentController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController();
     _titleController.addListener(() => setState(() {}));
-    _contentController = TextEditingController();
     _contentController.addListener(() => setState(() {}));
-    _createPostBloc = context.read<CreatePostBloc>();
   }
 
-  void _save() => _createPostBloc.createPost(_titleController.text, _contentController.text);
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _contentController.dispose();
+    super.dispose();
+  }
+
+  void _save() => context.read<CreatePostBloc>().createPost(_titleController.text, _contentController.text);
+
+  bool get _canSave => _titleController.text.length >= 5 && _contentController.text.length >= 20;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(
-          "Crea post",
-          style: const TextStyle(
-            fontSize: 22,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-            color: IncisiveColors.primary,
-          ),
-        ),
-        backgroundColor: const Color(0xFFFFF8E8),
-        foregroundColor: IncisiveColors.primary,
-        elevation: 0,
-      ),
-      backgroundColor: const Color(0xFFFFF8E8),
-      body: BlocListener<CreatePostBloc, BaseState>(
-        listener: (context, state) {
-          if (state is Success) {
-            context.read<SocialBloc>().getDailyPosts(DateTime.now());
-            if (context.canPop()) {
-              context.pop();
-            }
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => InsertConfirmDialog(type: PostType.gdInsert),
-            );
-          } else if (state is Error) {
-            showDialog(
-              context: context,
-              builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto.'),
-            );
-          }
+    return BlocListener<CreatePostBloc, BaseState>(
+      listener: (context, state) {
+        if (state is Success) {
+          context.read<SocialBloc>().getDailyPosts(DateTime.now());
+          if (context.canPop()) context.pop();
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => InsertConfirmDialog(type: PostType.gdInsert),
+          );
+        } else if (state is Error) {
+          showDialog(
+            context: context,
+            builder:
+                (_) => ErrorDialog(
+                  title: "Errore",
+                  text: state.errorString ?? 'Errore sconosciuto.',
+                ),
+          );
+        }
+      },
+      child: BlocBuilder<CreatePostBloc, BaseState>(
+        builder: (context, state) {
+          return TextInputPage(
+            title: "Crea post",
+            headerLabel: formatDateItalian(DateTime.now()),
+            speechHint: "Racconta quello che ti senti...",
+            controller: _contentController,
+            maxLength: 2000,
+            minLength: 20,
+            hintText: "Inserisci il tuo testo...",
+            isLoading: state is Loading,
+            onConfirm: _canSave ? _save : () {},
+            extraField: TextField(
+              controller: _titleController,
+              keyboardType: TextInputType.text,
+              maxLines: 1,
+              maxLength: 50,
+              textAlignVertical: TextAlignVertical.center,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                hintText: "Inserisci il titolo...",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.black26),
+                ),
+              ),
+              style: const TextStyle(
+                fontSize: 18,
+                fontFamily: "Nunito Sans",
+                height: 1.3,
+              ),
+            ),
+          );
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    formatDateItalian(DateTime.now()),
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 112, 66, 16),
-                      fontFamily: 'Nunito Sans',
-                      fontSize: 16,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      final result = await showDialog<String>(
-                        context: context,
-                        builder: (_) => SpeechDialog(description: "Racconta quello che ti senti..."),
-                      );
-
-                      if (result != null && result.isNotEmpty) {
-                        setState(() {
-                          _contentController.text += (_contentController.text.isNotEmpty ? " " : "") + result;
-                        });
-                      }
-                    },
-                    child: Icon(
-                      Icons.mic,
-                      color: Color.fromARGB(255, 112, 66, 16),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _titleController,
-                keyboardType: TextInputType.text,
-                maxLines: 1,
-                maxLength: 50,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: "Inserisci il titolo...",
-
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.black26),
-                  ),
-                ),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontFamily: "Nunito Sans",
-                  height: 1.3,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: TextField(
-                  controller: _contentController,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  maxLength: 2000,
-                  expands: true,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: "Inserisci il tuo testo...",
-                    alignLabelWithHint: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Colors.black26),
-                    ),
-                  ),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontFamily: "Nunito Sans",
-                    height: 1.4,
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Center(
-                child: BlocBuilder<CreatePostBloc, BaseState>(
-                  builder: (context, state) {
-                    final screenWidth = MediaQuery.sizeOf(context).width;
-                    return ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: IncisiveColors.primary,
-                        foregroundColor: Colors.white,
-                        disabledBackgroundColor:
-                            _titleController.text.length < 5 || _contentController.text.length < 20
-                                ? const Color.fromARGB(255, 184, 181, 181)
-                                : IncisiveColors.primary,
-                        fixedSize: Size.fromWidth(screenWidth * 0.4),
-                      ),
-                      onPressed: _titleController.text.length < 5 || _contentController.text.length < 20 || state is Loading ? null : _save,
-                      child:
-                          state is Loading
-                              ? SizedBox(
-                                height: 25,
-                                width: 25,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ),
-                              )
-                              : Text("Conferma"),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 20),
-            ],
-          ),
-        ),
       ),
     );
   }

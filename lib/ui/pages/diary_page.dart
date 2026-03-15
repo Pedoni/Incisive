@@ -1,4 +1,3 @@
-import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,9 +7,9 @@ import 'package:incisive/navigation/args/upsert_diary_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
 import 'package:incisive/ui/components/lined_paper.dart';
+import 'package:incisive/ui/widgets/date_timeline_picker.dart';
 import 'package:incisive/ui/widgets/page_detail_appbar.dart';
 import 'package:incisive/utils/constants.dart';
-import 'package:incisive/utils/incisive_colors.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -117,7 +116,7 @@ class _DiaryPageState extends State<DiaryPage> {
       floatingActionButton: BlocBuilder<DiaryPageBloc, BaseState>(
         builder: (context, state) {
           return FloatingActionButton(
-            backgroundColor: IncisiveColors.primary,
+            backgroundColor: Color.fromARGB(255, 141, 90, 35),
             onPressed: switch (state) {
               Initial() || Loading() || Error() => null,
               Empty() => () {
@@ -155,12 +154,8 @@ class _DiaryPageState extends State<DiaryPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: EasyDateTimeLinePicker(
+                  child: DateTimelinePicker(
                     focusedDate: _selectedDate,
-                    firstDate: DateTime(2000, 1, 1),
-                    lastDate: DateTime(2030, 12, 31),
-                    timelineOptions: TimelineOptions(height: 90),
-                    locale: Localizations.localeOf(context),
                     onDateChange:
                         (date) => setState(() {
                           _selectedDate = date;
