@@ -42,4 +42,7 @@ final List<RepositoryProvider> _repositories = [
           monthlyStatsService: context.read(),
         )),
   ),
+  RepositoryProvider<ChatRepository>(
+    create: ((context) => ChatRepository(chatService: context.read())),
+  ),
 ];
