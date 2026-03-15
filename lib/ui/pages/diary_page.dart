@@ -8,6 +8,7 @@ import 'package:incisive/navigation/args/upsert_diary_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
 import 'package:incisive/ui/components/lined_paper.dart';
+import 'package:incisive/ui/widgets/page_detail_appbar.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -111,21 +112,7 @@ class _DiaryPageState extends State<DiaryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        title: Text(
-          "Diario",
-          style: TextStyle(
-            fontSize: 25,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 141, 90, 35),
-          ),
-        ),
-        foregroundColor: Color.fromARGB(255, 141, 90, 35),
-        backgroundColor: const Color(0xFFFFF8E8),
-      ),
-
+      appBar: PageDetailAppbar(title: "Diario"),
       floatingActionButton: BlocBuilder<DiaryPageBloc, BaseState>(
         builder: (context, state) {
           return FloatingActionButton(

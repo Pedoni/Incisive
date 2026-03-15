@@ -6,7 +6,9 @@ import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/state_management/blocs/purchase/purchase_bloc.dart';
+import 'package:incisive/ui/widgets/page_detail_appbar.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ShopPage extends StatelessWidget {
@@ -17,20 +19,7 @@ class ShopPage extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          title: const Text(
-            "Shop",
-            style: TextStyle(
-              fontSize: 25,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 141, 90, 35),
-            ),
-          ),
-          foregroundColor: const Color.fromARGB(255, 141, 90, 35),
-          backgroundColor: const Color(0xFFFFF8E8),
-        ),
+        appBar: PageDetailAppbar(title: "Shop"),
         body: BlocListener<PurchaseBloc, BaseState>(
           listener: (context, state) {
             if (state is Success<String>) {
@@ -49,11 +38,11 @@ class ShopPage extends StatelessWidget {
                 children: [
                   _LevelHeader(user: user),
                   Material(
-                    color: Color(0xFFFFF8E8),
+                    color: IncisiveColors.background,
                     child: TabBar(
                       indicatorSize: TabBarIndicatorSize.tab,
-                      indicatorColor: Color.fromARGB(255, 141, 90, 35),
-                      labelColor: Color.fromARGB(255, 141, 90, 35),
+                      indicatorColor: IncisiveColors.primary,
+                      labelColor: IncisiveColors.primary,
                       unselectedLabelColor: Colors.grey,
                       tabs: [
                         Tab(text: "Avatar"),
@@ -63,7 +52,7 @@ class ShopPage extends StatelessWidget {
                   ),
                   Expanded(
                     child: Material(
-                      color: Color(0xFFFFF8E8),
+                      color: IncisiveColors.background,
                       child: TabBarView(
                         children: [
                           _AvatarShopTab(user: user),
@@ -128,7 +117,7 @@ class _LevelHeader extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 141, 90, 35),
+                    color: IncisiveColors.primary,
                   ),
                 ),
                 Text(
@@ -136,7 +125,7 @@ class _LevelHeader extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 141, 90, 35),
+                    color: IncisiveColors.primary,
                   ),
                 ),
               ],
@@ -145,7 +134,7 @@ class _LevelHeader extends StatelessWidget {
             LinearProgressIndicator(
               value: levelProgress(user.points, user.level),
               backgroundColor: Colors.brown.shade100,
-              color: const Color.fromARGB(255, 141, 90, 35),
+              color: IncisiveColors.primary,
             ),
             const SizedBox(height: 20),
             Row(
@@ -156,7 +145,7 @@ class _LevelHeader extends StatelessWidget {
                   "${user.points - user.spentPoints} foglie disponibili",
                   style: const TextStyle(
                     fontSize: 18,
-                    color: Color.fromARGB(255, 141, 90, 35),
+                    color: IncisiveColors.primary,
                   ),
                 ),
               ],
