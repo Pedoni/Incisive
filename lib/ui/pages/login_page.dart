@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/login/login_bloc.dart';
+import 'package:incisive/ui/widgets/auth_scaffold.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
 import 'package:incisive/ui/widgets/login_textfield.dart';
@@ -18,15 +19,21 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late TextEditingController _emailController;
-  late TextEditingController _passwordController;
-  late TapGestureRecognizer _tapRecognizer;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  late final TapGestureRecognizer _tapRecognizer;
+
+  @override
+  void initState() {
+    super.initState();
+    _tapRecognizer = TapGestureRecognizer()..onTap = () => context.push(AppRoutes.register);
+  }
 
   void _login() {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       showDialog(
         context: context,
-        builder: (context) => ErrorDialog(title: "Errore", text: "Compilare tutti i campi."),
+        builder: (_) => const ErrorDialog(title: "Errore", text: "Compilare tutti i campi."),
       );
     } else {
       context.read<LoginBloc>().login(_emailController.text, _passwordController.text);
@@ -34,133 +41,86 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _emailController = TextEditingController();
-    _passwordController = TextEditingController();
-    _tapRecognizer = TapGestureRecognizer()..onTap = () => context.push(AppRoutes.register);
-  }
-
-  Widget _buildLoginContent() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: constraints.maxHeight,
-            ),
-            child: IntrinsicHeight(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Expanded(child: SizedBox()),
-                  Image.asset("assets/images/logo_brown.png", height: 150),
-                  const SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-                      child: IntrinsicWidth(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "LOGIN",
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Poppins',
-                                  color: IncisiveColors.primary,
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              LoginTextField(isTextVisible: true, title: "Email", controller: _emailController),
-                              const SizedBox(height: 10),
-                              LoginTextField(isTextVisible: false, title: "Password", controller: _passwordController),
-                              const SizedBox(height: 15),
-                              BlocConsumer<LoginBloc, BaseState>(
-                                listener: (context, state) {
-                                  if (state is Error) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => ErrorDialog(title: "Errore", text: state.errorString ?? 'Errore sconosciuto'),
-                                    );
-                                  }
-                                },
-                                builder: (context, state) {
-                                  return LoginButton(
-                                    usernameController: _emailController,
-                                    passwordController: _passwordController,
-                                    isLoading: state is Loading,
-                                    login: _login,
-                                    color: IncisiveColors.primary,
-                                    title: 'Enter',
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 20),
-                              RichText(
-                                text: TextSpan(
-                                  text: 'or ',
-                                  style: TextStyle(color: IncisiveColors.primary),
-                                  children: [
-                                    TextSpan(
-                                      text: 'register',
-                                      style: TextStyle(color: IncisiveColors.primary, decoration: TextDecoration.underline),
-                                      recognizer: _tapRecognizer,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Expanded(child: SizedBox()),
-                  Image.asset("assets/images/logo_text.png", height: 15, fit: BoxFit.fitHeight),
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildMobileLayout(BuildContext context) {
-    return Center(child: _buildLoginContent());
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _tapRecognizer.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: SafeArea(
-        child: Scaffold(
-          appBar: null,
-          resizeToAvoidBottomInset: true,
-          extendBody: true,
-          extendBodyBehindAppBar: true,
-          backgroundColor: Colors.white,
-          body: SizedBox(child: _buildMobileLayout(context)),
-        ),
+    return AuthScaffold(
+      formContent: BlocConsumer<LoginBloc, BaseState>(
+        listener: (context, state) {
+          if (state is Error) {
+            showDialog(
+              context: context,
+              builder:
+                  (_) => ErrorDialog(
+                    title: "Errore",
+                    text: state.errorString ?? 'Errore sconosciuto',
+                  ),
+            );
+          }
+        },
+        builder: (context, state) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                "LOGIN",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Poppins',
+                  color: IncisiveColors.primary,
+                ),
+              ),
+              const SizedBox(height: 20),
+              LoginTextField(
+                isTextVisible: true,
+                title: "Email",
+                controller: _emailController,
+              ),
+              const SizedBox(height: 10),
+              LoginTextField(
+                isTextVisible: false,
+                title: "Password",
+                controller: _passwordController,
+              ),
+              const SizedBox(height: 15),
+              LoginButton(
+                usernameController: _emailController,
+                passwordController: _passwordController,
+                isLoading: state is Loading,
+                login: _login,
+                color: IncisiveColors.primary,
+                title: 'Enter',
+              ),
+              const SizedBox(height: 20),
+              RichText(
+                text: TextSpan(
+                  text: 'or ',
+                  style: const TextStyle(color: IncisiveColors.primary),
+                  children: [
+                    TextSpan(
+                      text: 'register',
+                      style: const TextStyle(
+                        color: IncisiveColors.primary,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: _tapRecognizer,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          );
+        },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _tapRecognizer.dispose();
   }
 }

@@ -1,4 +1,3 @@
-import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,8 +6,8 @@ import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/navigation/args/upsert_gratitude_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
+import 'package:incisive/ui/widgets/date_timeline_picker.dart';
 import 'package:incisive/utils/constants.dart';
-import 'package:incisive/utils/incisive_colors.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:skeletonizer/skeletonizer.dart';
@@ -41,17 +40,17 @@ class _GratitudePageState extends State<GratitudePage> {
             fontSize: 25,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.bold,
-            color: IncisiveColors.primary,
+            color: Color.fromARGB(255, 141, 90, 35),
           ),
         ),
-        foregroundColor: IncisiveColors.primary,
+        foregroundColor: Color.fromARGB(255, 141, 90, 35),
         backgroundColor: const Color(0xFFFFF8E8),
       ),
 
       floatingActionButton: BlocBuilder<GratitudePageBloc, BaseState>(
         builder: (context, state) {
           return FloatingActionButton(
-            backgroundColor: IncisiveColors.primary,
+            backgroundColor: Color.fromARGB(255, 141, 90, 35),
             onPressed: switch (state) {
               Initial() || Loading() || Error() => null,
 
@@ -84,12 +83,8 @@ class _GratitudePageState extends State<GratitudePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: EasyDateTimeLinePicker(
+                  child: DateTimelinePicker(
                     focusedDate: _selectedDate,
-                    firstDate: DateTime(2000, 1, 1),
-                    lastDate: DateTime(2030, 12, 31),
-                    timelineOptions: TimelineOptions(height: 90),
-                    locale: Localizations.localeOf(context),
                     onDateChange:
                         (date) => setState(() {
                           _selectedDate = date;
@@ -169,7 +164,7 @@ class _GratitudePageState extends State<GratitudePage> {
                                     fontSize: 20,
                                     fontFamily: 'Poppins',
                                     fontWeight: FontWeight.bold,
-                                    color: IncisiveColors.primary,
+                                    color: Color.fromARGB(255, 141, 90, 35),
                                   ),
                                 ),
                                 SizedBox(height: 16),

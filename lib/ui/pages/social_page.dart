@@ -1,4 +1,3 @@
-import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -6,9 +5,9 @@ import 'package:incisive/models/post_model.dart';
 import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
+import 'package:incisive/ui/widgets/date_timeline_picker.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
 import 'package:incisive/utils/constants.dart';
-import 'package:incisive/utils/incisive_colors.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -35,7 +34,7 @@ class _SocialPageState extends State<SocialPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF8E8),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: IncisiveColors.primary,
+        backgroundColor: Color.fromARGB(255, 141, 90, 35),
         onPressed: () => context.push(AppRoutes.addPost),
         child: Icon(Icons.add, color: Colors.white),
       ),
@@ -47,10 +46,10 @@ class _SocialPageState extends State<SocialPage> {
             fontSize: 25,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.bold,
-            color: IncisiveColors.primary,
+            color: Color.fromARGB(255, 141, 90, 35),
           ),
         ),
-        foregroundColor: IncisiveColors.primary,
+        foregroundColor: const Color.fromARGB(255, 141, 90, 35),
         backgroundColor: const Color(0xFFFFF8E8),
         actions: [
           IconButton(
@@ -67,12 +66,8 @@ class _SocialPageState extends State<SocialPage> {
           child: Column(
             children: [
               Center(
-                child: EasyDateTimeLinePicker(
+                child: DateTimelinePicker(
                   focusedDate: _selectedDate,
-                  firstDate: DateTime(2000, 1, 1),
-                  lastDate: DateTime(2030, 12, 31),
-                  timelineOptions: const TimelineOptions(height: 90),
-                  locale: Localizations.localeOf(context),
                   onDateChange: (date) {
                     setState(() => _selectedDate = date);
                     context.read<SocialBloc>().add(GetDailySocialPostsEvent(date));
