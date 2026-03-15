@@ -10,6 +10,7 @@ import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart'
 import 'package:incisive/ui/components/lined_paper.dart';
 import 'package:incisive/ui/widgets/page_detail_appbar.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -116,7 +117,7 @@ class _DiaryPageState extends State<DiaryPage> {
       floatingActionButton: BlocBuilder<DiaryPageBloc, BaseState>(
         builder: (context, state) {
           return FloatingActionButton(
-            backgroundColor: Color.fromARGB(255, 141, 90, 35),
+            backgroundColor: IncisiveColors.primary,
             onPressed: switch (state) {
               Initial() || Loading() || Error() => null,
               Empty() => () {

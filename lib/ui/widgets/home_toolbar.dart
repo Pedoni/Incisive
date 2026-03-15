@@ -5,6 +5,7 @@ import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/widgets/level_bar.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class HomeToolbar extends StatelessWidget {
   const HomeToolbar({super.key});
@@ -78,7 +79,7 @@ class _TopIcon extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: Color.fromARGB(255, 141, 90, 35),
+          color: IncisiveColors.primary,
           borderRadius: BorderRadius.circular(50),
         ),
         child: Icon(

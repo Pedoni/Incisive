@@ -6,6 +6,7 @@ import 'package:incisive/state_management/blocs/register/register_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
 import 'package:incisive/ui/widgets/login_textfield.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -94,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   fontSize: 24,
                                   fontWeight: FontWeight.w500,
                                   fontFamily: 'Poppins',
-                                  color: Color.fromARGB(255, 141, 90, 35),
+                                  color: IncisiveColors.primary,
                                 ),
                               ),
                               const SizedBox(height: 20),
@@ -123,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     passwordController: _passwordController,
                                     isLoading: state is Loading,
                                     login: _register,
-                                    color: Color.fromARGB(255, 141, 90, 35),
+                                    color: IncisiveColors.primary,
                                     title: 'Create account',
                                   );
                                 },
@@ -158,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            foregroundColor: Color.fromARGB(255, 141, 90, 35),
+            foregroundColor: IncisiveColors.primary,
             backgroundColor: Colors.white,
           ),
           extendBody: true,

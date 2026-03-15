@@ -8,6 +8,7 @@ import 'package:incisive/state_management/blocs/login/login_bloc.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
 import 'package:incisive/ui/widgets/login_textfield.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -73,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                                   fontSize: 24,
                                   fontWeight: FontWeight.w500,
                                   fontFamily: 'Poppins',
-                                  color: Color.fromARGB(255, 141, 90, 35),
+                                  color: IncisiveColors.primary,
                                 ),
                               ),
                               const SizedBox(height: 20),
@@ -96,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                                     passwordController: _passwordController,
                                     isLoading: state is Loading,
                                     login: _login,
-                                    color: Color.fromARGB(255, 141, 90, 35),
+                                    color: IncisiveColors.primary,
                                     title: 'Enter',
                                   );
                                 },
@@ -105,11 +106,11 @@ class _LoginPageState extends State<LoginPage> {
                               RichText(
                                 text: TextSpan(
                                   text: 'or ',
-                                  style: TextStyle(color: Color.fromARGB(255, 141, 90, 35)),
+                                  style: TextStyle(color: IncisiveColors.primary),
                                   children: [
                                     TextSpan(
                                       text: 'register',
-                                      style: TextStyle(color: Color.fromARGB(255, 141, 90, 35), decoration: TextDecoration.underline),
+                                      style: TextStyle(color: IncisiveColors.primary, decoration: TextDecoration.underline),
                                       recognizer: _tapRecognizer,
                                     ),
                                   ],

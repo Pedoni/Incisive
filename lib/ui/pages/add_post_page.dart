@@ -9,6 +9,7 @@ import 'package:incisive/ui/widgets/insert_confirm_dialog.dart';
 import 'package:incisive/ui/widgets/speech_dialog.dart';
 import 'package:incisive/utils/enums.dart';
 import 'package:incisive/utils/functions.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class AddPostPage extends StatefulWidget {
   const AddPostPage({super.key});
@@ -45,11 +46,11 @@ class _AddPostPageState extends State<AddPostPage> {
             fontSize: 22,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w600,
-            color: Color.fromARGB(255, 141, 90, 35),
+            color: IncisiveColors.primary,
           ),
         ),
         backgroundColor: const Color(0xFFFFF8E8),
-        foregroundColor: Color.fromARGB(255, 141, 90, 35),
+        foregroundColor: IncisiveColors.primary,
         elevation: 0,
       ),
       backgroundColor: const Color(0xFFFFF8E8),
@@ -164,12 +165,12 @@ class _AddPostPageState extends State<AddPostPage> {
                     final screenWidth = MediaQuery.sizeOf(context).width;
                     return ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 141, 90, 35),
+                        backgroundColor: IncisiveColors.primary,
                         foregroundColor: Colors.white,
                         disabledBackgroundColor:
                             _titleController.text.length < 5 || _contentController.text.length < 20
                                 ? const Color.fromARGB(255, 184, 181, 181)
-                                : Color.fromARGB(255, 141, 90, 35),
+                                : IncisiveColors.primary,
                         fixedSize: Size.fromWidth(screenWidth * 0.4),
                       ),
                       onPressed: _titleController.text.length < 5 || _contentController.text.length < 20 || state is Loading ? null : _save,

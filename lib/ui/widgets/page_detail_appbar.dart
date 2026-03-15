@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class PageDetailAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -18,10 +19,10 @@ class PageDetailAppbar extends StatelessWidget implements PreferredSizeWidget {
           fontSize: 25,
           fontFamily: 'Poppins',
           fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 141, 90, 35),
+          color: IncisiveColors.primary,
         ),
       ),
-      foregroundColor: Color.fromARGB(255, 141, 90, 35),
+      foregroundColor: IncisiveColors.primary,
       backgroundColor: const Color(0xFFFFF8E8),
     );
   }
