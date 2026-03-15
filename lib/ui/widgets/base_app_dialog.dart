@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:incisive/utils/incisive_colors.dart';
+
+class BaseAppDialog extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String content;
+  final int? points;
+
+  const BaseAppDialog({
+    super.key,
+    required this.imagePath,
+    required this.title,
+    required this.content,
+    this.points,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+      contentPadding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
+      backgroundColor: Colors.white,
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(imagePath, width: 120),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 25,
+              color: Color.fromARGB(255, 60, 60, 60),
+            ),
+          ),
+        ],
+      ),
+      content: Text(
+        content,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 18,
+          height: 1.4,
+          color: Color.fromARGB(255, 90, 90, 90),
+        ),
+      ),
+      actionsPadding: const EdgeInsets.only(bottom: 12, right: 12, left: 12),
+      actionsAlignment: points != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+      actions: [
+        if (points != null)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '+ $points',
+                style: const TextStyle(fontFamily: 'Nunito Sans', fontSize: 18),
+              ),
+              const SizedBox(width: 10),
+              Image.asset('assets/icons/leaf.png', height: 30, width: 30),
+            ],
+          ),
+        TextButton(
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            foregroundColor: Colors.white,
+            backgroundColor: IncisiveColors.primary,
+          ),
+          onPressed: () {
+            if (context.canPop()) context.pop();
+          },
+          child: const Text('Ok', style: TextStyle(fontWeight: FontWeight.w600)),
+        ),
+      ],
+    );
+  }
+}

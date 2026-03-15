@@ -6,11 +6,12 @@ import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/navigation/args/upsert_gratitude_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
+import 'package:incisive/ui/widgets/app_skeletonizer.dart';
 import 'package:incisive/ui/widgets/date_timeline_picker.dart';
+import 'package:incisive/ui/widgets/empty_widget.dart';
+import 'package:incisive/ui/widgets/state_error_view.dart';
 import 'package:incisive/utils/constants.dart';
-import 'package:lottie/lottie.dart';
-
-import 'package:skeletonizer/skeletonizer.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class GratitudePage extends StatefulWidget {
   const GratitudePage({super.key});
@@ -34,26 +35,24 @@ class _GratitudePageState extends State<GratitudePage> {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: Text(
+        title: const Text(
           "Gratitude",
           style: TextStyle(
             fontSize: 25,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 141, 90, 35),
+            color: IncisiveColors.primary,
           ),
         ),
-        foregroundColor: Color.fromARGB(255, 141, 90, 35),
-        backgroundColor: const Color(0xFFFFF8E8),
+        foregroundColor: IncisiveColors.primary,
+        backgroundColor: IncisiveColors.background,
       ),
-
       floatingActionButton: BlocBuilder<GratitudePageBloc, BaseState>(
         builder: (context, state) {
           return FloatingActionButton(
-            backgroundColor: Color.fromARGB(255, 141, 90, 35),
+            backgroundColor: IncisiveColors.primary,
             onPressed: switch (state) {
               Initial() || Loading() || Error() => null,
-
               Empty(data: final entry) || Success(data: final entry) => () {
                 context.push(
                   AppRoutes.upsertGratitude,
@@ -63,150 +62,108 @@ class _GratitudePageState extends State<GratitudePage> {
             },
             child: switch (state) {
               Initial() || Loading() || Error() => null,
-              Empty() => Icon(Icons.add, color: Colors.white),
-              Success() => Icon(Icons.edit, color: Colors.white),
+              Empty() => const Icon(Icons.add, color: Colors.white),
+              Success() => const Icon(Icons.edit, color: Colors.white),
             },
           );
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Container(
-        decoration: BoxDecoration(color: const Color(0xFFFFF8E8)),
+        color: IncisiveColors.background,
         child: SafeArea(
-          child: Container(
+          child: SizedBox(
             height: double.infinity,
-            decoration: BoxDecoration(color: const Color(0xFFFFF8E8)),
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: DateTimelinePicker(
-                    focusedDate: _selectedDate,
-                    onDateChange:
-                        (date) => setState(() {
-                          _selectedDate = date;
-                          context.read<GratitudePageBloc>().getGratitudePage(date);
-                        }),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: DateTimelinePicker(
+                      focusedDate: _selectedDate,
+                      onDateChange: (date) => setState(() {
+                        _selectedDate = date;
+                        context.read<GratitudePageBloc>().getGratitudePage(date);
+                      }),
+                    ),
                   ),
-                ),
-                SizedBox(height: 30),
-                Expanded(
-                  child: BlocBuilder<GratitudePageBloc, BaseState>(
-                    builder: (context, state) {
-                      if (state is Empty) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Lottie.asset(
-                                "assets/animations/empty_state.json",
-                                width: 200,
-                                height: 200,
-                                repeat: false,
-                              ),
-                              SizedBox(height: 30),
-                              Text(
-                                "Nessuna informazione inserita",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'Nunito Sans',
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else if (state is Error) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error,
-                                size: 42,
-                                color: Colors.black54,
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                "Errore nel caricamento",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'Nunito Sans',
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                      final entry = state is Success ? state.data as GratitudeModel : Constants.mockedGratitudeEntry;
-                      return SingleChildScrollView(
-                        physics: state is Loading ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
-                        child: Skeletonizer(
-                          effect: const ShimmerEffect(
-                            baseColor: Color.fromARGB(255, 238, 229, 207),
-                            highlightColor: Color.fromARGB(255, 217, 204, 173),
-                            duration: Duration(seconds: 1),
-                          ),
-                          enabled: state is Loading || state is Initial,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (state is Success) ...[
-                                Text(
-                                  "Sono grato per...",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 141, 90, 35),
+                  const SizedBox(height: 30),
+                  Expanded(
+                    child: BlocBuilder<GratitudePageBloc, BaseState>(
+                      builder: (context, state) {
+                        if (state is Empty) {
+                          return const EmptyWidget(text: "Nessuna informazione inserita");
+                        } else if (state is Error) {
+                          return const StateErrorView(message: 'Errore nel caricamento');
+                        }
+
+                        final entry = state is Success
+                            ? state.data as GratitudeModel
+                            : Constants.mockedGratitudeEntry;
+
+                        return SingleChildScrollView(
+                          physics: state is Loading
+                              ? const NeverScrollableScrollPhysics()
+                              : const BouncingScrollPhysics(),
+                          child: AppSkeletonizer(
+                            enabled: state is Loading || state is Initial,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (state is Success) ...[
+                                  const Text(
+                                    "Sono grato per...",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.bold,
+                                      color: IncisiveColors.primary,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 16),
-                              ],
-                              ...(entry.list!
-                                  .map(
-                                    (e) => Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(12),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black12,
-                                              blurRadius: 4,
-                                              offset: Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        padding: const EdgeInsets.all(16),
-                                        child: Text(
-                                          e,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontFamily: 'Nunito Sans',
-                                            color: Colors.black87,
+                                  const SizedBox(height: 16),
+                                ],
+                                ...entry.list!.map(
+                                  (e) => Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 4,
+                                            offset: Offset(0, 2),
                                           ),
+                                        ],
+                                      ),
+                                      padding: const EdgeInsets.all(16),
+                                      child: Text(
+                                        e,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: 'Nunito Sans',
+                                          color: Colors.black87,
                                         ),
                                       ),
                                     ),
-                                  )
-                                  .toList()),
-                            ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

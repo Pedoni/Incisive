@@ -6,6 +6,7 @@ import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
+import 'package:incisive/ui/widgets/state_error_view.dart';
 import 'package:incisive/utils/incisive_colors.dart';
 
 class PendingCommentsPage extends StatelessWidget {
@@ -48,39 +49,15 @@ class PendingCommentsPage extends StatelessWidget {
           }
 
           if (state is Error) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.black38),
-                  const SizedBox(height: 12),
-                  Text(
-                    state.errorString ?? 'Errore nel caricamento dei commenti.',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: 'Nunito Sans',
-                      fontSize: 16,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: IncisiveColors.primary,
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () =>
-                        context.read<SocialCommentBloc>().getComments(post.id),
-                    child: const Text('Riprova'),
-                  ),
-                ],
-              ),
+            return StateErrorView(
+              message: state.errorString ?? 'Errore nel caricamento dei commenti.',
+              onRetry: () => context.read<SocialCommentBloc>().getComments(post.id),
             );
           }
 
           if (state is Empty) {
             context.read<SocialBloc>().getDailyPosts(post.datetime);
-            return EmptyWidget(text: "Nessun commento in attesa");
+            return const EmptyWidget(text: "Nessun commento in attesa");
           }
 
           if (state is Success<List<CommentModel>>) {
@@ -88,7 +65,7 @@ class PendingCommentsPage extends StatelessWidget {
 
             if (pendingComments.isEmpty) {
               context.read<SocialBloc>().getDailyPosts(post.datetime);
-              return EmptyWidget(text: "Nessun commento in attesa");
+              return const EmptyWidget(text: "Nessun commento in attesa");
             }
 
             context.read<SocialBloc>().getDailyPosts(post.datetime);
@@ -96,13 +73,11 @@ class PendingCommentsPage extends StatelessWidget {
             return ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: pendingComments.length,
-              itemBuilder: (_, i) {
-                return _PendingCommentItem(
-                  comment: pendingComments[i],
-                  postId: post.id,
-                  postDate: post.datetime,
-                );
-              },
+              itemBuilder: (_, i) => _PendingCommentItem(
+                comment: pendingComments[i],
+                postId: post.id,
+                postDate: post.datetime,
+              ),
             );
           }
 
@@ -147,9 +122,7 @@ class _PendingCommentItem extends StatelessWidget {
               TextButton.icon(
                 icon: const Icon(Icons.close),
                 label: const Text("Rifiuta"),
-                onPressed: () {
-                  context.read<SocialCommentBloc>().rejectComment(comment.id, postId);
-                },
+                onPressed: () => context.read<SocialCommentBloc>().rejectComment(comment.id, postId),
               ),
               const SizedBox(width: 8),
               ElevatedButton.icon(
@@ -159,9 +132,7 @@ class _PendingCommentItem extends StatelessWidget {
                   backgroundColor: IncisiveColors.primary,
                   foregroundColor: Colors.white,
                 ),
-                onPressed: () {
-                  context.read<SocialCommentBloc>().approveComment(comment.id, postId);
-                },
+                onPressed: () => context.read<SocialCommentBloc>().approveComment(comment.id, postId),
               ),
             ],
           ),

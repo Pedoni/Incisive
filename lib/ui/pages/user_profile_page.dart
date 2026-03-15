@@ -7,6 +7,7 @@ import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/login/login_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/ui/widgets/logout_dialog.dart';
+import 'package:incisive/ui/widgets/state_error_view.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:incisive/utils/functions.dart';
 import 'package:incisive/utils/incisive_colors.dart';
@@ -48,32 +49,9 @@ class UserProfilePage extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is Error) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.black38),
-                  const SizedBox(height: 12),
-                  Text(
-                    state.errorString ?? 'Impossibile caricare il profilo.',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: 'Nunito Sans',
-                      fontSize: 16,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: IncisiveColors.primary,
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () => context.read<ProfileBloc>().getProfile(),
-                    child: const Text('Riprova'),
-                  ),
-                ],
-              ),
+            return StateErrorView(
+              message: state.errorString ?? 'Impossibile caricare il profilo.',
+              onRetry: () => context.read<ProfileBloc>().getProfile(),
             );
           }
 
@@ -96,15 +74,11 @@ class UserProfilePage extends StatelessWidget {
                   ),
                   child: _AvatarSection(user: user, loading: isLoading),
                 ),
-
                 const SizedBox(height: 24),
-
                 _InfoField(icon: Icons.person, text: '${user.firstName} ${user.lastName}'),
                 const SizedBox(height: 12),
                 _InfoField(icon: Icons.email, text: user.email),
-
                 const Spacer(),
-
                 Padding(
                   padding: const EdgeInsets.only(bottom: 32),
                   child: ElevatedButton.icon(

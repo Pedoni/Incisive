@@ -41,10 +41,12 @@ class _AddCommentPageState extends State<AddCommentPage> {
       listener: (context, state) {
         if (state is Success) {
           context.pop();
-          showDialog(
-            context: context,
-            builder: (_) => InsertConfirmDialog(type: PostType.comment),
-          );
+          if (context.mounted) {
+            showDialog(
+              context: context,
+              builder: (_) => InsertConfirmDialog(type: PostType.comment),
+            );
+          }
         } else if (state is Error) {
           showDialog(
             context: context,

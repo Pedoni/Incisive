@@ -7,6 +7,7 @@ import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/profile/profile_bloc.dart';
 import 'package:incisive/state_management/blocs/purchase/purchase_bloc.dart';
 import 'package:incisive/ui/widgets/page_detail_appbar.dart';
+import 'package:incisive/ui/widgets/state_error_view.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:incisive/utils/incisive_colors.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -48,32 +49,9 @@ class ShopPage extends StatelessWidget {
             },
             builder: (context, state) {
               if (state is Error) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.error_outline, size: 48, color: Colors.black38),
-                      const SizedBox(height: 12),
-                      Text(
-                        state.errorString ?? 'Errore nel caricamento del profilo.',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontFamily: 'Nunito Sans',
-                          fontSize: 16,
-                          color: Colors.black54,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: IncisiveColors.primary,
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () => context.read<ProfileBloc>().getProfile(),
-                        child: const Text('Riprova'),
-                      ),
-                    ],
-                  ),
+                return StateErrorView(
+                  message: state.errorString ?? 'Errore nel caricamento del profilo.',
+                  onRetry: () => context.read<ProfileBloc>().getProfile(),
                 );
               }
 
@@ -295,32 +273,9 @@ class _AvatarShopTab extends StatelessWidget {
     return BlocBuilder<AvatarBloc, BaseState>(
       builder: (context, state) {
         if (state is Error) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, size: 48, color: Colors.black38),
-                const SizedBox(height: 12),
-                Text(
-                  state.errorString ?? 'Errore nel caricamento degli avatar.',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontFamily: 'Nunito Sans',
-                    fontSize: 16,
-                    color: Colors.black54,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: IncisiveColors.primary,
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: () => context.read<AvatarBloc>().getAvatars(),
-                  child: const Text('Riprova'),
-                ),
-              ],
-            ),
+          return StateErrorView(
+            message: state.errorString ?? 'Errore nel caricamento degli avatar.',
+            onRetry: () => context.read<AvatarBloc>().getAvatars(),
           );
         }
 

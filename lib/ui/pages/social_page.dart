@@ -6,9 +6,11 @@ import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social/social_bloc.dart';
 import 'package:incisive/ui/widgets/date_timeline_picker.dart';
+import 'package:incisive/ui/widgets/empty_widget.dart';
 import 'package:incisive/ui/widgets/social_post_item.dart';
+import 'package:incisive/ui/widgets/state_error_view.dart';
 import 'package:incisive/utils/constants.dart';
-import 'package:lottie/lottie.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class SocialPage extends StatefulWidget {
@@ -25,18 +27,17 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-
     context.read<SocialBloc>().getDailyPosts(_selectedDate);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8E8),
+      backgroundColor: IncisiveColors.background,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color.fromARGB(255, 141, 90, 35),
+        backgroundColor: IncisiveColors.primary,
         onPressed: () => context.push(AppRoutes.addPost),
-        child: Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -46,17 +47,15 @@ class _SocialPageState extends State<SocialPage> {
             fontSize: 25,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 141, 90, 35),
+            color: IncisiveColors.primary,
           ),
         ),
-        foregroundColor: const Color.fromARGB(255, 141, 90, 35),
-        backgroundColor: const Color(0xFFFFF8E8),
+        foregroundColor: IncisiveColors.primary,
+        backgroundColor: IncisiveColors.background,
         actions: [
           IconButton(
-            onPressed: () {
-              context.push(AppRoutes.monthlyReport);
-            },
-            icon: Icon(Icons.track_changes),
+            onPressed: () => context.push(AppRoutes.monthlyReport),
+            icon: const Icon(Icons.track_changes),
           ),
         ],
       ),
@@ -74,9 +73,7 @@ class _SocialPageState extends State<SocialPage> {
                   },
                 ),
               ),
-
               const SizedBox(height: 20),
-
               Expanded(
                 child: BlocBuilder<SocialBloc, BaseState>(
                   builder: (context, state) {
@@ -92,50 +89,18 @@ class _SocialPageState extends State<SocialPage> {
                     }
 
                     if (state is Error) {
-                      return Center(
-                        child: Text(
-                          "Errore nel caricamento",
-                          style: TextStyle(
-                            fontFamily: 'Nunito Sans',
-                            fontSize: 16,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      );
+                      return const StateErrorView(message: 'Errore nel caricamento');
                     }
 
                     if (state is Empty) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Lottie.asset(
-                              "assets/animations/empty_state.json",
-                              width: 200,
-                              height: 200,
-                              repeat: false,
-                            ),
-                            const SizedBox(height: 24),
-                            const Text(
-                              "Nessuno ha condiviso nulla oggi",
-                              style: TextStyle(
-                                fontFamily: 'Nunito Sans',
-                                fontSize: 16,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
+                      return const EmptyWidget(text: "Nessuno ha condiviso nulla oggi");
                     }
 
                     if (state is Success<List<PostModel>>) {
                       return ListView.builder(
                         physics: const BouncingScrollPhysics(),
                         itemCount: state.data.length,
-                        itemBuilder: (context, index) {
-                          return SocialPostItem(post: state.data[index]);
-                        },
+                        itemBuilder: (context, index) => SocialPostItem(post: state.data[index]),
                       );
                     }
 
@@ -143,7 +108,7 @@ class _SocialPageState extends State<SocialPage> {
                   },
                 ),
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
             ],
           ),
         ),

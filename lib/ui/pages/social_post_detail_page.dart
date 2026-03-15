@@ -8,6 +8,8 @@ import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/social_comment/social_comment_bloc.dart';
 import 'package:incisive/ui/widgets/empty_widget.dart';
+import 'package:incisive/ui/widgets/state_error_view.dart';
+import 'package:incisive/ui/widgets/user_avatar_widget.dart';
 import 'package:incisive/utils/constants.dart';
 import 'package:incisive/utils/functions.dart';
 import 'package:incisive/utils/incisive_colors.dart';
@@ -60,7 +62,9 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
                 return Skeletonizer(
                   enabled: isLoading,
                   child: IconButton(
-                    icon: pendingComments.isNotEmpty ? const Icon(Icons.mark_email_unread_outlined) : const Icon(Icons.email_outlined),
+                    icon: pendingComments.isNotEmpty
+                        ? const Icon(Icons.mark_email_unread_outlined)
+                        : const Icon(Icons.email_outlined),
                     tooltip: "Commenti in attesa",
                     onPressed: () {
                       context.push(
@@ -74,17 +78,14 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
             ),
         ],
       ),
-      floatingActionButton:
-          !isAuthor
-              ? FloatingActionButton(
-                backgroundColor: IncisiveColors.primary,
-                foregroundColor: Colors.white,
-                child: const Icon(Icons.add_comment),
-                onPressed: () {
-                  context.push(AppRoutes.addComment, extra: widget.post);
-                },
-              )
-              : null,
+      floatingActionButton: !isAuthor
+          ? FloatingActionButton(
+              backgroundColor: IncisiveColors.primary,
+              foregroundColor: Colors.white,
+              onPressed: () => context.push(AppRoutes.addComment, extra: widget.post),
+              child: const Icon(Icons.add_comment),
+            )
+          : null,
       body: SafeArea(
         child: BlocConsumer<SocialCommentBloc, BaseState>(
           listener: (context, state) {
@@ -112,10 +113,8 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
                     child: _PostHeader(post: widget.post),
                   ),
                 ),
-
                 const SliverToBoxAdapter(child: Divider(height: 1)),
                 const SliverToBoxAdapter(child: SizedBox(height: 12)),
-
                 if (isLoading)
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
@@ -136,29 +135,9 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(32),
-                      child: Column(
-                        children: [
-                          const Icon(Icons.error_outline, size: 48, color: Colors.black38),
-                          const SizedBox(height: 12),
-                          Text(
-                            state.errorString ?? 'Errore nel caricamento dei commenti.',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontFamily: 'Nunito Sans',
-                              fontSize: 16,
-                              color: Colors.black54,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: IncisiveColors.primary,
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () => context.read<SocialCommentBloc>().getComments(widget.post.id),
-                            child: const Text('Riprova'),
-                          ),
-                        ],
+                      child: StateErrorView(
+                        message: state.errorString ?? 'Errore nel caricamento dei commenti.',
+                        onRetry: () => context.read<SocialCommentBloc>().getComments(widget.post.id),
                       ),
                     ),
                   )
@@ -186,7 +165,6 @@ class _SocialPostDetailPageState extends State<SocialPostDetailPage> {
                       childCount: approvedComments.length,
                     ),
                   ),
-
                 const SliverToBoxAdapter(child: SizedBox(height: 50)),
               ],
             );
@@ -215,29 +193,10 @@ class _PostHeader extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder:
-                        (context) => AlertDialog(
-                          content: Image.asset("assets/images/${author.avatarAsset}"),
-                        ),
-                  );
-                },
-                child: CircleAvatar(
-                  radius: 22,
-                  backgroundColor: getUserBackgroundColor(author.level),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/${author.avatarAsset}',
-                      width: 44,
-                      height: 44,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const Icon(Icons.person, size: 22),
-                    ),
-                  ),
-                ),
+              UserAvatarWidget(
+                avatarAsset: author.avatarAsset,
+                level: author.level,
+                radius: 22,
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -306,29 +265,10 @@ class _CommentItem extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder:
-                        (context) => AlertDialog(
-                          content: Image.asset("assets/images/${author.avatarAsset}"),
-                        ),
-                  );
-                },
-                child: CircleAvatar(
-                  radius: 16,
-                  backgroundColor: getUserBackgroundColor(author.level),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/${author.avatarAsset}',
-                      width: 32,
-                      height: 32,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const Icon(Icons.person, size: 16),
-                    ),
-                  ),
-                ),
+              UserAvatarWidget(
+                avatarAsset: author.avatarAsset,
+                level: author.level,
+                radius: 16,
               ),
             ],
           ),
@@ -344,23 +284,23 @@ class _CommentItem extends StatelessWidget {
               children: [
                 IconButton(
                   icon: Icon(
-                    comment.myVote == null || comment.myVote == false ? Icons.thumb_up_alt_outlined : Icons.thumb_up_alt,
+                    comment.myVote == null || comment.myVote == false
+                        ? Icons.thumb_up_alt_outlined
+                        : Icons.thumb_up_alt,
                     size: 18,
                   ),
-                  onPressed: () {
-                    context.read<SocialCommentBloc>().voteComment(comment.id, postId, true);
-                  },
+                  onPressed: () => context.read<SocialCommentBloc>().voteComment(comment.id, postId, true),
                 ),
                 Text(comment.upvotes.toString()),
                 const SizedBox(width: 8),
                 IconButton(
                   icon: Icon(
-                    comment.myVote == null || comment.myVote == true ? Icons.thumb_down_alt_outlined : Icons.thumb_down_alt,
+                    comment.myVote == null || comment.myVote == true
+                        ? Icons.thumb_down_alt_outlined
+                        : Icons.thumb_down_alt,
                     size: 18,
                   ),
-                  onPressed: () {
-                    context.read<SocialCommentBloc>().voteComment(comment.id, postId, false);
-                  },
+                  onPressed: () => context.read<SocialCommentBloc>().voteComment(comment.id, postId, false),
                 ),
                 Text(comment.downvotes.toString()),
               ],

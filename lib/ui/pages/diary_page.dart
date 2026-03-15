@@ -7,11 +7,12 @@ import 'package:incisive/navigation/args/upsert_diary_args.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/diary_page/diary_page_bloc.dart';
 import 'package:incisive/ui/components/lined_paper.dart';
+import 'package:incisive/ui/widgets/app_skeletonizer.dart';
 import 'package:incisive/ui/widgets/date_timeline_picker.dart';
+import 'package:incisive/ui/widgets/empty_widget.dart';
 import 'package:incisive/ui/widgets/page_detail_appbar.dart';
+import 'package:incisive/ui/widgets/state_error_view.dart';
 import 'package:incisive/utils/constants.dart';
-import 'package:lottie/lottie.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class DiaryPage extends StatefulWidget {
   const DiaryPage({super.key});
@@ -26,7 +27,6 @@ class _DiaryPageState extends State<DiaryPage> {
   bool _emotionsOpen = false;
   bool _areasOpen = false;
 
-  // Mappa icone emozioni (scegli quelle che vuoi)
   IconData _emotionIcon(String e) {
     switch (e.toLowerCase()) {
       case 'gioia':
@@ -59,17 +59,10 @@ class _DiaryPageState extends State<DiaryPage> {
     return pos.contains(e.toLowerCase());
   }
 
-  Widget _pill({
-    required IconData icon,
-    required Color bg,
-    required String label,
-  }) {
+  Widget _pill({required IconData icon, required Color bg, required String label}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(999),
-      ),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -89,16 +82,10 @@ class _DiaryPageState extends State<DiaryPage> {
     );
   }
 
-  Widget _wrapPills({
-    required List<Widget> children,
-  }) {
+  Widget _wrapPills({required List<Widget> children}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-      child: Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: children,
-      ),
+      child: Wrap(spacing: 10, runSpacing: 10, children: children),
     );
   }
 
@@ -116,7 +103,7 @@ class _DiaryPageState extends State<DiaryPage> {
       floatingActionButton: BlocBuilder<DiaryPageBloc, BaseState>(
         builder: (context, state) {
           return FloatingActionButton(
-            backgroundColor: Color.fromARGB(255, 141, 90, 35),
+            backgroundColor: const Color.fromARGB(255, 141, 90, 35),
             onPressed: switch (state) {
               Initial() || Loading() || Error() => null,
               Empty() => () {
@@ -134,19 +121,19 @@ class _DiaryPageState extends State<DiaryPage> {
             },
             child: switch (state) {
               Initial() || Loading() || Error() => null,
-              Empty() => Icon(Icons.add, color: Colors.white),
-              Success() => Icon(Icons.edit, color: Colors.white),
+              Empty() => const Icon(Icons.add, color: Colors.white),
+              Success() => const Icon(Icons.edit, color: Colors.white),
             },
           );
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Container(
-        decoration: BoxDecoration(color: const Color(0xFFFFF8E8)),
+        decoration: const BoxDecoration(color: Color(0xFFFFF8E8)),
         child: SafeArea(
           child: Container(
             height: double.infinity,
-            decoration: BoxDecoration(color: const Color(0xFFFFF8E8)),
+            decoration: const BoxDecoration(color: Color(0xFFFFF8E8)),
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -156,15 +143,13 @@ class _DiaryPageState extends State<DiaryPage> {
                 Center(
                   child: DateTimelinePicker(
                     focusedDate: _selectedDate,
-                    onDateChange:
-                        (date) => setState(() {
-                          _selectedDate = date;
-                          context.read<DiaryPageBloc>().getPage(date);
-                        }),
+                    onDateChange: (date) => setState(() {
+                      _selectedDate = date;
+                      context.read<DiaryPageBloc>().getPage(date);
+                    }),
                   ),
                 ),
-                SizedBox(height: 20),
-
+                const SizedBox(height: 20),
                 Expanded(
                   child: BlocConsumer<DiaryPageBloc, BaseState>(
                     listener: (context, state) {
@@ -177,51 +162,11 @@ class _DiaryPageState extends State<DiaryPage> {
                     },
                     builder: (context, state) {
                       if (state is Empty) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Lottie.asset(
-                                "assets/animations/empty_state.json",
-                                width: 200,
-                                height: 200,
-                                repeat: false,
-                              ),
-                              SizedBox(height: 30),
-                              Text(
-                                "Nessuna informazione inserita",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'Nunito Sans',
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
+                        return const EmptyWidget(text: "Nessuna informazione inserita");
                       } else if (state is Error) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error,
-                                size: 42,
-                                color: Colors.black54,
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                "Errore nel caricamento",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'Nunito Sans',
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
+                        return const StateErrorView(message: 'Errore nel caricamento');
                       }
+
                       final entry = state is Success ? state.data as DiaryModel : Constants.mockedDiaryEntry;
                       final emotions = entry.emotions;
                       final gratitudeAreas = entry.gratitudeAreas;
@@ -231,13 +176,10 @@ class _DiaryPageState extends State<DiaryPage> {
                       const red = Color(0xFFC62828);
 
                       return SingleChildScrollView(
-                        physics: state is Loading ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
-                        child: Skeletonizer(
-                          effect: const ShimmerEffect(
-                            baseColor: Color.fromARGB(255, 238, 229, 207),
-                            highlightColor: Color.fromARGB(255, 217, 204, 173),
-                            duration: Duration(seconds: 1),
-                          ),
+                        physics: state is Loading
+                            ? const NeverScrollableScrollPhysics()
+                            : const BouncingScrollPhysics(),
+                        child: AppSkeletonizer(
                           enabled: state is Initial || state is Loading,
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
@@ -248,9 +190,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                 child: ExpansionTile(
                                   tilePadding: const EdgeInsets.symmetric(horizontal: 0),
                                   childrenPadding: const EdgeInsets.only(bottom: 6),
-                                  onExpansionChanged: (open) {
-                                    setState(() => _emotionsOpen = open);
-                                  },
+                                  onExpansionChanged: (open) => setState(() => _emotionsOpen = open),
                                   title: const Text(
                                     "Emozioni",
                                     style: TextStyle(
@@ -260,7 +200,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                     ),
                                   ),
                                   trailing: AnimatedRotation(
-                                    turns: _emotionsOpen ? 0.5 : 0.0, // 180°
+                                    turns: _emotionsOpen ? 0.5 : 0.0,
                                     duration: const Duration(milliseconds: 200),
                                     child: const Icon(Icons.expand_more),
                                   ),
@@ -269,15 +209,14 @@ class _DiaryPageState extends State<DiaryPage> {
                                       const SizedBox(height: 4)
                                     else
                                       _wrapPills(
-                                        children:
-                                            emotions.map((e) {
-                                              final isPos = _isPositiveEmotion(e);
-                                              return _pill(
-                                                icon: _emotionIcon(e),
-                                                bg: isPos ? green : red,
-                                                label: e,
-                                              );
-                                            }).toList(),
+                                        children: emotions.map((e) {
+                                          final isPos = _isPositiveEmotion(e);
+                                          return _pill(
+                                            icon: _emotionIcon(e),
+                                            bg: isPos ? green : red,
+                                            label: e,
+                                          );
+                                        }).toList(),
                                       ),
                                   ],
                                 ),
@@ -296,16 +235,12 @@ class _DiaryPageState extends State<DiaryPage> {
                                       color: Colors.black87,
                                     ),
                                   ),
-                                  onExpansionChanged: (open) {
-                                    setState(() => _areasOpen = open);
-                                  },
-
+                                  onExpansionChanged: (open) => setState(() => _areasOpen = open),
                                   trailing: AnimatedRotation(
                                     turns: _areasOpen ? 0.5 : 0.0,
                                     duration: const Duration(milliseconds: 200),
                                     child: const Icon(Icons.expand_more),
                                   ),
-
                                   children: [
                                     if (gratitudeAreas.isEmpty && nonGratitudeAreas.isEmpty)
                                       const SizedBox(height: 4)
@@ -327,16 +262,9 @@ class _DiaryPageState extends State<DiaryPage> {
                                               ),
                                             ),
                                             _wrapPills(
-                                              children:
-                                                  gratitudeAreas
-                                                      .map(
-                                                        (a) => _pill(
-                                                          icon: Icons.thumb_up,
-                                                          bg: green,
-                                                          label: a,
-                                                        ),
-                                                      )
-                                                      .toList(),
+                                              children: gratitudeAreas
+                                                  .map((a) => _pill(icon: Icons.thumb_up, bg: green, label: a))
+                                                  .toList(),
                                             ),
                                           ],
                                           if (nonGratitudeAreas.isNotEmpty) ...[
@@ -353,16 +281,9 @@ class _DiaryPageState extends State<DiaryPage> {
                                               ),
                                             ),
                                             _wrapPills(
-                                              children:
-                                                  nonGratitudeAreas
-                                                      .map(
-                                                        (a) => _pill(
-                                                          icon: Icons.thumb_down,
-                                                          bg: red,
-                                                          label: a,
-                                                        ),
-                                                      )
-                                                      .toList(),
+                                              children: nonGratitudeAreas
+                                                  .map((a) => _pill(icon: Icons.thumb_down, bg: red, label: a))
+                                                  .toList(),
                                             ),
                                           ],
                                         ],
