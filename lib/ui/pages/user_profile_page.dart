@@ -17,38 +17,73 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(
-      backgroundColor: IncisiveColors.primary,
-      foregroundColor: const Color(0xFFFFF8E8),
-      elevation: 0,
-      title: const Text(
-        'Profilo',
-        style: TextStyle(
-          fontSize: 25,
-          fontFamily: 'Poppins',
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.edit),
-          onPressed: () {},
-        ),
-      ],
-    );
-
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8E8),
-      appBar: appBar,
-      body: BlocBuilder<ProfileBloc, BaseState>(
+      backgroundColor: IncisiveColors.background,
+      appBar: AppBar(
+        backgroundColor: IncisiveColors.primary,
+        foregroundColor: IncisiveColors.background,
+        elevation: 0,
+        title: const Text(
+          'Profilo',
+          style: TextStyle(
+            fontSize: 25,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
+        ],
+      ),
+      body: BlocConsumer<ProfileBloc, BaseState>(
+        listener: (context, state) {
+          if (state is Error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorString ?? 'Errore nel caricamento del profilo.'),
+                backgroundColor: Colors.red.shade700,
+              ),
+            );
+          }
+        },
         builder: (context, state) {
+          if (state is Error) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: Colors.black38),
+                  const SizedBox(height: 12),
+                  Text(
+                    state.errorString ?? 'Impossibile caricare il profilo.',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Nunito Sans',
+                      fontSize: 16,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: IncisiveColors.primary,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () => context.read<ProfileBloc>().getProfile(),
+                    child: const Text('Riprova'),
+                  ),
+                ],
+              ),
+            );
+          }
+
           final user = state is Success ? state.data as UserModel : Constants.mockedUser;
+          final isLoading = state is Loading || state is Initial;
 
           return Skeletonizer(
-            enabled: state is Loading || state is Initial,
+            enabled: isLoading,
             child: Column(
               children: [
-                // HEADER + AVATAR
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 32),
@@ -59,38 +94,25 @@ class UserProfilePage extends StatelessWidget {
                       bottomRight: Radius.circular(50),
                     ),
                   ),
-                  child: _AvatarSection(user: user, loading: state is Loading || state is Initial),
+                  child: _AvatarSection(user: user, loading: isLoading),
                 ),
 
                 const SizedBox(height: 24),
 
-                // INFO
-                _InfoField(
-                  icon: Icons.person,
-                  text: '${user.firstName} ${user.lastName}',
-                ),
+                _InfoField(icon: Icons.person, text: '${user.firstName} ${user.lastName}'),
                 const SizedBox(height: 12),
-                _InfoField(
-                  icon: Icons.email,
-                  text: user.email,
-                ),
+                _InfoField(icon: Icons.email, text: user.email),
 
                 const Spacer(),
 
-                // LOGOUT
                 Padding(
                   padding: const EdgeInsets.only(bottom: 32),
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: IncisiveColors.primary,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: () async {
                       final bool res = await showDialog(
@@ -119,51 +141,43 @@ class _AvatarSection extends StatelessWidget {
   final UserModel user;
   final bool loading;
 
-  const _AvatarSection({
-    required this.user,
-    required this.loading,
-  });
+  const _AvatarSection({required this.user, required this.loading});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AvatarBloc, BaseState>(
       builder: (context, state) {
+        // In caso di errore mostriamo solo il placeholder senza bloccare la pagina,
+        // dato che l'avatar è un dettaglio secondario rispetto al profilo.
         String? avatarAsset;
-
         if (state is Success<List<AvatarModel>>) {
           final equippedAvatar = state.data.firstWhere(
             (a) => a.equipped,
             orElse: () => state.data.first,
           );
-
           avatarAsset = equippedAvatar.asset;
         }
 
         return GestureDetector(
-          onTap:
-              avatarAsset == null
-                  ? () {}
-                  : () {
-                    showDialog(
-                      context: context,
-                      builder:
-                          (context) => AlertDialog(
-                            content: Image.asset("assets/images/$avatarAsset"),
-                          ),
-                    );
-                  },
+          onTap: avatarAsset == null
+              ? null
+              : () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      content: Image.asset("assets/images/$avatarAsset"),
+                    ),
+                  );
+                },
           child: CircleAvatar(
             radius: 54,
             backgroundColor: const Color.fromARGB(255, 212, 173, 18),
             child: CircleAvatar(
               radius: 46,
               backgroundColor: getUserBackgroundColor(user.level),
-              child:
-                  loading || avatarAsset == null
-                      ? null
-                      : Image.asset(
-                        "assets/images/$avatarAsset",
-                      ),
+              child: loading || avatarAsset == null
+                  ? null
+                  : Image.asset("assets/images/$avatarAsset"),
             ),
           ),
         );
@@ -176,10 +190,7 @@ class _InfoField extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const _InfoField({
-    required this.icon,
-    required this.text,
-  });
+  const _InfoField({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -187,9 +198,7 @@ class _InfoField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Card(
         elevation: 1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
@@ -204,10 +213,7 @@ class _InfoField extends StatelessWidget {
                 child: Text(
                   text,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
               ),
             ],

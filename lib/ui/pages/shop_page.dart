@@ -24,19 +24,65 @@ class ShopPage extends StatelessWidget {
           listener: (context, state) {
             if (state is Success<String>) {
               context.read<ProfileBloc>().getProfile();
+            } else if (state is Error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorString ?? 'Acquisto non riuscito. Riprova.'),
+                  backgroundColor: Colors.red.shade700,
+                ),
+              );
             }
           },
           child: BlocConsumer<ProfileBloc, BaseState>(
             listener: (context, state) {
               if (state is Success<UserModel>) {
                 context.read<AvatarBloc>().getAvatars();
+              } else if (state is Error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.errorString ?? 'Errore nel caricamento del profilo.'),
+                    backgroundColor: Colors.red.shade700,
+                  ),
+                );
               }
             },
             builder: (context, state) {
+              if (state is Error) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline, size: 48, color: Colors.black38),
+                      const SizedBox(height: 12),
+                      Text(
+                        state.errorString ?? 'Errore nel caricamento del profilo.',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontFamily: 'Nunito Sans',
+                          fontSize: 16,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: IncisiveColors.primary,
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () => context.read<ProfileBloc>().getProfile(),
+                        child: const Text('Riprova'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
               final user = state is Success ? state.data as UserModel : Constants.mockedUser;
+              final isLoading = state is Loading || state is Initial;
+
               return Column(
                 children: [
-                  _LevelHeader(user: user),
+                  _LevelHeader(user: user, isLoading: isLoading),
                   Material(
                     color: IncisiveColors.background,
                     child: TabBar(
@@ -44,7 +90,7 @@ class ShopPage extends StatelessWidget {
                       indicatorColor: IncisiveColors.primary,
                       labelColor: IncisiveColors.primary,
                       unselectedLabelColor: Colors.grey,
-                      tabs: [
+                      tabs: const [
                         Tab(text: "Avatar"),
                         Tab(text: "Sfondo"),
                       ],
@@ -55,7 +101,7 @@ class ShopPage extends StatelessWidget {
                       color: IncisiveColors.background,
                       child: TabBarView(
                         children: [
-                          _AvatarShopTab(user: user),
+                          _AvatarShopTab(user: user, userLoading: isLoading),
                           _ColorsProgressTab(user: user),
                         ],
                       ),
@@ -73,12 +119,11 @@ class ShopPage extends StatelessWidget {
 
 class _LevelHeader extends StatelessWidget {
   final UserModel user;
+  final bool isLoading;
 
-  const _LevelHeader({required this.user});
+  const _LevelHeader({required this.user, required this.isLoading});
 
-  int pointsRequiredForLevel(int level) {
-    return 100 + (level - 1) * 10;
-  }
+  int pointsRequiredForLevel(int level) => 100 + (level - 1) * 10;
 
   int totalPointsToReachLevel(int level) {
     int total = 0;
@@ -91,20 +136,17 @@ class _LevelHeader extends StatelessWidget {
   double levelProgress(int totalPoints, int level) {
     final pointsForCurrentLevel = totalPointsToReachLevel(level);
     final pointsForNextLevel = pointsRequiredForLevel(level);
-
     final pointsIntoLevel = totalPoints - pointsForCurrentLevel;
-
     return (pointsIntoLevel / pointsForNextLevel).clamp(0.0, 1.0);
   }
 
   @override
   Widget build(BuildContext context) {
-    final userLoading = user.id == "mocked_user_id";
     return Skeletonizer(
-      enabled: userLoading,
+      enabled: isLoading,
       child: Container(
         padding: const EdgeInsets.all(16),
-        color: const Color(0xFFFFF8E8),
+        color: IncisiveColors.background,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -143,10 +185,7 @@ class _LevelHeader extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   "${user.points - user.spentPoints} foglie disponibili",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: IncisiveColors.primary,
-                  ),
+                  style: const TextStyle(fontSize: 18, color: IncisiveColors.primary),
                 ),
               ],
             ),
@@ -180,7 +219,6 @@ class _ColorsProgressTab extends StatelessWidget {
       itemBuilder: (context, index) {
         final levelRequired = milestones[index].$1;
         final color = milestones[index].$2;
-
         final reached = user.level >= levelRequired;
 
         return Card(
@@ -188,7 +226,9 @@ class _ColorsProgressTab extends StatelessWidget {
           child: ListTile(
             leading: CircleAvatar(backgroundColor: color),
             title: Text("Livello $levelRequired"),
-            trailing: reached ? const Icon(Icons.check, color: Colors.green) : const Icon(Icons.lock_outline),
+            trailing: reached
+                ? const Icon(Icons.check, color: Colors.green)
+                : const Icon(Icons.lock_outline),
           ),
         );
       },
@@ -198,28 +238,24 @@ class _ColorsProgressTab extends StatelessWidget {
 
 class _AvatarShopTab extends StatelessWidget {
   final UserModel user;
+  final bool userLoading;
 
-  const _AvatarShopTab({required this.user});
+  const _AvatarShopTab({required this.user, required this.userLoading});
 
   Widget _avatarButton(BuildContext context, AvatarModel avatar, UserModel user) {
-    final style = ElevatedButton.styleFrom(
-      backgroundColor: avatar.owned ? Colors.grey.shade400 : const Color(0xFF2E7D32),
-      foregroundColor: Colors.white,
-      disabledBackgroundColor: Colors.grey.shade400,
-      disabledForegroundColor: Colors.white,
-    );
-
     final availableLeaves = user.points - user.spentPoints;
 
     if (!avatar.owned) {
       return ElevatedButton(
-        style: style,
-        onPressed:
-            availableLeaves >= avatar.cost
-                ? () {
-                  context.read<PurchaseBloc>().purchaseAvatar(avatar.id);
-                }
-                : null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF2E7D32),
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: Colors.grey.shade400,
+          disabledForegroundColor: Colors.white,
+        ),
+        onPressed: availableLeaves >= avatar.cost
+            ? () => context.read<PurchaseBloc>().purchaseAvatar(avatar.id)
+            : null,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -249,9 +285,7 @@ class _AvatarShopTab extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 235, 250, 221),
         foregroundColor: const Color(0xFF2E7D32),
       ),
-      onPressed: () {
-        context.read<PurchaseBloc>().equipAvatar(avatar.id);
-      },
+      onPressed: () => context.read<PurchaseBloc>().equipAvatar(avatar.id),
       child: const Text("Usa"),
     );
   }
@@ -260,10 +294,40 @@ class _AvatarShopTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AvatarBloc, BaseState>(
       builder: (context, state) {
-        final userLoading = user.id == "mocked_user_id";
+        if (state is Error) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 48, color: Colors.black38),
+                const SizedBox(height: 12),
+                Text(
+                  state.errorString ?? 'Errore nel caricamento degli avatar.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontFamily: 'Nunito Sans',
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: IncisiveColors.primary,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () => context.read<AvatarBloc>().getAvatars(),
+                  child: const Text('Riprova'),
+                ),
+              ],
+            ),
+          );
+        }
+
         final loading = state is Loading || state is Initial;
         final avatars = state is Success ? state.data as List<AvatarModel> : Constants.mockedAvatars;
         avatars.sort((a, b) => a.name.compareTo(b.name));
+
         return Skeletonizer(
           enabled: userLoading || loading,
           child: GridView.builder(
@@ -283,7 +347,7 @@ class _AvatarShopTab extends StatelessWidget {
                   Positioned.fill(
                     child: Card(
                       elevation: 2,
-                      color: Color.fromARGB(255, 255, 255, 255),
+                      color: Colors.white,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -291,21 +355,17 @@ class _AvatarShopTab extends StatelessWidget {
                             onTap: () {
                               showDialog(
                                 context: context,
-                                builder:
-                                    (context) => AlertDialog(
-                                      content: Image.asset("assets/images/${avatar.asset}"),
-                                    ),
+                                builder: (context) => AlertDialog(
+                                  content: Image.asset("assets/images/${avatar.asset}"),
+                                ),
                               );
                             },
                             child: CircleAvatar(
                               radius: 50,
                               backgroundColor: const Color.fromARGB(255, 249, 220, 165),
-                              child:
-                                  userLoading || loading
-                                      ? const SizedBox.shrink()
-                                      : Image.asset(
-                                        "assets/images/${avatar.asset}",
-                                      ),
+                              child: userLoading || loading
+                                  ? const SizedBox.shrink()
+                                  : Image.asset("assets/images/${avatar.asset}"),
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -317,14 +377,10 @@ class _AvatarShopTab extends StatelessWidget {
                     ),
                   ),
                   if (avatar.owned)
-                    Positioned(
+                    const Positioned(
                       top: 8,
                       right: 8,
-                      child: const Icon(
-                        Icons.check_circle,
-                        color: Color(0xFF2E7D32),
-                        size: 26,
-                      ),
+                      child: Icon(Icons.check_circle, color: Color(0xFF2E7D32), size: 26),
                     ),
                 ],
               );
