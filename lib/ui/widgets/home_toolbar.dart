@@ -8,7 +8,16 @@ import 'package:incisive/ui/widgets/level_bar.dart';
 import 'package:incisive/utils/incisive_colors.dart';
 
 class HomeToolbar extends StatelessWidget {
-  const HomeToolbar({super.key});
+  const HomeToolbar({
+    super.key,
+    this.levelKey,
+    this.profileKey,
+    this.shopKey,
+  });
+
+  final GlobalKey? levelKey;
+  final GlobalKey? profileKey;
+  final GlobalKey? shopKey;
 
   static const double toolbarHeight = 72;
 
@@ -31,6 +40,7 @@ class HomeToolbar extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Column(
+                    key: levelKey,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       LevelBar(),
@@ -38,6 +48,7 @@ class HomeToolbar extends StatelessWidget {
                   ),
                   Expanded(child: SizedBox()),
                   _TopIcon(
+                    key: profileKey,
                     icon: Icons.person_2,
                     onTap: () {
                       context.read<ProfileBloc>().getProfile();
@@ -47,6 +58,7 @@ class HomeToolbar extends StatelessWidget {
                   ),
                   SizedBox(width: 15),
                   _TopIcon(
+                    key: shopKey,
                     icon: Icons.store,
                     onTap: () {
                       context.read<ProfileBloc>().getProfile();
@@ -68,6 +80,7 @@ class _TopIcon extends StatelessWidget {
   final VoidCallback onTap;
 
   const _TopIcon({
+    super.key,
     required this.icon,
     required this.onTap,
   });

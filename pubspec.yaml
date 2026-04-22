@@ -43,6 +43,8 @@ dependencies:
 
   flutter_localizations:
     sdk: flutter
+  tutorial_coach_mark: ^1.2.12
+  shared_preferences: ^2.3.0
 
 
 dev_dependencies:

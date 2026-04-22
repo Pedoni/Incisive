@@ -10,6 +10,7 @@ import 'package:incisive/ui/components/garden_game.dart';
 import 'package:incisive/ui/components/living_room_game.dart';
 import 'package:incisive/ui/components/square_game.dart';
 import 'package:incisive/ui/widgets/home_toolbar.dart';
+import 'package:incisive/ui/widgets/tutorial_manager.dart';
 import 'package:incisive/utils/incisive_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +28,14 @@ class _HomePageState extends State<HomePage> {
   double _currentPage = 0.0;
   int currentIndex = 0;
   bool _isAnimating = false;
+
+  final GlobalKey toolbarLevelKey = GlobalKey();
+  final GlobalKey toolbarProfileKey = GlobalKey();
+  final GlobalKey toolbarShopKey = GlobalKey();
+  final GlobalKey navBedroomKey = GlobalKey();
+  final GlobalKey navLivingRoomKey = GlobalKey();
+  final GlobalKey navGardenKey = GlobalKey();
+  final GlobalKey navSquareKey = GlobalKey();
 
   final List<String> _images = [
     'assets/images/bedroom_unity.png',
@@ -60,10 +69,10 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _navItem(Icons.bed, 0),
-                  _navItem(Icons.chair, 1),
-                  _navItem(Icons.grass_sharp, 2),
-                  _navItem(Icons.location_city, 3),
+                  _navItem(Icons.bed, 0, key: navBedroomKey),
+                  _navItem(Icons.chair, 1, key: navLivingRoomKey),
+                  _navItem(Icons.grass_sharp, 2, key: navGardenKey),
+                  _navItem(Icons.location_city, 3, key: navSquareKey),
                 ],
               ),
             ),
@@ -73,10 +82,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _navItem(IconData icon, int index) {
+  Widget _navItem(IconData icon, int index, {GlobalKey? key}) {
     final isSelected = currentIndex == index;
 
     return GestureDetector(
+      key: key,
       onTap: () {
         _isAnimating = true;
 
@@ -155,6 +165,127 @@ class _HomePageState extends State<HomePage> {
     gardenGame = GardenGame(onStatueTap: () => context.push(AppRoutes.breathing));
 
     squareGame = SquareGame(onBulletinBoardTap: () => context.push(AppRoutes.social));
+
+    // avvia il tutorial al primo lancio
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeStartTutorial());
+  }
+
+  Future<void> _maybeStartTutorial() async {
+    final should = await TutorialManager.shouldShowTutorial();
+    if (!should || !mounted) return;
+    _showWelcomeDialog();
+  }
+
+  void _showWelcomeDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black54,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        backgroundColor: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('👋', style: TextStyle(fontSize: 48)),
+              const SizedBox(height: 16),
+              const Text(
+                'Benvenuto in Incisive!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF8D5A23),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'Il tuo spazio digitale per il benessere mentale.\n\nEsplora le stanze, scrivi nel diario, pratica la gratitudine e connettiti con gli altri.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Nunito Sans',
+                  fontSize: 15,
+                  color: Color(0xFF4A3728),
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 28),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    _startTutorial();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8D5A23),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: const Text(
+                    'Inizia il tour →',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  TutorialManager.markTutorialDone();
+                },
+                child: const Text(
+                  'Salta',
+                  style: TextStyle(
+                    fontFamily: 'Nunito Sans',
+                    fontSize: 14,
+                    color: Color(0xFF8D5A23),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _startTutorial() {
+    final targets = TutorialManager.buildTargets(
+      levelKey: toolbarLevelKey,
+      profileKey: toolbarProfileKey,
+      shopKey: toolbarShopKey,
+      bedroomKey: navBedroomKey,
+      livingRoomKey: navLivingRoomKey,
+      gardenKey: navGardenKey,
+      squareKey: navSquareKey,
+    );
+
+    TutorialManager.build(
+      context: context,
+      targets: targets,
+      onStepShown: (index) {
+        _isAnimating = true;
+        setState(() => currentIndex = index);
+        _controller
+            .animateToPage(
+              index,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            )
+            .then((_) => _isAnimating = false);
+      },
+    ).show(context: context);
   }
 
   @override
@@ -207,7 +338,11 @@ class _HomePageState extends State<HomePage> {
               };
             },
           ),
-          HomeToolbar(),
+          HomeToolbar(
+            levelKey: toolbarLevelKey,
+            profileKey: toolbarProfileKey,
+            shopKey: toolbarShopKey,
+          ),
           IgnorePointer(child: Container(color: Colors.black.withValues(alpha: _calculateOverlayOpacity()))),
           _buildFloatingBar(),
         ],
