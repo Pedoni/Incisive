@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:incisive/models/post_model.dart';
 import 'package:incisive/navigation/app_routes.dart';
@@ -5,6 +6,7 @@ import 'package:incisive/navigation/args/social_post_detail_args.dart';
 import 'package:incisive/navigation/args/upsert_diary_args.dart';
 import 'package:incisive/navigation/args/upsert_gratitude_args.dart';
 import 'package:incisive/navigation/auth_notifier.dart';
+import 'package:incisive/state_management/blocs/questionnaire/questionnaire_bloc.dart';
 import 'package:incisive/ui/pages/add_comment_page.dart';
 import 'package:incisive/ui/pages/add_post_page.dart';
 import 'package:incisive/ui/pages/breathing_page.dart';
@@ -173,7 +175,10 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
     ),
     GoRoute(
       path: QuestionnairePage.routeName,
-      builder: (_, _) => const QuestionnairePage(),
+      builder: (_, _) => BlocProvider(
+        create: (_) => QuestionnaireBloc(),
+        child: const QuestionnairePage(),
+      ),
     ),
   ],
 );
