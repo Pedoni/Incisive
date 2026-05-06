@@ -1,8 +1,10 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:incisive/state_management/blocs/register/register_bloc.dart';
+import 'package:incisive/ui/pages/questionnaire_page.dart';
 import 'package:incisive/ui/widgets/auth_scaffold.dart';
 import 'package:incisive/ui/widgets/error_dialog.dart';
 import 'package:incisive/ui/widgets/login_button.dart';
@@ -78,6 +80,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     text: state.errorString ?? 'Errore sconosciuto',
                   ),
             );
+          }
+          if (state is Success) {
+            context.go(QuestionnairePage.routeName);
           }
         },
         builder: (context, state) {
