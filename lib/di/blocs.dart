@@ -55,4 +55,7 @@ final List<BlocProvider> _blocs = [
   BlocProvider<ChatBloc>(
     create: (context) => ChatBloc(chatRepository: context.read()),
   ),
+  BlocProvider<QuestionnaireBloc>(
+    create: (context) => QuestionnaireBloc(),
+  ),
 ];

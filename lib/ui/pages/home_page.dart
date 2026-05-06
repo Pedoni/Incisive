@@ -13,6 +13,7 @@ import 'package:incisive/ui/widgets/home_toolbar.dart';
 import 'package:incisive/ui/widgets/tutorial_manager.dart';
 import 'package:incisive/utils/incisive_colors.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -170,7 +171,13 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _maybeStartTutorial());
   }
 
-  Future<void> _maybeStartTutorial() async {
+    Future<void> _maybeStartTutorial() async {
+    final prefs = await SharedPreferences.getInstance();
+    final questionnaireDone = prefs.getBool('questionnaire_done') ?? false;
+
+    if (!questionnaireDone) return;
+ 
+    // questionario già completato
     final should = await TutorialManager.shouldShowTutorial();
     if (!should || !mounted) return;
     _showWelcomeDialog();

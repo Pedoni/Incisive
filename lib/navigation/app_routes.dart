@@ -15,4 +15,5 @@ abstract class AppRoutes {
   static const upsertDiary = '/upsertDiaryPage';
   static const upsertGratitude = '/upsertGratitudePage';
   static const userProfile = '/userProfilePage';
+  static const questionnaire = '/questionnaire';
 }

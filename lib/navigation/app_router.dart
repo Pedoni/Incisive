@@ -17,18 +17,20 @@ import 'package:incisive/ui/pages/home_page.dart';
 import 'package:incisive/ui/pages/login_page.dart';
 import 'package:incisive/ui/pages/monthly_report_page.dart';
 import 'package:incisive/ui/pages/pending_comments_page.dart';
+import 'package:incisive/ui/pages/questionnaire_page.dart';
 import 'package:incisive/ui/pages/register_page.dart';
 import 'package:incisive/ui/pages/social_page.dart';
 import 'package:incisive/ui/pages/social_post_detail_page.dart';
 import 'package:incisive/ui/pages/shop_page.dart';
 import 'package:incisive/ui/pages/user_profile_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 GoRouter createRouter(AuthNotifier notifier) => GoRouter(
   refreshListenable: notifier,
   initialLocation: AppRoutes.login,
 
-  redirect: (context, state) {
+  redirect: (context, state) async {
     final session = Supabase.instance.client.auth.currentSession;
     final location = state.uri.path;
 
@@ -40,7 +42,24 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
     }
 
     if (session != null && isLoggingIn) {
-      return HomePage.routeName;
+      final prefs = await SharedPreferences.getInstance();
+  
+      // controlla se ha saltato in locale
+      final skipped = prefs.getBool('questionnaire_done') ?? false;
+      if (skipped) return HomePage.routeName;
+
+      // controlla Supabase
+      final userId = Supabase.instance.client.auth.currentUser!.id;
+      final data = await Supabase.instance.client
+          .from('user_preferences')
+          .select('user_id')
+          .eq('user_id', userId)
+          .limit(1);
+
+      final questionnaireDone = data.isNotEmpty;
+      await prefs.setBool('questionnaire_done', questionnaireDone);
+
+      return questionnaireDone ? HomePage.routeName : QuestionnairePage.routeName;
     }
 
     return null;
@@ -151,6 +170,10 @@ GoRouter createRouter(AuthNotifier notifier) => GoRouter(
         final args = state.extra! as SocialPostDetailArgs;
         return PendingCommentsPage(post: args.post);
       },
+    ),
+    GoRoute(
+      path: QuestionnairePage.routeName,
+      builder: (_, _) => const QuestionnairePage(),
     ),
   ],
 );
