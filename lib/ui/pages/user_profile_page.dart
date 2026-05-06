@@ -12,100 +12,109 @@ import 'package:incisive/utils/constants.dart';
 import 'package:incisive/utils/functions.dart';
 import 'package:incisive/utils/incisive_colors.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:incisive/state_management/blocs/questionnaire/questionnaire_bloc.dart';
+import 'package:incisive/ui/widgets/preferences_section.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: IncisiveColors.background,
-      appBar: AppBar(
-        backgroundColor: IncisiveColors.primary,
-        foregroundColor: IncisiveColors.background,
-        elevation: 0,
-        title: const Text(
-          'Profilo',
-          style: TextStyle(
-            fontSize: 25,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.bold,
+    return BlocProvider(
+      create: (_) => QuestionnaireBloc()..add(LoadPreferences()),
+      child: Scaffold(
+        backgroundColor: IncisiveColors.background,
+        appBar: AppBar(
+          backgroundColor: IncisiveColors.primary,
+          foregroundColor: IncisiveColors.background,
+          elevation: 0,
+          title: const Text(
+            'Profilo',
+            style: TextStyle(
+              fontSize: 25,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          actions: [
+            IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
+          ],
         ),
-        actions: [
-          IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
-        ],
-      ),
-      body: BlocConsumer<ProfileBloc, BaseState>(
-        listener: (context, state) {
-          if (state is Error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorString ?? 'Errore nel caricamento del profilo.'),
-                backgroundColor: Colors.red.shade700,
+        body: BlocConsumer<ProfileBloc, BaseState>(
+          listener: (context, state) {
+            if (state is Error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorString ?? 'Errore nel caricamento del profilo.'),
+                  backgroundColor: Colors.red.shade700,
+                ),
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state is Error) {
+              return StateErrorView(
+                message: state.errorString ?? 'Impossibile caricare il profilo.',
+                onRetry: () => context.read<ProfileBloc>().getProfile(),
+              );
+            }
+
+            final user = state is Success ? state.data as UserModel : Constants.mockedUser;
+            final isLoading = state is Loading || state is Initial;
+
+            return Skeletonizer(
+              enabled: isLoading,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 32),
+                      decoration: const BoxDecoration(
+                        color: IncisiveColors.primary,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(50),
+                          bottomRight: Radius.circular(50),
+                        ),
+                      ),
+                      child: _AvatarSection(user: user, loading: isLoading),
+                    ),
+                    const SizedBox(height: 24),
+                    _InfoField(icon: Icons.person, text: '${user.firstName} ${user.lastName}'),
+                    const SizedBox(height: 12),
+                    _InfoField(icon: Icons.email, text: user.email),
+                    const SizedBox(height: 24),
+                    const PreferencesSection(), 
+                    const SizedBox(height: 40),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 32),
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: IncisiveColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
+                        onPressed: () async {
+                          final bool res = await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (ctx) => const LogoutDialog(),
+                          );
+                          if (res && context.mounted) {
+                            await context.read<LoginBloc>().logout();
+                          }
+                        },
+                        icon: const Icon(Icons.logout),
+                        label: const Text('Logout'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
-          }
-        },
-        builder: (context, state) {
-          if (state is Error) {
-            return StateErrorView(
-              message: state.errorString ?? 'Impossibile caricare il profilo.',
-              onRetry: () => context.read<ProfileBloc>().getProfile(),
-            );
-          }
-
-          final user = state is Success ? state.data as UserModel : Constants.mockedUser;
-          final isLoading = state is Loading || state is Initial;
-
-          return Skeletonizer(
-            enabled: isLoading,
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 32),
-                  decoration: const BoxDecoration(
-                    color: IncisiveColors.primary,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(50),
-                      bottomRight: Radius.circular(50),
-                    ),
-                  ),
-                  child: _AvatarSection(user: user, loading: isLoading),
-                ),
-                const SizedBox(height: 24),
-                _InfoField(icon: Icons.person, text: '${user.firstName} ${user.lastName}'),
-                const SizedBox(height: 12),
-                _InfoField(icon: Icons.email, text: user.email),
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 32),
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: IncisiveColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    ),
-                    onPressed: () async {
-                      final bool res = await showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (ctx) => const LogoutDialog(),
-                      );
-                      if (res && context.mounted) {
-                        await context.read<LoginBloc>().logout();
-                      }
-                    },
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Logout'),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }
