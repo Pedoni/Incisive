@@ -12,7 +12,9 @@ class UserService extends BaseService {
           throw IncisiveException('Utente non autenticato');
         }
 
-        final userJson = await supabase.from('user').select().eq('id', authUser.id).single();
+        final userJson = await supabase.from('user').select().eq('id', authUser.id).maybeSingle();
+
+        if (userJson == null) throw IncisiveException('Profilo utente non trovato');
 
         final progressJson =
             await supabase.rpc(
