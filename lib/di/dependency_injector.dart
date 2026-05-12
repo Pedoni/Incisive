@@ -23,6 +23,8 @@ import 'package:incisive/repositories/login_repository.dart';
 import 'package:incisive/repositories/monthly_stats_repository.dart';
 import 'package:incisive/repositories/social_repository.dart';
 import 'package:incisive/repositories/user_repository.dart';
+import 'package:incisive/source/remote/ai_context_service.dart';
+import 'package:incisive/source/remote/ai_service.dart';
 import 'package:incisive/source/remote/breathing_service.dart';
 import 'package:incisive/source/remote/chat_service.dart';
 import 'package:incisive/source/remote/diary_service.dart';

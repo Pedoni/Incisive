@@ -53,6 +53,9 @@ final List<BlocProvider> _blocs = [
     create: (context) => GlobalMonthlyStatsBloc(monthlyStatsRepository: context.read()),
   ),
   BlocProvider<ChatBloc>(
-    create: (context) => ChatBloc(chatRepository: context.read()),
+    create: (context) => ChatBloc(
+      chatRepository: context.read(),
+      aiContextService: AiContextService(aiService: AiService()),
+    ),
   ),
 ];
