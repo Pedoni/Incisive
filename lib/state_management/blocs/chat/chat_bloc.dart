@@ -2,14 +2,19 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/repositories/chat_repository.dart';
+import 'package:incisive/source/remote/ai_context_service.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 
 part 'chat_bloc_event.dart';
 
 class ChatBloc extends BaseBloc {
   final ChatRepository chatRepository;
+  final AiContextService aiContextService;
 
-  ChatBloc({required this.chatRepository}) : super(Initial()) {
+  ChatBloc({
+    required this.chatRepository,
+    required this.aiContextService,
+  }) : super(Initial()) {
     on<SendChatMessageEvent>(_sendMessage);
   }
 
@@ -22,7 +27,14 @@ class ChatBloc extends BaseBloc {
   ) async {
     emitter(Loading());
     try {
-      final reply = await chatRepository.sendMessage(event.messages);
+      final systemPrompt = await aiContextService.buildSystemPrompt();
+      // ignore: avoid_print
+      // print('=== SYSTEM PROMPT ===\n$systemPrompt');
+      final fullPayload = [
+        {'role': 'system', 'content': systemPrompt},
+        ...event.messages,
+      ];
+      final reply = await chatRepository.sendMessage(fullPayload);
       emitter(Success(reply));
     } catch (e) {
       emitter(Error(e.toString()));
