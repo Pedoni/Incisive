@@ -7,7 +7,7 @@ class DiaryService extends BaseService {
     return await guard("Get diary page", () async {
       final sqlDate = toSqlDate(date);
 
-      final page = await supabase.from('diary_page').select().eq('user_id', currentUserId).eq('date', sqlDate).maybeSingle();
+      final page = await supabase.from('diary_page').select('*, is_private').eq('user_id', currentUserId).eq('date', sqlDate).maybeSingle();
 
       if (page == null) return null;
 
@@ -42,6 +42,7 @@ class DiaryService extends BaseService {
         'emotions': emotions,
         'gratitudeAreas': gratitudeAreas,
         'nonGratitudeAreas': nonGratitudeAreas,
+        'is_private': page['is_private'] as bool? ?? false,
       };
     });
   }
@@ -81,6 +82,19 @@ class DiaryService extends BaseService {
     return await guard("Get mood", () async {
       final response = await supabase.from('diary_page').select('date, score').eq('user_id', currentUserId).order('date');
       return _extractDateScoreMap(response);
+    });
+  }
+
+  Future<void> updatePrivacy({
+    required DateTime date,
+    required bool isPrivate,
+  }) async {
+    return await guard("Update diary privacy", () async {
+      await supabase
+          .from('diary_page')
+          .update({'is_private': isPrivate})
+          .eq('user_id', currentUserId)
+          .eq('date', toSqlDate(date));
     });
   }
 

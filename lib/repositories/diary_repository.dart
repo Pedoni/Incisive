@@ -44,4 +44,14 @@ class DiaryRepository extends BaseRepository {
       () => diaryService.getMood(),
     );
   }
+
+  Future<void> updatePrivacy({
+    required DateTime date,
+    required bool isPrivate,
+  }) async {
+    return await guard(
+      'Update diary privacy',
+      () => diaryService.updatePrivacy(date: date, isPrivate: isPrivate),
+    );
+  }
 }

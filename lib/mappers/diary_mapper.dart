@@ -12,6 +12,7 @@ class DiaryMapper extends DTOMapper<DiaryDTO, DiaryModel> {
       emotions: dto.emotions,
       gratitudeAreas: dto.gratitudeAreas,
       nonGratitudeAreas: dto.nonGratitudeAreas,
+      isPrivate: dto.isPrivate,
     );
   }
 

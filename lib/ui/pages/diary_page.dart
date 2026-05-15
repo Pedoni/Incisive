@@ -13,6 +13,7 @@ import 'package:incisive/ui/widgets/empty_widget.dart';
 import 'package:incisive/ui/widgets/page_detail_appbar.dart';
 import 'package:incisive/ui/widgets/state_error_view.dart';
 import 'package:incisive/utils/constants.dart';
+import 'package:incisive/utils/incisive_colors.dart';
 
 class DiaryPage extends StatefulWidget {
   const DiaryPage({super.key});
@@ -301,6 +302,88 @@ class _DiaryPageState extends State<DiaryPage> {
                                   fontFamily: "Nunito Sans",
                                 ),
                               ),
+                              if (state is Success) ...[
+                                const SizedBox(height: 40),
+                                GestureDetector(
+                                  onTap: () {
+                                    context.read<DiaryPageBloc>().updatePrivacy(
+                                          _selectedDate,
+                                          !entry.isPrivate,
+                                        );
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: entry.isPrivate
+                                          ? IncisiveColors.primary.withValues(alpha: 0.12)
+                                          : const Color.fromARGB(255, 241, 218, 192),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: entry.isPrivate
+                                            ? IncisiveColors.primary
+                                            : Colors.transparent,
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          entry.isPrivate
+                                              ? Icons.lock
+                                              : Icons.lock_open_outlined,
+                                          size: 20,
+                                          color: IncisiveColors.primary,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                entry.isPrivate
+                                                    ? 'Voce privata'
+                                                    : 'Condividi con Pixel',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: IncisiveColors.primary,
+                                                ),
+                                              ),
+                                              Text(
+                                                entry.isPrivate
+                                                    ? 'Pixel non leggerà questa pagina'
+                                                    : 'Pixel usa questa pagina per conoscerti meglio',
+                                                style: const TextStyle(
+                                                  fontFamily: 'Nunito Sans',
+                                                  fontSize: 11,
+                                                  color: Color(0xFF7A6050),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Switch(
+                                          value: !entry.isPrivate,
+                                          onChanged: (val) {
+                                            context
+                                                .read<DiaryPageBloc>()
+                                                .updatePrivacy(
+                                                  _selectedDate,
+                                                  !val,
+                                                );
+                                          },
+                                          activeThumbColor: IncisiveColors.primary,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 80),
+                              ],
                             ],
                           ),
                         ),

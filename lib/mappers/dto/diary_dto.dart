@@ -9,6 +9,7 @@ final class DiaryDTO extends DTO with EquatableMixin {
   final List<String> emotions;
   final List<String> gratitudeAreas;
   final List<String> nonGratitudeAreas;
+  final bool isPrivate;
 
   DiaryDTO.fromJson(JsonObject json)
     : date = json['date'] as String,
@@ -16,7 +17,8 @@ final class DiaryDTO extends DTO with EquatableMixin {
       score = (json['score'] as num).toDouble(),
       emotions = List<String>.from(json['emotions'] as List),
       gratitudeAreas = List<String>.from(json['gratitudeAreas'] as List),
-      nonGratitudeAreas = List<String>.from(json['nonGratitudeAreas'] as List);
+      nonGratitudeAreas = List<String>.from(json['nonGratitudeAreas'] as List),
+      isPrivate = json['is_private'] as bool? ?? false;
 
   @override
   List<Object?> get props => [
@@ -26,5 +28,6 @@ final class DiaryDTO extends DTO with EquatableMixin {
     emotions,
     gratitudeAreas,
     nonGratitudeAreas,
+    isPrivate,
   ];
 }

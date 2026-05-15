@@ -11,9 +11,13 @@ class DiaryPageBloc extends BaseBloc {
 
   DiaryPageBloc({required this.diaryRepository}) : super(Initial()) {
     on<TryDiaryPageEvent>(_getPage);
+    on<UpdateDiaryPrivacyEvent>(_updatePrivacy);
   }
 
   void getPage(DateTime dateTime) => add(TryDiaryPageEvent(dateTime: dateTime));
+
+  void updatePrivacy(DateTime date, bool isPrivate) =>
+      add(UpdateDiaryPrivacyEvent(date: date, isPrivate: isPrivate));
 
   FutureOr<void> _getPage(
     TryDiaryPageEvent event,
@@ -23,6 +27,27 @@ class DiaryPageBloc extends BaseBloc {
     try {
       final entry = await diaryRepository.getPage(event.dateTime);
       emitter(entry != null ? Success(entry) : Empty());
+    } catch (e) {
+      emitter(Error(e.toString()));
+    }
+  }
+
+  FutureOr<void> _updatePrivacy(
+    UpdateDiaryPrivacyEvent event,
+    Emitter<BaseState> emitter,
+  ) async {
+    // mantiene lo stato corrente durante il salvataggio
+    final currentState = state;
+    try {
+      await diaryRepository.updatePrivacy(
+        date: event.date,
+        isPrivate: event.isPrivate,
+      );
+      // aggiorna la voce nello stato con il nuovo valore isPrivate
+      if (currentState is Success) {
+        final entry = currentState.data as dynamic;
+        emitter(Success(entry.copyWith(isPrivate: event.isPrivate)));
+      }
     } catch (e) {
       emitter(Error(e.toString()));
     }

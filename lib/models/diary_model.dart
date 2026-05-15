@@ -5,6 +5,7 @@ class DiaryModel {
   final List<String> emotions;
   final List<String> gratitudeAreas;
   final List<String> nonGratitudeAreas;
+  final bool isPrivate;
 
   const DiaryModel({
     required this.date,
@@ -13,5 +14,19 @@ class DiaryModel {
     this.emotions = const [],
     this.gratitudeAreas = const [],
     this.nonGratitudeAreas = const [],
+    this.isPrivate = false,
   });
+
+
+  DiaryModel copyWith({bool? isPrivate}) {
+      return DiaryModel(
+        date: date,
+        text: text,
+        score: score,
+        emotions: emotions,
+        gratitudeAreas: gratitudeAreas,
+        nonGratitudeAreas: nonGratitudeAreas,
+        isPrivate: isPrivate ?? this.isPrivate,
+      );
+  }
 }

@@ -8,3 +8,12 @@ class TryDiaryPageEvent extends BaseEvent {
   @override
   List<Object> get props => [dateTime];
 }
+
+class UpdateDiaryPrivacyEvent extends BaseEvent {
+  final DateTime date;
+  final bool isPrivate;
+  const UpdateDiaryPrivacyEvent({required this.date, required this.isPrivate});
+
+  @override
+  List<Object> get props => [date, isPrivate];
+}

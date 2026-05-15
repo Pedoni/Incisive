@@ -24,6 +24,7 @@ class AiService extends BaseService {
           .from('diary_page')
           .select('date, text, score')
           .eq('user_id', currentUserId)
+          .eq('is_private', false)
           .order('date', ascending: false)
           .limit(limit);
     });
