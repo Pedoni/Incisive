@@ -5,8 +5,8 @@ import 'package:incisive/source/remote/ai_service.dart';
 class AiContextService {
   final AiService aiService;
 
-  static const int _maxDiaryEntries = 4;
   static const int _gratitudeDays = 7;
+  static const int _recentDiaryDays = 7;
 
   AiContextService({required this.aiService});
 
@@ -39,20 +39,49 @@ class AiContextService {
 
   Future<String> _fetchDiary() async {
     try {
-      final rows = await aiService.getRecentDiaryEntries(limit: _maxDiaryEntries);
-      if (rows.isEmpty) return '';
+      // riassunti mensili storici
+      final summaries = await aiService.getMonthlySummaries();
+
+      // ultime voci recenti (ultimi 7 giorni)
+      final since = _toSqlDate(
+        DateTime.now().subtract(const Duration(days: _recentDiaryDays)),
+      );
+      final recentEntries = await aiService.getRecentDiaryEntriesSince(since: since);
+
+      if (summaries.isEmpty && recentEntries.isEmpty) return '';
 
       final buffer = StringBuffer();
-      buffer.writeln('STORICO RECENTE DEL DIARIO:');
-      for (final row in rows) {
-        final date = _formatDate(DateTime.parse(row['date'] as String));
-        final text = row['text'] as String? ?? '';
-        buffer.writeln('• [$date] $text');
+
+      if (summaries.isNotEmpty) {
+        buffer.writeln('RIASSUNTI MENSILI DEL DIARIO:');
+        for (final row in summaries) {
+          final monthName = _monthName(row['month'] as int);
+          final year = row['year'] as int;
+          buffer.writeln('• [$monthName $year] ${row['summary']}');
+        }
+        buffer.writeln();
       }
+
+      if (recentEntries.isNotEmpty) {
+        buffer.writeln('VOCI RECENTI DEL DIARIO (ultimi 7 giorni):');
+        for (final row in recentEntries) {
+          final date = _formatDate(DateTime.parse(row['date'] as String));
+          buffer.writeln('• [$date] ${row['text']}');
+        }
+      }
+
       return buffer.toString();
     } catch (_) {
       return '';
     }
+  }
+
+  String _monthName(int month) {
+    const names = [
+      '', 'Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
+      'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'
+    ];
+    return names[month];
   }
 
   Future<String> _fetchGratitude(String since) async {

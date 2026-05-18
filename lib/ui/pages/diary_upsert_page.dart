@@ -30,6 +30,24 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
   late TextEditingController _controller;
   late UpsertPageBloc _upsertPageBloc;
 
+  
+  bool get _isDateLocked => _dateLockMessage != null;
+
+  String? get _dateLockMessage {
+    final today = DateTime.now();
+    final todayOnly = DateTime(today.year, today.month, today.day);
+    final pageDate = DateTime(widget.date.year, widget.date.month, widget.date.day);
+
+    if (pageDate.isAfter(todayOnly)) {
+      return "Non puoi scrivere il diario per un giorno futuro.";
+    }
+    final difference = todayOnly.difference(pageDate).inDays;
+    if (difference > 7) {
+      return "Non puoi più modificare questa pagina.";
+    }
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +61,7 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.existingEntry != null;
+    final lockMessage = _dateLockMessage;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -131,11 +150,12 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
                   maxLines: null,
                   maxLength: 1000,
                   expands: true,
+                  readOnly: _isDateLocked,
                   textAlignVertical: TextAlignVertical.top,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
-                    hintText: "Inserisci il tuo testo...",
+                    hintText: lockMessage ?? "Inserisci il tuo testo...",
                     alignLabelWithHint: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -149,6 +169,21 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
                   ),
                 ),
               ),
+              if (lockMessage != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Center(
+                    child: Text(
+                      lockMessage,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 13,
+                        fontFamily: 'Nunito Sans',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               SizedBox(height: 20),
               Center(
                 child: BlocBuilder<UpsertPageBloc, BaseState>(
@@ -158,11 +193,10 @@ class _UpsertDiaryPageState extends State<UpsertDiaryPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: IncisiveColors.primary,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor:
-                            _controller.text.length < 10 ? const Color.fromARGB(255, 184, 181, 181) : IncisiveColors.primary,
+                        disabledBackgroundColor: const Color.fromARGB(255, 184, 181, 181),
                         fixedSize: Size.fromWidth(screenWidth * 0.4),
                       ),
-                      onPressed: _controller.text.length < 10 || state is Loading ? null : _save,
+                      onPressed: _controller.text.length < 10 || state is Loading || _isDateLocked ? null : _save,
                       child:
                           state is Loading
                               ? SizedBox(
