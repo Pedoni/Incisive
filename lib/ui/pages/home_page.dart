@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incisive/models/chat_session.dart';
 import 'package:incisive/navigation/app_routes.dart';
 import 'package:incisive/state_management/blocs/avatar/avatar_bloc.dart';
 import 'package:incisive/state_management/blocs/gratitude_page/gratitude_page_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:incisive/ui/widgets/tutorial_manager.dart';
 import 'package:incisive/utils/incisive_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -167,8 +169,11 @@ class _HomePageState extends State<HomePage> {
 
     squareGame = SquareGame(onBulletinBoardTap: () => context.push(AppRoutes.social));
 
-    // avvia il tutorial al primo lancio
-    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeStartTutorial());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _maybeStartTutorial();
+      await _checkPendingNotification();
+    });
+
   }
 
     Future<void> _maybeStartTutorial() async {
@@ -293,6 +298,124 @@ class _HomePageState extends State<HomePage> {
             .then((_) => _isAnimating = false);
       },
     ).show(context: context);
+  }
+
+  Future<void> _checkPendingNotification() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final today = DateTime.now().toIso8601String().split('T')[0];
+      final lastChecked = prefs.getString('notification_last_checked');
+
+      if (lastChecked == today) return;
+
+      final data = await Supabase.instance.client
+          .from('scheduled_notifications')
+          .select()
+          .eq('user_id', Supabase.instance.client.auth.currentUser!.id)
+          .eq('scheduled_for', today)
+          .eq('is_read', false)
+          .maybeSingle();
+
+      if (data == null || !mounted) return;
+
+      await Supabase.instance.client
+          .from('scheduled_notifications')
+          .update({'is_read': true})
+          .eq('id', data['id']);
+
+      await prefs.setString('notification_last_checked', today);
+
+      _showNotificationDialog(data['id'], data['message']);
+    } catch (e) {
+      // ignore: avoid_print
+      print('[Notification] Errore: $e');
+    }
+  }
+
+  void _showNotificationDialog(String id, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        backgroundColor: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircleAvatar(
+                radius: 36,
+                backgroundColor: Colors.white,
+                backgroundImage: AssetImage('assets/images/cat_thumb.png'),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Pixel vuole sapere...',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF8D5A23),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontFamily: 'Nunito Sans',
+                  fontSize: 15,
+                  color: Color(0xFF4A3728),
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 28),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    // messaggio come primo messaggio della chat
+                    ChatSession.messages.clear();
+                    ChatSession.messages.insert(0, ChatMessage(false, message));
+                    context.push(AppRoutes.chat);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8D5A23),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: const Text(
+                    'Vai alla chat',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text(
+                  'Non ora',
+                  style: TextStyle(
+                    fontFamily: 'Nunito Sans',
+                    fontSize: 14,
+                    color: Color(0xFF8D5A23),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override

@@ -42,27 +42,37 @@ class UpsertPageBloc extends BaseBloc {
       final token = Supabase.instance.client.auth.currentSession?.accessToken;
       final userId = Supabase.instance.client.auth.currentUser?.id;
 
-      // ignore: avoid_print
-      print('[MonthlySummary] Chiamata in partenza per user: $userId');
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
 
-      final response = await http.post(
-        Uri.parse('https://hktlznvzeixqyisnegzr.supabase.co/functions/v1/generate-monthly-summary'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({
-          'user_id': userId,
-          'year': date.year,
-          'month': date.month,
-        }),
-      );
+      final body = jsonEncode({
+        'user_id': userId,
+        'year': date.year,
+        'month': date.month,
+      });
 
-      // ignore: avoid_print
-      print('[MonthlySummary] Status: ${response.statusCode}, Body: ${response.body}');
+      const baseUrl = 'https://hktlznvzeixqyisnegzr.supabase.co/functions/v1';
+
+      await Future.wait([
+        http.post(
+          Uri.parse('$baseUrl/generate-monthly-summary'),
+          headers: headers,
+          body: body,
+        // ignore: avoid_print
+        ).then((r) => print('[Summary] Status: ${r.statusCode}, Body: ${r.body}')),
+        http.post(
+          Uri.parse('$baseUrl/generate-notification'),
+          headers: headers,
+          body: body,
+        // ignore: avoid_print
+        )
+      ]);
+
     } catch (e) {
       // ignore: avoid_print
-      print('[MonthlySummary] Errore: $e');
+      print('[Background] Errore: $e');
     }
   }
 }
