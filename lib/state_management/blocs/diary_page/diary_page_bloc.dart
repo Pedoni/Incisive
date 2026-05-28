@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'package:incisive/repositories/diary_repository.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
@@ -53,6 +55,21 @@ class DiaryPageBloc extends BaseBloc {
             .eq('user_id', Supabase.instance.client.auth.currentUser!.id)
             .eq('scheduled_for', tomorrowStr)
             .eq('is_read', false);
+
+        final token = Supabase.instance.client.auth.currentSession?.accessToken;
+        final userId = Supabase.instance.client.auth.currentUser?.id;
+        http.post(
+          Uri.parse('https://hktlznvzeixqyisnegzr.supabase.co/functions/v1/generate-monthly-summary'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'user_id': userId,
+            'year': event.date.year,
+            'month': event.date.month,
+          }),
+        );
       }
 
       if (currentState is Success) {
