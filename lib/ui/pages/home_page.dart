@@ -182,7 +182,6 @@ class _HomePageState extends State<HomePage> {
 
     if (!questionnaireDone) return;
  
-    // questionario già completato
     final should = await TutorialManager.shouldShowTutorial();
     if (!should || !mounted) return;
     _showWelcomeDialog();
@@ -305,16 +304,20 @@ class _HomePageState extends State<HomePage> {
       final prefs = await SharedPreferences.getInstance();
       final today = DateTime.now().toIso8601String().split('T')[0];
       final lastChecked = prefs.getString('notification_last_checked');
+      final fiveDaysAgo = DateTime.now().subtract(const Duration(days: 5)).toIso8601String().split('T')[0];
 
       if (lastChecked == today) return;
 
       final data = await Supabase.instance.client
-          .from('scheduled_notifications')
-          .select()
-          .eq('user_id', Supabase.instance.client.auth.currentUser!.id)
-          .eq('scheduled_for', today)
-          .eq('is_read', false)
-          .maybeSingle();
+        .from('scheduled_notifications')
+        .select()
+        .eq('user_id', Supabase.instance.client.auth.currentUser!.id)
+        .lte('scheduled_for', today)
+        .gte('scheduled_for', fiveDaysAgo)
+        .eq('is_read', false)
+        .order('scheduled_for', ascending: false)
+        .limit(1)
+        .maybeSingle();
 
       if (data == null || !mounted) return;
 
@@ -376,7 +379,6 @@ class _HomePageState extends State<HomePage> {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(ctx).pop();
-                    // messaggio come primo messaggio della chat
                     ChatSession.messages.clear();
                     ChatSession.messages.insert(0, ChatMessage(false, message));
                     context.push(AppRoutes.chat);

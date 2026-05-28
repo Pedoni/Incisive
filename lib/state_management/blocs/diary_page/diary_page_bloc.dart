@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incisive/repositories/diary_repository.dart';
 import 'package:incisive/state_management/blocs/base/base_bloc.dart';
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 part 'diary_page_event.dart';
 
@@ -36,14 +37,24 @@ class DiaryPageBloc extends BaseBloc {
     UpdateDiaryPrivacyEvent event,
     Emitter<BaseState> emitter,
   ) async {
-    // mantiene lo stato corrente durante il salvataggio
     final currentState = state;
     try {
       await diaryRepository.updatePrivacy(
         date: event.date,
         isPrivate: event.isPrivate,
       );
-      // aggiorna la voce nello stato con il nuovo valore isPrivate
+
+      if (event.isPrivate) {
+        final tomorrow = event.date.add(const Duration(days: 1));
+        final tomorrowStr = '${tomorrow.year}-${tomorrow.month.toString().padLeft(2, '0')}-${tomorrow.day.toString().padLeft(2, '0')}';
+        await Supabase.instance.client
+            .from('scheduled_notifications')
+            .delete()
+            .eq('user_id', Supabase.instance.client.auth.currentUser!.id)
+            .eq('scheduled_for', tomorrowStr)
+            .eq('is_read', false);
+      }
+
       if (currentState is Success) {
         final entry = currentState.data as dynamic;
         emitter(Success(entry.copyWith(isPrivate: event.isPrivate)));

@@ -67,7 +67,7 @@ class UpsertPageBloc extends BaseBloc {
           headers: headers,
           body: body,
         // ignore: avoid_print
-        )
+        ).then((r) => print('[Notification] Status: ${r.statusCode}, Body: ${r.body}')),
       ]);
 
     } catch (e) {
