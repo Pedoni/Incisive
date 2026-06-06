@@ -304,7 +304,7 @@ class _HomePageState extends State<HomePage> {
       final prefs = await SharedPreferences.getInstance();
       final today = DateTime.now().toIso8601String().split('T')[0];
       final lastChecked = prefs.getString('notification_last_checked');
-      final fiveDaysAgo = DateTime.now().subtract(const Duration(days: 5)).toIso8601String().split('T')[0];
+      final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7)).toIso8601String().split('T')[0];
 
       if (lastChecked == today) return;
 
@@ -313,7 +313,7 @@ class _HomePageState extends State<HomePage> {
         .select()
         .eq('user_id', Supabase.instance.client.auth.currentUser!.id)
         .lte('scheduled_for', today)
-        .gte('scheduled_for', fiveDaysAgo)
+        .gte('scheduled_for', sevenDaysAgo)
         .eq('is_read', false)
         .order('scheduled_for', ascending: false)
         .limit(1)

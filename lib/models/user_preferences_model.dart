@@ -80,7 +80,7 @@ class QuestionnaireData {
     QuestionnaireQuestion(
       index: 0,
       question:
-          'Ciao, sono Pixel, il tuo assistente virtuale. \nSono qui per guidarti e aiutarti, che tipo di supporto preferisci ricevere?',
+          'Ciao, sono Pixel, il tuo assistente virtuale. \nSono qui per guidarti e aiutarti. Le tue risposte verranno utilizzate per personalizzare il mio comportamento.\n Che tipo di supporto preferisci ricevere?',
       options: [
         QuestionnaireOption(
           value: 'calm_empathetic',
@@ -126,7 +126,7 @@ class QuestionnaireData {
         ),
         QuestionnaireOption(
           value: 'gratitude',
-          label: 'Imparare a essere grato e vedere le cose positive',
+          label: 'Imparare a essere grato e vedere il lato positivo delle cose',
           emoji: '🌟',
         ),
       ],

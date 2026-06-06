@@ -15,7 +15,6 @@ class TutorialManager {
     await prefs.setBool(_tutorialKey, true);
   }
 
-  /// resetta il tutorial (utile per debug)
   static Future<void> resetTutorial() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tutorialKey);
@@ -35,7 +34,7 @@ class TutorialManager {
         key: bedroomKey,
         identify: 'bedroom',
         title: '🛏️ La Stanza',
-        body: 'Questo è il tuo spazio privato. Qui puoi scrivere nel diario cliccando l\'icona sul comodino e interagire con il tuo assistente virtuale cliccando sulla cuccia di Pixel.',
+        body: 'Questo è il tuo spazio privato. Qui puoi scrivere nel diario cliccando l\'icona sul comodino e interagire con il tuo assistente virtuale cliccando sulla cuccia di Pixel. \n\nPixel leggerà le tue pagine di diario per conoscerti meglio, ma puoi scegliere di rendere privata qualsiasi pagina se preferisci che non la legga.',
         align: ContentAlign.top,
         shape: ShapeLightFocus.Circle,
       ),
