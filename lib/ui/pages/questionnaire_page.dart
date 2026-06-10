@@ -222,6 +222,19 @@ class _QuestionnairePageState extends State<QuestionnairePage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
+          if (_currentQuestion == 0)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Text(
+                'Le tue risposte personalizzeranno il mio comportamento.',
+                style: TextStyle(
+                  fontFamily: 'Nunito Sans',
+                  fontSize: 13,
+                  color: Color(0xFFB08040),
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
           Text(
             q.question,
             style: const TextStyle(
