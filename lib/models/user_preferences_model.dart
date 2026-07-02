@@ -80,7 +80,7 @@ class QuestionnaireData {
     QuestionnaireQuestion(
       index: 0,
       question:
-          'Ciao, sono Pixel, il tuo assistente virtuale. Sono qui per guidarti e aiutarti. Che tipo di supporto preferisci ricevere?',
+          'Ciao, sono Pixel, il tuo assistente virtuale. Che tipo di supporto preferisci ricevere?',
       options: [
         QuestionnaireOption(
           value: 'calm_empathetic',
